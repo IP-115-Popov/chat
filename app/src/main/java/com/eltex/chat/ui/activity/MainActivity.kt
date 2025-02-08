@@ -3,14 +3,15 @@ package com.eltex.chat.ui.activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.navigationBar.NavigationGraph
 import com.eltex.chat.ui.theme.CustomTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             CustomTheme {
                 Main()
@@ -31,8 +32,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val navController = rememberNavController()
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
     Scaffold(bottomBar = {
-        BottomNavigationBar(navController)
+        if (currentRoute != NavRoutes.Splash.route) {
+            BottomNavigationBar(navController)
+        }
     }) { innerPadding ->
         NavigationGraph(
             navController = navController, modifier = Modifier.padding(innerPadding)

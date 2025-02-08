@@ -65,9 +65,9 @@ fun  BottomNavigationBar(navController: NavHostController) {
             NavBarItem(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_account_circle),
                 text = "Профиль",
-                isSelected = currentRoute == NavRoutes.Chat.route,
+                isSelected = currentRoute == NavRoutes.Profile.route,
                 onClick = {
-                    navController.navigate(NavRoutes.Chat.route) {
+                    navController.navigate(NavRoutes.Profile.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
