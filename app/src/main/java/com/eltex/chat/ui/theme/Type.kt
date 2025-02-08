@@ -1,0 +1,54 @@
+package com.eltex.chat.ui.theme
+
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.eltex.chat.R
+
+val Roboto = FontFamily(Font(R.font.roboto_regular))
+private val robotoTextStyle = TextStyle(fontFamily = Roboto)
+
+val sfProDisplay = FontFamily(Font(R.font.roboto_regular))
+private val sfProDisplayTextStyle = TextStyle(fontFamily = sfProDisplay)
+
+val simpleRobotoTypography = CustomTypography(
+    titleMedium = robotoTextStyle.copy(
+        fontWeight = FontWeight(600),
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+    ),
+
+    bodyMedium = robotoTextStyle.copy(
+        fontWeight = FontWeight(400),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
+
+    headlineSemibold = robotoTextStyle.copy(
+        fontWeight = FontWeight(400),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
+)
+
+val simpleSfProDisplayTypography = CustomTypography(
+    titleMedium = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(600),
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+    ),
+
+    bodyMedium = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(400),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
+
+    headlineSemibold = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(400),
+        fontSize = 17.sp,
+        lineHeight = 24.sp,
+    ),
+)

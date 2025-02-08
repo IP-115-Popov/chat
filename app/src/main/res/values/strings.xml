@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">chat</string>
+    <string name="enter_login_password">Введите логин и пароль для входа</string>
+    <string name="login">Логин</string>
+    <string name="log_out_of_account">Выйти из аккаунта</string>
+    <string name="are_you_sure_want_to_get_out">Вы уверенны, что хотите выйти</string>
+    <string name="Cancel">Отменить</string>
+    <string name="Exit">Выйти</string>
+</resources>
