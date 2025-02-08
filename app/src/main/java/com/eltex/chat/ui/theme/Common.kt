@@ -16,24 +16,35 @@ data class BasicPalette(
     val blue: Color,
 )
 
-data class CustomTypography(
+data class CustomRobotoTypography(
+    val titleMedium: TextStyle,
+    val bodyMedium: TextStyle,
+)
+
+data class CustomSfProDisplayTypography(
     val titleMedium: TextStyle,
     val bodyMedium: TextStyle,
     val headlineSemibold: TextStyle,
+    val caption2Medium: TextStyle,
 )
+
+
 
 object CustomTheme {
     val basicPalette: BasicPalette
         @Composable get() = LocalBasicPalette.current
-    val typographyRoboto: CustomTypography
+    val typographyRoboto: CustomRobotoTypography
         @Composable get() = LocalCustomTypography.current
-    val typographySfPro: CustomTypography
-        @Composable get() = LocalCustomTypography.current
+    val typographySfPro: CustomSfProDisplayTypography
+        @Composable get() = LocalCustomSfProDisplayTypography.current
 }
 
 val LocalBasicPalette = staticCompositionLocalOf<BasicPalette> {
     error("No colors provided")
 }
-val LocalCustomTypography = staticCompositionLocalOf<CustomTypography> {
+val LocalCustomTypography = staticCompositionLocalOf<CustomRobotoTypography> {
     error("No typography provided")
+}
+val LocalCustomSfProDisplayTypography = staticCompositionLocalOf<CustomSfProDisplayTypography> {
+    error("No CustomSfProDisplayTypography provided")
 }

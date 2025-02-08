@@ -10,7 +10,7 @@ fun CustomTheme(
     CompositionLocalProvider(
         LocalBasicPalette provides basicLightPalette,
         LocalCustomTypography provides simpleRobotoTypography,
-        LocalCustomTypography provides simpleSfProDisplayTypography,
+        LocalCustomSfProDisplayTypography provides simpleSfProDisplayTypography,
         content = content
     )
 }

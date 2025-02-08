@@ -13,7 +13,7 @@ private val robotoTextStyle = TextStyle(fontFamily = Roboto)
 val sfProDisplay = FontFamily(Font(R.font.roboto_regular))
 private val sfProDisplayTextStyle = TextStyle(fontFamily = sfProDisplay)
 
-val simpleRobotoTypography = CustomTypography(
+val simpleRobotoTypography = CustomRobotoTypography(
     titleMedium = robotoTextStyle.copy(
         fontWeight = FontWeight(600),
         fontSize = 17.sp,
@@ -25,15 +25,9 @@ val simpleRobotoTypography = CustomTypography(
         fontSize = 14.sp,
         lineHeight = 20.sp,
     ),
-
-    headlineSemibold = robotoTextStyle.copy(
-        fontWeight = FontWeight(400),
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-    ),
 )
 
-val simpleSfProDisplayTypography = CustomTypography(
+val simpleSfProDisplayTypography = CustomSfProDisplayTypography(
     titleMedium = sfProDisplayTextStyle.copy(
         fontWeight = FontWeight(600),
         fontSize = 17.sp,
@@ -50,5 +44,11 @@ val simpleSfProDisplayTypography = CustomTypography(
         fontWeight = FontWeight(400),
         fontSize = 17.sp,
         lineHeight = 24.sp,
+    ),
+
+    caption2Medium = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(500),
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
     ),
 )

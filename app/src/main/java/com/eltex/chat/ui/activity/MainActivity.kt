@@ -4,13 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.eltex.chat.feature.authorization.screens.SignInScreen
-import com.eltex.chat.feature.authorization.screens.SplashScreen
+import androidx.navigation.compose.rememberNavController
+import com.eltex.chat.feature.navigationBar.BottomNavigationBar
+import com.eltex.chat.feature.navigationBar.NavigationGraph
 import com.eltex.chat.ui.theme.CustomTheme
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -19,9 +22,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CustomTheme {
-                SignInScreen()
+                Main()
             }
         }
+    }
+}
+
+@Composable
+fun Main() {
+    val navController = rememberNavController()
+    Scaffold(bottomBar = {
+        BottomNavigationBar(navController)
+    }) { innerPadding ->
+        NavigationGraph(
+            navController = navController, modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -29,6 +44,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     CustomTheme {
-        SplashScreen()
+        Main()
     }
 }
