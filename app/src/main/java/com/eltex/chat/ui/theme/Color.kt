@@ -10,7 +10,7 @@ val basicLightPalette = BasicPalette(
     black = getColorFormHex("#1B416B"),
     lightBlue = getColorFormHex("#329BDE"),
     lightGreen = Color.Green,
-    blue = Color.Blue
+    blue = getColorFormHex("#1B416B")
 )
 
 fun getColorFormHex(hex: String): Color {

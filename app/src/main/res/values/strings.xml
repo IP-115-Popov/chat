@@ -6,4 +6,6 @@
     <string name="are_you_sure_want_to_get_out">Вы уверенны, что хотите выйти</string>
     <string name="Cancel">Отменить</string>
     <string name="Exit">Выйти</string>
+    <string name="chat_search_placeholder">Поиск по чатам</string>
+    <string name="chats">Чаты</string>
 </resources>
