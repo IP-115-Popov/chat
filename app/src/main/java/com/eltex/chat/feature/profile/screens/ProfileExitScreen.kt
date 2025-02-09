@@ -63,9 +63,9 @@ fun ProfileScreen() {
 
         var imageLoadError by remember { mutableStateOf(false) }
 
-        if (state.value.user?.avatarUrl != null && !imageLoadError) {
+        if (state.value.authData?.avatarUrl != null && !imageLoadError) {
             AsyncImage(
-                model = state.value.user?.avatarUrl,
+                model = state.value.authData?.avatarUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -89,7 +89,7 @@ fun ProfileScreen() {
                 contentScale = ContentScale.FillWidth
             )
         }
-        
+
         Text(
             text = "Татьяна Иванова",
             modifier = Modifier

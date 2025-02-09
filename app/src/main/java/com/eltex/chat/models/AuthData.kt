@@ -1,6 +1,6 @@
 package com.eltex.chat.models
 
-data class User(
+data class AuthData(
     val userId: String,
     val authToken: String,
     val avatarUrl: String

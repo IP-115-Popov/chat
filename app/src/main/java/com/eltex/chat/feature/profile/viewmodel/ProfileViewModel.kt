@@ -2,7 +2,7 @@ package com.eltex.chat.feature.profile.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eltex.chat.feature.authorization.repository.UserRepository
+import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val authDataRepository: AuthDataRepository
 ): ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
@@ -26,12 +26,12 @@ class ProfileViewModel @Inject constructor(
 
     private fun getUser(){
         viewModelScope.launch(Dispatchers.IO) {
-            val user = userRepository.getUser()
+            val user = authDataRepository.getAuthData()
             user?.let {
                 withContext(Dispatchers.Main) {
                     _state.update {
                         it.copy(
-                            user = user
+                            authData = user
                         )
                     }
                 }

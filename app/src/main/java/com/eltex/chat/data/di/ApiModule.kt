@@ -24,5 +24,5 @@ class ApiModule {
     fun provideRetrofit(client: OkHttpClient): Retrofit = RetrofitFactory.getRetrofit(client)
 
     @Provides
-    fun providePostApi(retrofit: Retrofit): AuthorizationApi = retrofit.create<AuthorizationApi>()
+    fun provideAuthorizationApi(retrofit: Retrofit): AuthorizationApi = retrofit.create<AuthorizationApi>()
 }
