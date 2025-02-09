@@ -8,4 +8,6 @@
     <string name="Exit">Выйти</string>
     <string name="chat_search_placeholder">Поиск по чатам</string>
     <string name="chats">Чаты</string>
+    <string name="enter">Войти</string>
+    <string name="password">Пароль</string>
 </resources>

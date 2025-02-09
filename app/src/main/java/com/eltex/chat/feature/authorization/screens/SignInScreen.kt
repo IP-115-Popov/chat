@@ -16,9 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -63,6 +64,7 @@ private fun SignInStatusIdle(
     state: State<AuthorizationUiState>,
     authorizationViewModel: AuthorizationViewModel
 ) {
+    val signInButtonEnabled = remember { derivedStateOf {state.value.user.user.isNotEmpty() && state.value.user.password.isNotEmpty()} }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -98,27 +100,29 @@ private fun SignInStatusIdle(
             Spacer(Modifier.size(38.dp))
             PasswordTextField(
                 value = state.value.user.password,
-                placeholder = stringResource(R.string.login),
+                placeholder = stringResource(R.string.password),
                 onValueChange = { authorizationViewModel.setPassword(it) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(Modifier.size(218.dp))
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(start = 22.dp, end = 10.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White, contentColor = Color.Black
-                ),
-                onClick = { authorizationViewModel.signIn() }) {
-                Text(
-                    text = "Войти",
-                    style = CustomTheme.typographyRoboto.bodyMedium,
-                    color = CustomTheme.basicPalette.black
-                )
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(start = 22.dp, end = 10.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomTheme.basicPalette.white, contentColor = CustomTheme.basicPalette.black,
+                        disabledContainerColor = CustomTheme.basicPalette.white.copy(alpha = 0.5f), disabledContentColor = CustomTheme.basicPalette.black.copy(alpha = 0.5f),
+                    ),
+                    enabled = signInButtonEnabled.value,
+                    onClick = { authorizationViewModel.signIn() }) {
+                    Text(
+                        text = stringResource(R.string.enter),
+                        style = CustomTheme.typographyRoboto.bodyMedium,
+                        color = CustomTheme.basicPalette.black
+                    )
+                }
             }
-        }
     }
 }
 
