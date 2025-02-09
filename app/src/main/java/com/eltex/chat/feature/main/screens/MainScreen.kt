@@ -22,9 +22,7 @@ import com.eltex.chat.ui.theme.CustomTheme
 @Composable
 fun MainScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            topBar = {MainScreenTopBar(onAddClick = {})}
-        ) { innerPadding ->
+        Scaffold(topBar = { MainScreenTopBar(onAddClick = {}) }) { innerPadding ->
             Box(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -36,13 +34,16 @@ fun MainScreen() {
                 SearchField(
                     value = "",
                     placeholderText = stringResource(R.string.chat_search_placeholder),
-                    onValueChange = {}
+                    onValueChange = {},
+                    onClearClick = {},
                 )
             }
             Column {
-                LazyColumn(modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                ) {
 //                items() {
 //                    ChatItem()
 //                }

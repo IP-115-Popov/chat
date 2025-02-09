@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
@@ -28,7 +30,8 @@ fun SearchField(
     value: String,
     placeholderText: String,
     onValueChange: (it: String) -> Unit,
-    containerModifier: Modifier = Modifier
+    containerModifier: Modifier = Modifier,
+    onClearClick: () -> Unit,
 ) {
     Row(
         Modifier
@@ -44,21 +47,22 @@ fun SearchField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(24.dp).padding(3.6.dp),
+            modifier = Modifier
+                .size(24.dp)
+                .padding(3.6.dp),
             imageVector = ImageVector.vectorResource(R.drawable.ic_search),
             contentDescription = null,
             tint = CustomTheme.basicPalette.grey
         )
         Spacer(Modifier.size(8.dp))
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.weight(1f, fill = false),
         ) {
             BasicTextField(
                 value = value,
                 onValueChange = { onValueChange(it) },
                 textStyle = CustomTheme.typographyRoboto.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )
 
@@ -66,15 +70,27 @@ fun SearchField(
                 Text(
                     text = placeholderText,
                     style = CustomTheme.typographyRoboto.bodyMedium,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart),
+                    modifier = Modifier.align(Alignment.CenterStart),
                     color = CustomTheme.basicPalette.grey,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
+        if (value.isNotEmpty()) {
+            Spacer(Modifier.width(12.dp))
+            Icon(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .size(16.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_clear),
+                contentDescription = null,
+                tint = CustomTheme.basicPalette.grey,
+            )
+        }
     }
 }
+
 @Preview(showBackground = false)
 @Composable
 fun SearchFieldPreview() {
@@ -82,10 +98,12 @@ fun SearchFieldPreview() {
         SearchField(
             value = "",
             placeholderText = "Поиск по чатам",
-            onValueChange = {}
+            onValueChange = {},
+            onClearClick = {},
         )
     }
 }
+
 @Preview(showBackground = false)
 @Composable
 fun SearchFieldPreview2() {
@@ -93,10 +111,12 @@ fun SearchFieldPreview2() {
         SearchField(
             value = "ПоискпочатамПоискпочатамПоискпочатамПоискпочатамПоискпочатамПоискпочатам",
             placeholderText = "Поиск по чатам",
-            onValueChange = {}
+            onValueChange = {},
+            onClearClick = {},
         )
     }
 }
+
 @Preview(showBackground = false)
 @Composable
 fun SearchFieldPreview3() {
@@ -104,7 +124,8 @@ fun SearchFieldPreview3() {
         SearchField(
             value = "",
             placeholderText = "ПоискпочатамПоискпочатамПоискпочатамПоискпочатамПоискпочатамПоискпочатам",
-            onValueChange = {}
+            onValueChange = {},
+            onClearClick = {},
         )
     }
 }
