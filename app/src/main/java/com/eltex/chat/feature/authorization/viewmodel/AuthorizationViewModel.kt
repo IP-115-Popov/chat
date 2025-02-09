@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.authorization.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.authorization.repository.SignInRepository
@@ -26,30 +25,44 @@ class AuthorizationViewModel @Inject constructor(
         syncToken()
     }
     private fun syncToken() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val token = tokenRepository.getToken()
-            token?.let {
-                tokenRepository.setToken(token)
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val token = tokenRepository.getToken()
+                token?.let {
+                    setStatus(AuthorizationStatus.AuthorizationSuccessful)
+                    tokenRepository.setToken(token)
+                }
             }
+        } catch (e: Exception) {
+            setStatus(AuthorizationStatus.Error(e))
         }
     }
 
     fun signIn() {
+        setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = signInRepository.signIn(state.value.user)
+                setStatus(AuthorizationStatus.Idle)
                 if (result != "") {
+                    setStatus(AuthorizationStatus.AuthorizationSuccessful)
                     tokenRepository.setToken(result)
                     tokenRepository.saveToken(result)
                 }
             } catch (e: Exception) {
-                Log.e("my-log", "Ошибка при регистрации: ${e.message}")
-                e.printStackTrace()
+                setStatus(AuthorizationStatus.Error(e))
             }
         }
 
     }
 
+    private fun setStatus(authorizationStatus: AuthorizationStatus) {
+        _state.update {
+            it.copy(
+                status = authorizationStatus
+            )
+        }
+    }
     fun setLogin(value: String) {
         _state.update {
             it.copy(

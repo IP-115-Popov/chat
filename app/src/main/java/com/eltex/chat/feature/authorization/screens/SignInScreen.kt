@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,18 +28,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.authorization.viewmodel.AuthorizationStatus
+import com.eltex.chat.feature.authorization.viewmodel.AuthorizationUiState
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationViewModel
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.components.PasswordTextField
 import com.eltex.chat.ui.components.SimpleTextField
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
-fun SignInScreen() {
-
+fun SignInScreen(
+    navController: NavHostController
+) {
     val authorizationViewModel = hiltViewModel<AuthorizationViewModel>()
     val state = authorizationViewModel.state.collectAsState()
 
+    when (state.value.status) {
+        AuthorizationStatus.AuthorizationSuccessful -> {navController.navigate(NavRoutes.Main.route)}
+        is AuthorizationStatus.Error,
+        AuthorizationStatus.Loading,
+        AuthorizationStatus.Idle -> SignInStatusIdle(state, authorizationViewModel)
+    }
+
+}
+
+@Composable
+private fun SignInStatusIdle(
+    state: State<AuthorizationUiState>,
+    authorizationViewModel: AuthorizationViewModel
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -101,5 +122,5 @@ fun SignInScreen() {
 @Preview(showBackground = true)
 @Composable
 fun SSignInScreenPreview() {
-    SignInScreen()
+    SignInScreen(navController = rememberNavController())
 }

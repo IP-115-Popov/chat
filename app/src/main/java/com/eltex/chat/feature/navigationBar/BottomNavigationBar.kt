@@ -51,9 +51,9 @@ fun  BottomNavigationBar(navController: NavHostController) {
             NavBarItem(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_chat_bubble),
                 text = "Чат",
-                isSelected = currentRoute == NavRoutes.Chat.route,
+                isSelected = currentRoute == NavRoutes.Main.route,
                 onClick = {
-                    navController.navigate(NavRoutes.Chat.route) {
+                    navController.navigate(NavRoutes.Main.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }

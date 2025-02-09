@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.eltex.chat.feature.authorization.screens.SignInScreen
 import com.eltex.chat.feature.exit.screens.ProfileExitScreen
+import com.eltex.chat.feature.main.screens.MainScreen
 import com.eltex.chat.ui.components.SplashScreen
 
 @Composable
@@ -16,9 +17,9 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         startDestination = NavRoutes.Splash.route,
         modifier = modifier
     ) {
-        composable(NavRoutes.Authorization.route) { SignInScreen() }
+        composable(NavRoutes.Authorization.route) { SignInScreen(navController) }
         composable(NavRoutes.Exit.route) { ProfileExitScreen() }
-        composable(NavRoutes.Chat.route) { ProfileExitScreen() }
+        composable(NavRoutes.Main.route) { MainScreen() }
         composable(NavRoutes.Profile.route) { ProfileExitScreen() }
         composable(NavRoutes.Splash.route) {
             SplashScreen(
