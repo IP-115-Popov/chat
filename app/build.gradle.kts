@@ -71,4 +71,6 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     //Either
     implementation(libs.arrow.core)
+    //serialization
+    implementation(libs.gson)
 }

@@ -8,6 +8,7 @@ import com.eltex.chat.R
 import com.eltex.chat.feature.authorization.models.SignInError
 import com.eltex.chat.feature.authorization.repository.SignInRepository
 import com.eltex.chat.feature.authorization.repository.TokenRepository
+import com.eltex.chat.feature.authorization.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class AuthorizationViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val signInRepository: SignInRepository,
+    private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AuthorizationUiState())
@@ -34,10 +36,10 @@ class AuthorizationViewModel @Inject constructor(
     private fun syncToken() {
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
-                val token = tokenRepository.getToken()
-                token?.let {
+                val user = userRepository.getUser()
+                user?.let {
                     setStatus(AuthorizationStatus.AuthorizationSuccessful)
-                    tokenRepository.setToken(token)
+                    tokenRepository.setToken(user.authToken)
                 }
             }
         }
@@ -64,7 +66,7 @@ class AuthorizationViewModel @Inject constructor(
                     is Either.Right -> {
                         setStatus(AuthorizationStatus.Idle)
                         tokenRepository.setToken(user.value.authToken)
-                        tokenRepository.saveToken(user.value.authToken)
+                        userRepository.saveUser(user.value)
                         setStatus(AuthorizationStatus.AuthorizationSuccessful)
 
                     }
