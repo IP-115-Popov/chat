@@ -73,7 +73,9 @@ fun ChatItem(
                 )
             }
             Row(
-                modifier = Modifier.height(20.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .height(20.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Absolute.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -127,6 +129,7 @@ fun ChatItemPreview2() {
         )
     }
 }
+
 @Preview
 @Composable
 fun ChatItemPreview3() {
