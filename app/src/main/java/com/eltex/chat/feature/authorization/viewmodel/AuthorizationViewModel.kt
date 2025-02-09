@@ -1,10 +1,15 @@
 package com.eltex.chat.feature.authorization.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import com.eltex.chat.R
+import com.eltex.chat.feature.authorization.models.SignInError
 import com.eltex.chat.feature.authorization.repository.SignInRepository
 import com.eltex.chat.feature.authorization.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val signInRepository: SignInRepository,
     private val tokenRepository: TokenRepository,
 ) : ViewModel() {
@@ -26,7 +32,7 @@ class AuthorizationViewModel @Inject constructor(
     }
 
     private fun syncToken() {
-        try {
+        runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 val token = tokenRepository.getToken()
                 token?.let {
@@ -34,8 +40,6 @@ class AuthorizationViewModel @Inject constructor(
                     tokenRepository.setToken(token)
                 }
             }
-        } catch (e: Exception) {
-            setStatus(AuthorizationStatus.Error(e))
         }
     }
 
@@ -43,18 +47,40 @@ class AuthorizationViewModel @Inject constructor(
         setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = signInRepository.signIn(state.value.user)
-                setStatus(AuthorizationStatus.Idle)
-                if (result != "") {
-                    setStatus(AuthorizationStatus.AuthorizationSuccessful)
-                    tokenRepository.setToken(result)
-                    tokenRepository.saveToken(result)
+                val token = signInRepository.signIn(state.value.user)
+                when (token) {
+                    is Either.Left -> {
+                        when (token.value) {
+                            SignInError.ConnectionMissing -> {
+                                setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
+                            }
+
+                            SignInError.Unauthorized -> {
+                                setStatus(AuthorizationStatus.Error(context.getString(R.string.Unauthorized)))
+                            }
+                        }
+
+                    }
+
+                    is Either.Right -> {
+                        setStatus(AuthorizationStatus.Idle)
+                        if (token.value != "") {
+                            tokenRepository.setToken(token.value)
+                            tokenRepository.saveToken(token.value)
+                            setStatus(AuthorizationStatus.AuthorizationSuccessful)
+                        }
+                    }
                 }
+
             } catch (e: Exception) {
-                setStatus(AuthorizationStatus.Error(e))
+                setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
             }
         }
 
+    }
+
+    fun setStatusIdle() {
+        setStatus(AuthorizationStatus.Idle)
     }
 
     private fun setStatus(authorizationStatus: AuthorizationStatus) {

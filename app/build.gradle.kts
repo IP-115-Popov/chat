@@ -69,4 +69,6 @@ dependencies {
     //retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    //Either
+    implementation(libs.arrow.core)
 }

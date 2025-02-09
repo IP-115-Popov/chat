@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.authorization.components.ErrorSignInAlertDialog
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationStatus
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationUiState
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationViewModel
@@ -52,19 +53,25 @@ fun SignInScreen(
             navController.navigate(NavRoutes.Main.route)
         }
 
-        is AuthorizationStatus.Error,
-        AuthorizationStatus.Loading,
-        AuthorizationStatus.Idle -> SignInStatusIdle(state, authorizationViewModel)
+        AuthorizationStatus.Loading, is AuthorizationStatus.Error, AuthorizationStatus.Idle -> SignInStatusIdle(
+            state, authorizationViewModel
+        )
     }
 
 }
 
 @Composable
 private fun SignInStatusIdle(
-    state: State<AuthorizationUiState>,
-    authorizationViewModel: AuthorizationViewModel
+    state: State<AuthorizationUiState>, authorizationViewModel: AuthorizationViewModel
 ) {
-    val signInButtonEnabled = remember { derivedStateOf {state.value.user.user.isNotEmpty() && state.value.user.password.isNotEmpty()} }
+    (state.value.status as? AuthorizationStatus.Error)?.let {
+        ErrorSignInAlertDialog(message = it.message,
+            onDismissRequest = { authorizationViewModel.setStatusIdle() })
+    }
+
+    val signInButtonEnabled =
+        remember { derivedStateOf { state.value.user.user.isNotEmpty() && state.value.user.password.isNotEmpty() } }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -105,24 +112,26 @@ private fun SignInStatusIdle(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(Modifier.size(218.dp))
-                Button(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .padding(start = 22.dp, end = 10.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = CustomTheme.basicPalette.white, contentColor = CustomTheme.basicPalette.black,
-                        disabledContainerColor = CustomTheme.basicPalette.white.copy(alpha = 0.5f), disabledContentColor = CustomTheme.basicPalette.black.copy(alpha = 0.5f),
-                    ),
-                    enabled = signInButtonEnabled.value,
-                    onClick = { authorizationViewModel.signIn() }) {
-                    Text(
-                        text = stringResource(R.string.enter),
-                        style = CustomTheme.typographyRoboto.bodyMedium,
-                        color = CustomTheme.basicPalette.black
-                    )
-                }
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .padding(start = 22.dp, end = 10.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = CustomTheme.basicPalette.white,
+                    contentColor = CustomTheme.basicPalette.black,
+                    disabledContainerColor = CustomTheme.basicPalette.white.copy(alpha = 0.5f),
+                    disabledContentColor = CustomTheme.basicPalette.black.copy(alpha = 0.5f),
+                ),
+                enabled = signInButtonEnabled.value,
+                onClick = { authorizationViewModel.signIn() }) {
+                Text(
+                    text = stringResource(R.string.enter),
+                    style = CustomTheme.typographyRoboto.bodyMedium,
+                    color = CustomTheme.basicPalette.black
+                )
             }
+        }
     }
 }
 

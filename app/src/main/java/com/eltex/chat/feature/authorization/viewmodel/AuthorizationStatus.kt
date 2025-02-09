@@ -4,5 +4,5 @@ sealed interface AuthorizationStatus {
     data object Idle : AuthorizationStatus
     data object Loading : AuthorizationStatus
     data object AuthorizationSuccessful : AuthorizationStatus
-    data class Error(val throwable: Throwable) : AuthorizationStatus
+    data class Error(val message: String) : AuthorizationStatus
 }

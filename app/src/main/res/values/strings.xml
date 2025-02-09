@@ -10,4 +10,7 @@
     <string name="chats">Чаты</string>
     <string name="enter">Войти</string>
     <string name="password">Пароль</string>
+    <string name="connection_is_missing">Отсутствует соединение с сервером, проверьте ваше интернет соединение и повторите позднее.</string>
+    <string name="Unauthorized">Неправильный логин или пароль.</string>
+    <string name="ok">Ок</string>
 </resources>
