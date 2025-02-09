@@ -20,6 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,12 +34,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.eltex.chat.R
+import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 
 
 @Composable
 fun ProfileScreen() {
+
+    val profileViewModel = hiltViewModel<ProfileViewModel>()
+    val state = profileViewModel.state.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,17 +60,36 @@ fun ProfileScreen() {
                 .height(142.dp),
             contentScale = ContentScale.Crop
         )
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = null,
-            modifier = Modifier
-                .offset(y = -59.dp)
-                .size(118.dp)
-                .clip(CircleShape)
-                .align(Alignment.CenterHorizontally),
-            contentScale = ContentScale.FillWidth
-        )
 
+        var imageLoadError by remember { mutableStateOf(false) }
+
+        if (state.value.user?.avatarUrl != null && !imageLoadError) {
+            AsyncImage(
+                model = state.value.user?.avatarUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .offset(y = -59.dp)
+                    .size(118.dp)
+                    .clip(CircleShape)
+                    .align(Alignment.CenterHorizontally),
+                onError = {
+                    imageLoadError = true
+                }
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .offset(y = -59.dp)
+                    .size(118.dp)
+                    .clip(CircleShape)
+                    .align(Alignment.CenterHorizontally),
+                contentScale = ContentScale.FillWidth
+            )
+        }
+        
         Text(
             text = "Татьяна Иванова",
             modifier = Modifier

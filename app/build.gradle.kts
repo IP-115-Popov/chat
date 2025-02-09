@@ -73,4 +73,6 @@ dependencies {
     implementation(libs.arrow.core)
     //serialization
     implementation(libs.gson)
+    //AsyncImage
+    implementation(libs.coil.compose)
 }
