@@ -26,6 +26,7 @@ data class CustomSfProDisplayTypography(
     val bodyMedium: TextStyle,
     val headlineSemibold: TextStyle,
     val caption2Medium: TextStyle,
+    val caption2Regular: TextStyle,
     val bodyMedium500: TextStyle,
     val caption1Regular: TextStyle,
 )

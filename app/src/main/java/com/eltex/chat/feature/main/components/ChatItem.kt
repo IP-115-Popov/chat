@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.ui.theme.CustomTheme
@@ -26,6 +27,7 @@ fun ChatItem(
     title: String,
     message: String,
     time: String,
+    unreadableCount: Int,
 ) {
     Row(
         modifier = Modifier
@@ -61,6 +63,8 @@ fun ChatItem(
                     text = title,
                     style = CustomTheme.typographySfPro.bodyMedium500,
                     modifier = Modifier.weight(1f, fill = false),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = time,
@@ -68,14 +72,32 @@ fun ChatItem(
                     color = CustomTheme.basicPalette.grey,
                 )
             }
-            Box(
-                contentAlignment = Alignment.CenterStart, modifier = Modifier.height(20.dp)
+            Row(
+                modifier = Modifier.height(20.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = message,
                     style = CustomTheme.typographySfPro.caption1Regular,
                     color = CustomTheme.basicPalette.grey,
+                    modifier = Modifier.weight(1f, fill = false),
+                    overflow = TextOverflow.Ellipsis
                 )
+                Spacer(Modifier.size(41.dp))
+                Box(
+                    modifier = Modifier
+
+                        .size(16.dp)
+                        .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (unreadableCount < 10) unreadableCount.toString() else "...",
+                        style = CustomTheme.typographySfPro.caption2Regular,
+                        color = CustomTheme.basicPalette.white,
+                    )
+                }
             }
         }
     }
@@ -86,7 +108,8 @@ fun ChatItem(
 fun ChatItemPreview() {
     CustomTheme {
         ChatItem(
-            imageText = "ФИ", title = "Избранное", message = "Текст сообщения", time = "15:30"
+            imageText = "ФИ", title = "Избранное", message = "Текст сообщения", time = "15:30",
+            unreadableCount = 1,
         )
     }
 }
@@ -99,7 +122,21 @@ fun ChatItemPreview2() {
             imageText = "ФИ",
             title = "ИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранное",
             message = "ТекстсообщенияТекстсообщенияТекстсообщениТекстсообщенияТекстсообщенияТекстсообщения",
-            time = "15:30"
+            time = "15:30",
+            unreadableCount = 9,
+        )
+    }
+}
+@Preview
+@Composable
+fun ChatItemPreview3() {
+    CustomTheme {
+        ChatItem(
+            imageText = "ФИ",
+            title = "ИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранноеИзбранное",
+            message = "ТекстсообщенияТекстсообщенияТекстсообщениТекстсообщенияТекстсообщенияТекстсообщения",
+            time = "15:30",
+            unreadableCount = 100,
         )
     }
 }
