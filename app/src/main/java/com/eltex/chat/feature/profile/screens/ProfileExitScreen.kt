@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.exit.screens
+package com.eltex.chat.feature.profile.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +34,7 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 
 @Composable
-fun ProfileExitScreen() {
+fun ProfileScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -128,6 +128,6 @@ fun LogoutButton(onClick: () -> Unit) {
 @Composable
 fun ProfileScreenPreview() {
     CustomTheme {
-        ProfileExitScreen()
+        ProfileScreen()
     }
 }
