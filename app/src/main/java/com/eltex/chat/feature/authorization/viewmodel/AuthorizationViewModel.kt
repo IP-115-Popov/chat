@@ -47,10 +47,10 @@ class AuthorizationViewModel @Inject constructor(
         setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val token = signInRepository.signIn(state.value.user)
-                when (token) {
+                val user = signInRepository.signIn(state.value.user)
+                when (user) {
                     is Either.Left -> {
-                        when (token.value) {
+                        when (user.value) {
                             SignInError.ConnectionMissing -> {
                                 setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
                             }
@@ -59,16 +59,14 @@ class AuthorizationViewModel @Inject constructor(
                                 setStatus(AuthorizationStatus.Error(context.getString(R.string.Unauthorized)))
                             }
                         }
-
                     }
 
                     is Either.Right -> {
                         setStatus(AuthorizationStatus.Idle)
-                        if (token.value != "") {
-                            tokenRepository.setToken(token.value)
-                            tokenRepository.saveToken(token.value)
-                            setStatus(AuthorizationStatus.AuthorizationSuccessful)
-                        }
+                        tokenRepository.setToken(user.value.authToken)
+                        tokenRepository.saveToken(user.value.authToken)
+                        setStatus(AuthorizationStatus.AuthorizationSuccessful)
+
                     }
                 }
 
