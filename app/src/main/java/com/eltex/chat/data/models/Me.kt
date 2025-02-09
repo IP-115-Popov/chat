@@ -11,5 +11,5 @@ data class Me(
     val status: String,
     val statusConnection: String,
     val username: String,
-    val utcOffset: Int
+    val utcOffset: Float,
 )

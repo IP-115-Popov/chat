@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.authorization.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.authorization.repository.SignInRepository
@@ -35,12 +36,15 @@ class AuthorizationViewModel @Inject constructor(
 
     fun signIn() {
         viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
+            try {
                 val result = signInRepository.signIn(state.value.user)
                 if (result != "") {
                     tokenRepository.setToken(result)
                     tokenRepository.saveToken(result)
                 }
+            } catch (e: Exception) {
+                Log.e("my-log", "Ошибка при регистрации: ${e.message}")
+                e.printStackTrace()
             }
         }
 
