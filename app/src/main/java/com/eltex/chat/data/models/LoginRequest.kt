@@ -9,13 +9,14 @@ data class LoginRequest(
     companion object {
         fun toLoginRequest(loginUiModel: LoginUiModel): LoginRequest = with(loginUiModel) {
             LoginRequest(
-                user =  user,
+                user = user,
                 password = password
             )
         }
     }
+
     fun fromLoginRequest(): LoginRequest = LoginRequest(
-        user =  user,
+        user = user,
         password = password
     )
 }

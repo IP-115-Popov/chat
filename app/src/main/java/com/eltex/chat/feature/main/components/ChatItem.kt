@@ -82,6 +82,7 @@ fun ChatItem(
                                 tint = CustomTheme.basicPalette.lightBlue
                             )
                         }
+
                         MessageStatus.yourLastMessageIsRead -> {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.ic_done_all),
@@ -89,6 +90,7 @@ fun ChatItem(
                                 tint = CustomTheme.basicPalette.lightBlue
                             )
                         }
+
                         else -> {}
                     }
                     Spacer(Modifier.size(2.dp))
@@ -173,6 +175,7 @@ fun ChatItemPreview3() {
         )
     }
 }
+
 @Preview
 @Composable
 fun ChatItemPreview4() {
@@ -186,6 +189,7 @@ fun ChatItemPreview4() {
         )
     }
 }
+
 @Preview
 @Composable
 fun ChatItemPreview5() {

@@ -23,7 +23,7 @@ import com.eltex.chat.ui.theme.CustomTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenTopBar(
-    onAddClick: ()->Unit
+    onAddClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -36,13 +36,13 @@ fun MainScreenTopBar(
                     style = CustomTheme.typographySfPro.titleMedium,
                 )
             }
-                },
+        },
         actions = {
             Box(
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 IconButton(
-                    onClick = {onAddClick()},
+                    onClick = { onAddClick() },
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(
@@ -55,15 +55,16 @@ fun MainScreenTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = CustomTheme.basicPalette.blue,
             titleContentColor = CustomTheme.basicPalette.white,
-            actionIconContentColor =  CustomTheme.basicPalette.white
+            actionIconContentColor = CustomTheme.basicPalette.white
         ),
         modifier = Modifier.height(44.dp)
     )
 }
+
 @Preview
 @Composable
 fun MainScreenTopBarPreview() {
-    CustomTheme{
+    CustomTheme {
         MainScreenTopBar({})
     }
 }

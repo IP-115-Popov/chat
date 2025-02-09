@@ -3,7 +3,18 @@ package com.eltex.chat.feature.exit.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -32,25 +43,27 @@ fun ProfileExitScreen() {
         Image(
             imageVector = ImageVector.vectorResource(R.drawable.subtract),
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth().height(142.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(142.dp),
             contentScale = ContentScale.Crop
         )
-                Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .offset(y = -59.dp)
-                    .size(118.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.CenterHorizontally),
-                contentScale = ContentScale.FillWidth
-                )
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = null,
+            modifier = Modifier
+                .offset(y = -59.dp)
+                .size(118.dp)
+                .clip(CircleShape)
+                .align(Alignment.CenterHorizontally),
+            contentScale = ContentScale.FillWidth
+        )
 
         Text(
             text = "Татьяна Иванова",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .offset(y = (8-59).dp),
+                .offset(y = (8 - 59).dp),
             style = CustomTheme.typographySfPro.titleMedium
         )
 
@@ -61,7 +74,8 @@ fun ProfileExitScreen() {
         }
 
     }
-        }
+}
+
 @Composable
 fun LogoutButton(onClick: () -> Unit) {
     Box(
@@ -69,7 +83,10 @@ fun LogoutButton(onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .height(48.dp)
-            .background(CustomTheme.basicPalette.white, RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
+            .background(
+                CustomTheme.basicPalette.white,
+                RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp)
+            )
             .clickable { onClick() }
     ) {
         Row(
@@ -83,22 +100,24 @@ fun LogoutButton(onClick: () -> Unit) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
-                contentDescription = null,
-                modifier = Modifier.size(18.dp),
-                tint = CustomTheme.basicPalette.lightBlue
-            )
-            Spacer(modifier = Modifier.width(11.dp))
-            Text(
-                text = "Выйти",
-                style = CustomTheme.typographySfPro.headlineSemibold
-            )
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = CustomTheme.basicPalette.lightBlue
+                )
+                Spacer(modifier = Modifier.width(11.dp))
+                Text(
+                    text = "Выйти",
+                    style = CustomTheme.typographySfPro.headlineSemibold
+                )
             }
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_forward),
                 contentDescription = null,
-                modifier = Modifier.height(13.33.dp).padding(end = 1.dp),
+                modifier = Modifier
+                    .height(13.33.dp)
+                    .padding(end = 1.dp),
                 tint = CustomTheme.basicPalette.lightGrey
             )
         }

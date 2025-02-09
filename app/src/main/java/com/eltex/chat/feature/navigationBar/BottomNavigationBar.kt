@@ -30,20 +30,22 @@ import com.eltex.chat.R
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
-fun  BottomNavigationBar(navController: NavHostController) {
+fun BottomNavigationBar(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(58.dp)
-        .padding(horizontal = 16.dp)
-        .background(Color.White),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .padding(horizontal = 16.dp)
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -79,17 +81,20 @@ fun  BottomNavigationBar(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 private fun NavBarItem(
     imageVector: ImageVector,
     text: String,
     isSelected: Boolean,
-    onClick: ()->Unit,
+    onClick: () -> Unit,
 ) {
-    val color = if (isSelected)  CustomTheme.basicPalette.lightBlue else CustomTheme.basicPalette.lightGrey
+    val color =
+        if (isSelected) CustomTheme.basicPalette.lightBlue else CustomTheme.basicPalette.lightGrey
 
     Column(
-        modifier = Modifier.size(width = 75.dp, height = 50.dp)
+        modifier = Modifier
+            .size(width = 75.dp, height = 50.dp)
             .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -107,9 +112,10 @@ private fun NavBarItem(
         )
     }
 }
+
 @Preview
 @Composable
-fun  BottomNavigationBar() {
+fun BottomNavigationBar() {
     CustomTheme {
         BottomNavigationBar(navController = rememberNavController())
     }

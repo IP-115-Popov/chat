@@ -47,7 +47,10 @@ fun SignInScreen(
     val state = authorizationViewModel.state.collectAsState()
 
     when (state.value.status) {
-        AuthorizationStatus.AuthorizationSuccessful -> {navController.navigate(NavRoutes.Main.route)}
+        AuthorizationStatus.AuthorizationSuccessful -> {
+            navController.navigate(NavRoutes.Main.route)
+        }
+
         is AuthorizationStatus.Error,
         AuthorizationStatus.Loading,
         AuthorizationStatus.Idle -> SignInStatusIdle(state, authorizationViewModel)

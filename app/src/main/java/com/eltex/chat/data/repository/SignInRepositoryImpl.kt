@@ -8,9 +8,10 @@ import javax.inject.Inject
 
 class SignInRepositoryImpl @Inject constructor(
     private val authorizationApi: AuthorizationApi
-): SignInRepository {
+) : SignInRepository {
     override suspend fun signIn(loginUiRequest: LoginUiModel): String {
-        val response = authorizationApi.signIn(loginRequest = LoginRequest.toLoginRequest(loginUiRequest))
+        val response =
+            authorizationApi.signIn(loginRequest = LoginRequest.toLoginRequest(loginUiRequest))
 
         return if (response.isSuccessful) {
             val token = response.body()

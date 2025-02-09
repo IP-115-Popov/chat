@@ -24,9 +24,10 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
 fun ExitAlertDialog() {
-    Column(modifier = Modifier
-        .size(width = 274.dp, height = 122.dp)
-        .background(color = CustomTheme.basicPalette.white, shape = RoundedCornerShape(16.dp)),
+    Column(
+        modifier = Modifier
+            .size(width = 274.dp, height = 122.dp)
+            .background(color = CustomTheme.basicPalette.white, shape = RoundedCornerShape(16.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
@@ -37,7 +38,7 @@ fun ExitAlertDialog() {
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.are_you_sure_want_to_get_out),
-            style =  CustomTheme.typographySfPro.bodyMedium,
+            style = CustomTheme.typographySfPro.bodyMedium,
             color = CustomTheme.basicPalette.grey
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -47,11 +48,11 @@ fun ExitAlertDialog() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            TextButton(onClick = {  }) {
+            TextButton(onClick = { }) {
                 Text(stringResource(R.string.Cancel), color = CustomTheme.basicPalette.lightBlue)
             }
             VerticalDivider()
-            TextButton(onClick = {  }) {
+            TextButton(onClick = { }) {
                 Text(stringResource(R.string.Exit), color = CustomTheme.basicPalette.lightBlue)
             }
         }

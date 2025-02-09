@@ -24,6 +24,7 @@ class AuthorizationViewModel @Inject constructor(
     init {
         syncToken()
     }
+
     private fun syncToken() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
@@ -63,6 +64,7 @@ class AuthorizationViewModel @Inject constructor(
             )
         }
     }
+
     fun setLogin(value: String) {
         _state.update {
             it.copy(
