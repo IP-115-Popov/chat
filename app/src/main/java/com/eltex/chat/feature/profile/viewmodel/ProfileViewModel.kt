@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
-import com.eltex.chat.feature.profile.models.ProfileUiModel
+import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -46,12 +46,7 @@ class ProfileViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             _state.update {
                                 it.copy(
-                                    profileUiModel = ProfileUiModel(
-                                        id = result.value.id,
-                                        avatarUrl = result.value.avatarUrl,
-                                        name = result.value.name,
-                                        authToken = result.value.authToken,
-                                    )
+                                    profileUiModel = ProfileModelToProfileUiMapper.map(result.value)
                                 )
                             }
                             setStatus(ProfileStatus.Idle)

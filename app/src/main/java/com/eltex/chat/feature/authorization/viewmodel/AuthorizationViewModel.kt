@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
+import com.eltex.chat.feature.authorization.mapper.LoginUiToLoginModelMapper
 import com.eltex.domain.feature.autorization.usecase.SyncAuthDataUseCase
 import com.eltex.domain.feature.autorization.usecase.SignInUseCase
-import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -50,10 +50,9 @@ class AuthorizationViewModel @Inject constructor(
         setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val authData = signInUseCase.execute(LoginModel(
-                    user = state.value.user.user,
-                    password =  state.value.user.password
-                ))
+                val loginModel = LoginUiToLoginModelMapper.map(state.value.user)
+                val authData = signInUseCase.execute(loginModel)
+
                 when (authData) {
                     is Either.Left -> {
                         when (authData.value) {
