@@ -3,7 +3,7 @@ package com.eltex.data.api
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthInterceptor(private var token: String? = null) : Interceptor {
+internal class AuthInterceptor(private var token: String? = null) : Interceptor {
     fun updateToken(token: String?) {
         this.token = token
     }

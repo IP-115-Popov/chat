@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
-object OkHttpClientFactory {
+internal object OkHttpClientFactory {
 
     private val authInterceptor = AuthInterceptor()
 
