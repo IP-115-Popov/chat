@@ -5,9 +5,11 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.ProfileInfoApi
 import com.eltex.data.mappers.ProfileInfoRequestToProfileModelMapper
+import com.eltex.data.models.profileinfo.ProfileInfoRequest
 import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.models.ProfileInfoError
 import com.eltex.domain.models.ProfileModel
+import retrofit2.Response
 import javax.inject.Inject
 
 class ProfileNetworkInfoRepositoryImpl @Inject constructor(
@@ -17,7 +19,12 @@ class ProfileNetworkInfoRepositoryImpl @Inject constructor(
         userId: String,
         authToken: String,
     ): Either<ProfileInfoError, ProfileModel> {
-        val response = profileInfoApi.getProfileInfo(userId, authToken)
+        val response: Response<ProfileInfoRequest>
+        try {
+            response = profileInfoApi.getProfileInfo(userId, authToken)
+        } catch (e: Exception) {
+            return ProfileInfoError.ConnectionMissing.left()
+        }
 
         return if (response.isSuccessful) {
             val loginResponse = response.body()
@@ -26,6 +33,7 @@ class ProfileNetworkInfoRepositoryImpl @Inject constructor(
             } else {
                 ProfileInfoError.ConnectionMissing.left()
             }
+
         } else {
             ProfileInfoError.ConnectionMissing.left()
         }

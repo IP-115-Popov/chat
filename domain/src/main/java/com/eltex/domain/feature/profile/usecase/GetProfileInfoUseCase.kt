@@ -15,20 +15,28 @@ class GetProfileInfoUseCase(
 ) {
     suspend fun execute(): Either<ProfileInfoError, ProfileModel> {
         val authData: AuthData? = authDataRepository.getAuthData()
-         if (authData != null) {
+        if (authData != null) {
             val result = profileNetworkInfoRepository.getProfileInfo(
                 userId = authData.userId, authToken = authData.authToken
             )
-             when (result) {
-                 is Either.Left -> {
-                     return result.value.left()
-                 }
-                 is Either.Right -> {
-                     return result.value.right()
-                 }
-             }
+            when (result) {
+                is Either.Left -> {
+                    return with(authData) {
+                        ProfileModel(
+                            id = userId,
+                            name = name,
+                            avatarUrl = avatarUrl,
+                            authToken = authToken,
+                        )
+                    }.right()
+                }
+
+                is Either.Right -> {
+                    return result.value.right()
+                }
+            }
         } else {
-             return ProfileInfoError.LocalStorage.left()
+            return ProfileInfoError.LocalStorage.left()
         }
     }
 }
