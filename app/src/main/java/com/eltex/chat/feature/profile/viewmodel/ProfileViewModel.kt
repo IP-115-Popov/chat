@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.profile.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -47,6 +48,7 @@ class ProfileViewModel @Inject constructor(
                                 id = authData.userId,
                                 avatarUrl = authData.avatarUrl,
                                 name = authData.name,
+                                authToken = authData.authToken,
                             )
                         )
                     }
@@ -54,6 +56,7 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            Log.e("ProfileViewModel", "Error getting user from local storage", e)
             setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))
         }
     }
@@ -63,7 +66,10 @@ class ProfileViewModel @Inject constructor(
         state.value.profileUiModel?.let { profileUiModel ->
             try {
                 val profileInfo =
-                    profileNetworkInfoRepository.getProfileInfo(userId = profileUiModel.id)
+                    profileNetworkInfoRepository.getProfileInfo(
+                        userId = profileUiModel.id,
+                        authToken = profileUiModel.authToken,
+                        )
 
                 when (profileInfo) {
                     is Either.Left -> {
@@ -82,6 +88,7 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Error getting user from server", e)
                 setStatus(ProfileStatus.Error(context.getString(R.string.connection_is_missing)))
             }
         }

@@ -16,5 +16,5 @@ data class ProfileInfoRequest(
     val statusConnection: String,
     val success: Boolean,
     val username: String,
-    val utcOffset: Int
+    val utcOffset: Float,
 )

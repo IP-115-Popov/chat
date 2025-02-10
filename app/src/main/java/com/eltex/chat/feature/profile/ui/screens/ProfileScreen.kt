@@ -113,7 +113,12 @@ fun ProfileScreen() {
 
     when (state.value.status) {
         ProfileStatus.Loading -> {
-            CircularProgressIndicator()
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
         }
 
         is ProfileStatus.Error -> {}

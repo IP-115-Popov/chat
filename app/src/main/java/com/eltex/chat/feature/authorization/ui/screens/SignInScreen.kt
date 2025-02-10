@@ -15,7 +15,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.authorization.ui.components.ErrorSignInAlertDialog
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationStatus
-import com.eltex.chat.feature.authorization.viewmodel.AuthorizationUiState
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.components.PasswordTextField

@@ -12,8 +12,11 @@ import javax.inject.Inject
 class ProfileNetworkInfoRepositoryImpl @Inject constructor(
     private val profileInfoApi: ProfileInfoApi
 ) : ProfileNetworkInfoRepository {
-    override suspend fun getProfileInfo(userId: String): Either<String, ProfileUiModel> {
-        val response = profileInfoApi.getProfileInfo(userId)
+    override suspend fun getProfileInfo(
+        userId: String,
+        authToken: String,
+    ): Either<String, ProfileUiModel> {
+        val response = profileInfoApi.getProfileInfo(userId, authToken)
 
         return if (response.isSuccessful) {
             val loginResponse = response.body()
