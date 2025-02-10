@@ -94,4 +94,8 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
+
+    fun exitFromProfile() {
+        TODO("Not yet implemented")
+    }
 }

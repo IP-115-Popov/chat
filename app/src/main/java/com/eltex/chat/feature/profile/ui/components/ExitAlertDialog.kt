@@ -30,6 +30,7 @@ import com.eltex.chat.ui.theme.CustomTheme
 @Composable
 fun ExitAlertDialog(
     onDismissRequest: () -> Unit,
+    onExitRequest: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -65,7 +66,9 @@ fun ExitAlertDialog(
                     )
                 }
                 VerticalDivider()
-                TextButton(onClick = { }) {
+                TextButton(onClick = {
+                    onExitRequest()
+                }) {
                     Text(stringResource(R.string.Exit), color = CustomTheme.basicPalette.lightBlue)
                 }
             }
@@ -75,10 +78,13 @@ fun ExitAlertDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun ExitAlertDialogPreview() {
+private fun ExitAlertDialogPreview() {
     CustomTheme {
         Box(Modifier.fillMaxSize()) {
-            ExitAlertDialog(onDismissRequest = {})
+            ExitAlertDialog(
+                onDismissRequest = {},
+                onExitRequest = {}
+            )
         }
     }
 }

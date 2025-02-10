@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.eltex.chat.R
+import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
+import com.eltex.chat.feature.profile.viewmodel.ProfileState
+import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 
@@ -46,6 +51,26 @@ fun ProfileScreen() {
 
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     val state = profileViewModel.state.collectAsState()
+
+    when (state.value.status) {
+        ProfileStatus.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is ProfileStatus.Error, ProfileStatus.Idle -> ProfileScreenIdle(state, profileViewModel)
+    }
+}
+
+@Composable
+private fun ProfileScreenIdle(state: State<ProfileState>, profileViewModel: ProfileViewModel) {
+
+    val showExitAlertDialog = remember { mutableStateOf(false) }
+    if (showExitAlertDialog.value) {
+        ExitAlertDialog(
+            onDismissRequest = { showExitAlertDialog.value = false },
+            onExitRequest = {profileViewModel.exitFromProfile()}
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -64,8 +89,7 @@ fun ProfileScreen() {
         var imageLoadError by remember { mutableStateOf(false) }
 
         if ((!state.value.profileUiModel?.avatarUrl.isNullOrEmpty()) && !imageLoadError) {
-            AsyncImage(
-                model = state.value.profileUiModel?.avatarUrl,
+            AsyncImage(model = state.value.profileUiModel?.avatarUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -75,8 +99,7 @@ fun ProfileScreen() {
                     .align(Alignment.CenterHorizontally),
                 onError = {
                     imageLoadError = true
-                }
-            )
+                })
         } else {
             Image(
                 painter = painterResource(id = R.drawable.logo),
@@ -101,24 +124,21 @@ fun ProfileScreen() {
         Spacer(modifier = Modifier.height(190.dp))
 
         LogoutButton {
-            println("Logout clicked")
+            showExitAlertDialog.value = true
         }
     }
 }
 
 @Composable
 fun LogoutButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .height(48.dp)
-            .background(
-                CustomTheme.basicPalette.white,
-                RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp)
-            )
-            .clickable { onClick() }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
+        .height(48.dp)
+        .background(
+            CustomTheme.basicPalette.white, RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp)
+        )
+        .clickable { onClick() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -138,8 +158,7 @@ fun LogoutButton(onClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(11.dp))
                 Text(
-                    text = "Выйти",
-                    style = CustomTheme.typographySfPro.headlineSemibold
+                    text = "Выйти", style = CustomTheme.typographySfPro.headlineSemibold
                 )
             }
             Icon(
