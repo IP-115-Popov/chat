@@ -1,6 +1,6 @@
-package com.eltex.chat.feature.authorization.mapper
+package com.eltex.chat.feature.signin.mapper
 
-import com.eltex.chat.feature.authorization.models.LoginUiModel
+import com.eltex.chat.feature.signin.models.LoginUiModel
 import com.eltex.domain.models.LoginModel
 
 object LoginUiToLoginModelMapper {

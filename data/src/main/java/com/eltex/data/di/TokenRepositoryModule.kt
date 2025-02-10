@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
 import com.eltex.data.repository.TokenRepositoryImpl
-import com.eltex.domain.feature.autorization.repository.TokenRepository
+import com.eltex.domain.feature.signin.repository.TokenRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.authorization.models
+package com.eltex.chat.feature.signin.models
 
 data class LoginUiModel(
     val user: String = "",

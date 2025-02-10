@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.authorization.ui.screens
+package com.eltex.chat.feature.signin.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -32,9 +32,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
-import com.eltex.chat.feature.authorization.ui.components.ErrorSignInAlertDialog
-import com.eltex.chat.feature.authorization.viewmodel.AuthorizationStatus
-import com.eltex.chat.feature.authorization.viewmodel.AuthorizationViewModel
+import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
+import com.eltex.chat.feature.signin.viewmodel.SignInStatus
+import com.eltex.chat.feature.signin.viewmodel.SignInViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.components.PasswordTextField
 import com.eltex.chat.ui.components.SimpleTextField
@@ -44,8 +44,8 @@ import com.eltex.chat.ui.theme.CustomTheme
 fun SignInScreen(
     navController: NavHostController
 ) {
-    val authorizationViewModel = hiltViewModel<AuthorizationViewModel>()
-    val state = authorizationViewModel.state.collectAsState()
+    val signInViewModel = hiltViewModel<SignInViewModel>()
+    val state = signInViewModel.state.collectAsState()
     val signInButtonEnabled =
         remember { derivedStateOf { state.value.user.user.isNotEmpty() && state.value.user.password.isNotEmpty() } }
 
@@ -78,14 +78,14 @@ fun SignInScreen(
             SimpleTextField(
                 value = state.value.user.user,
                 placeholder = stringResource(R.string.login),
-                onValueChange = { authorizationViewModel.setLogin(it) },
+                onValueChange = { signInViewModel.setLogin(it) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(Modifier.size(38.dp))
             PasswordTextField(
                 value = state.value.user.password,
                 placeholder = stringResource(R.string.password),
-                onValueChange = { authorizationViewModel.setPassword(it) },
+                onValueChange = { signInViewModel.setPassword(it) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(Modifier.size(218.dp))
@@ -101,7 +101,7 @@ fun SignInScreen(
                     disabledContentColor = CustomTheme.basicPalette.black.copy(alpha = 0.5f),
                 ),
                 enabled = signInButtonEnabled.value,
-                onClick = { authorizationViewModel.signIn() }) {
+                onClick = { signInViewModel.signIn() }) {
                 Text(
                     text = stringResource(R.string.enter),
                     style = CustomTheme.typographyRoboto.bodyMedium,
@@ -112,11 +112,11 @@ fun SignInScreen(
     }
 
     when (state.value.status) {
-        AuthorizationStatus.AuthorizationSuccessful -> {
+        SignInStatus.SignInSuccessful -> {
             navController.navigate(NavRoutes.Main.route)
         }
 
-        AuthorizationStatus.Loading -> {
+        SignInStatus.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
@@ -124,14 +124,14 @@ fun SignInScreen(
             }
         }
 
-        is AuthorizationStatus.Error -> {
-            (state.value.status as? AuthorizationStatus.Error)?.let {
+        is SignInStatus.Error -> {
+            (state.value.status as? SignInStatus.Error)?.let {
                 ErrorSignInAlertDialog(message = it.message,
-                    onDismissRequest = { authorizationViewModel.setStatusIdle() })
+                    onDismissRequest = { signInViewModel.setStatusIdle() })
             }
         }
 
-        AuthorizationStatus.Idle -> {}
+        SignInStatus.Idle -> {}
     }
 }
 

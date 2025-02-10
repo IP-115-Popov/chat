@@ -3,7 +3,7 @@ package com.eltex.domain.feature.profile.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.eltex.domain.feature.autorization.repository.AuthDataRepository
+import com.eltex.domain.feature.signin.repository.AuthDataRepository
 import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.ProfileInfoError

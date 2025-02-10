@@ -1,10 +1,10 @@
 package com.eltex.chat.di
 
-import com.eltex.domain.feature.autorization.repository.AuthDataRepository
-import com.eltex.domain.feature.autorization.repository.SignInNetworkRepository
-import com.eltex.domain.feature.autorization.repository.TokenRepository
-import com.eltex.domain.feature.autorization.usecase.SyncAuthDataUseCase
-import com.eltex.domain.feature.autorization.usecase.SignInUseCase
+import com.eltex.domain.feature.signin.repository.AuthDataRepository
+import com.eltex.domain.feature.signin.repository.SignInNetworkRepository
+import com.eltex.domain.feature.signin.repository.TokenRepository
+import com.eltex.domain.feature.signin.usecase.SyncAuthDataUseCase
+import com.eltex.domain.feature.signin.usecase.SignInUseCase
 import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
 import dagger.Module

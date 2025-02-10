@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.authorization.ui.components
+package com.eltex.chat.feature.signin.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

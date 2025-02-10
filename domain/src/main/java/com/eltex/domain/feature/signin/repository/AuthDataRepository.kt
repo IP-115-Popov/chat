@@ -1,4 +1,4 @@
-package com.eltex.domain.feature.autorization.repository
+package com.eltex.domain.feature.signin.repository
 
 import com.eltex.domain.models.AuthData
 

@@ -1,13 +1,13 @@
-package com.eltex.chat.feature.authorization.viewmodel
+package com.eltex.chat.feature.signin.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
-import com.eltex.chat.feature.authorization.mapper.LoginUiToLoginModelMapper
-import com.eltex.domain.feature.autorization.usecase.SyncAuthDataUseCase
-import com.eltex.domain.feature.autorization.usecase.SignInUseCase
+import com.eltex.chat.feature.signin.mapper.LoginUiToLoginModelMapper
+import com.eltex.domain.feature.signin.usecase.SyncAuthDataUseCase
+import com.eltex.domain.feature.signin.usecase.SignInUseCase
 import com.eltex.domain.models.SignInError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,13 +20,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthorizationViewModel @Inject constructor(
+class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val signInUseCase: SignInUseCase,
     private val syncAuthDataUseCase: SyncAuthDataUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(AuthorizationUiState())
-    val state: StateFlow<AuthorizationUiState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(SignInUiState())
+    val state: StateFlow<SignInUiState> = _state.asStateFlow()
 
     init {
         syncToken()
@@ -38,7 +38,7 @@ class AuthorizationViewModel @Inject constructor(
                 val authData = syncAuthDataUseCase.execute()
                 when (authData) {
                     is Either.Right -> {
-                        setStatus(AuthorizationStatus.AuthorizationSuccessful)
+                        setStatus(SignInStatus.SignInSuccessful)
                     }
                     else -> {}
                 }
@@ -47,7 +47,7 @@ class AuthorizationViewModel @Inject constructor(
     }
 
     fun signIn() {
-        setStatus(AuthorizationStatus.Loading)
+        setStatus(SignInStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val loginModel = LoginUiToLoginModelMapper.map(state.value.user)
@@ -57,34 +57,34 @@ class AuthorizationViewModel @Inject constructor(
                     is Either.Left -> {
                         when (authData.value) {
                             SignInError.ConnectionMissing -> {
-                                setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
+                                setStatus(SignInStatus.Error(context.getString(R.string.connection_is_missing)))
                             }
 
                             SignInError.Unauthorized -> {
-                                setStatus(AuthorizationStatus.Error(context.getString(R.string.Unauthorized)))
+                                setStatus(SignInStatus.Error(context.getString(R.string.Unauthorized)))
                             }
                         }
                     }
                     is Either.Right -> {
-                        setStatus(AuthorizationStatus.AuthorizationSuccessful)
+                        setStatus(SignInStatus.SignInSuccessful)
                     }
                     else -> {}
                 }
             } catch (e: Exception) {
-                setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
+                setStatus(SignInStatus.Error(context.getString(R.string.connection_is_missing)))
             }
         }
 
     }
 
     fun setStatusIdle() {
-        setStatus(AuthorizationStatus.Idle)
+        setStatus(SignInStatus.Idle)
     }
 
-    private fun setStatus(authorizationStatus: AuthorizationStatus) {
+    private fun setStatus(signInStatus: SignInStatus) {
         _state.update {
             it.copy(
-                status = authorizationStatus
+                status = signInStatus
             )
         }
     }
