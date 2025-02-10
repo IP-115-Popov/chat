@@ -5,6 +5,6 @@ import com.eltex.chat.feature.authorization.models.LoginUiModel
 import com.eltex.chat.feature.authorization.models.SignInError
 import com.eltex.chat.feature.authorization.models.AuthData
 
-interface SignInRepository {
+interface SignInNetworkRepository {
     suspend fun signIn(loginUiRequest: LoginUiModel): Either<SignInError, AuthData>
 }

@@ -7,7 +7,7 @@ import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import com.eltex.chat.feature.profile.models.ProfileUiModel
-import com.eltex.chat.feature.profile.repository.ProfileInfoRepository
+import com.eltex.chat.feature.profile.repository.ProfileNetworkInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val profileInfoRepository: ProfileInfoRepository,
+    private val profileNetworkInfoRepository: ProfileNetworkInfoRepository,
     private val authDataRepository: AuthDataRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState())
@@ -63,7 +63,7 @@ class ProfileViewModel @Inject constructor(
         state.value.profileUiModel?.let { profileUiModel ->
             try {
                 val profileInfo =
-                    profileInfoRepository.getProfileInfo(userId = profileUiModel.id)
+                    profileNetworkInfoRepository.getProfileInfo(userId = profileUiModel.id)
 
                 when (profileInfo) {
                     is Either.Left -> {

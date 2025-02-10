@@ -6,12 +6,12 @@ import arrow.core.right
 import com.eltex.chat.data.api.ProfileInfoApi
 import com.eltex.chat.data.mappers.ProfileInfoRequestToProfileUiModelMapper
 import com.eltex.chat.feature.profile.models.ProfileUiModel
-import com.eltex.chat.feature.profile.repository.ProfileInfoRepository
+import com.eltex.chat.feature.profile.repository.ProfileNetworkInfoRepository
 import javax.inject.Inject
 
-class ProfileInfoRepositoryImpl @Inject constructor(
+class ProfileNetworkInfoRepositoryImpl @Inject constructor(
     private val profileInfoApi: ProfileInfoApi
-) : ProfileInfoRepository {
+) : ProfileNetworkInfoRepository {
     override suspend fun getProfileInfo(userId: String): Either<String, ProfileUiModel> {
         val response = profileInfoApi.getProfileInfo(userId)
 

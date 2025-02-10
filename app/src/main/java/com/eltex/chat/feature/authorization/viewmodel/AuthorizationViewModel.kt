@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.authorization.models.SignInError
-import com.eltex.chat.feature.authorization.repository.SignInRepository
+import com.eltex.chat.feature.authorization.repository.SignInNetworkRepository
 import com.eltex.chat.feature.authorization.repository.TokenRepository
 import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val signInRepository: SignInRepository,
+    private val signInNetworkRepository: SignInNetworkRepository,
     private val authDataRepository: AuthDataRepository,
     private val tokenRepository: TokenRepository,
 ) : ViewModel() {
@@ -49,7 +49,7 @@ class AuthorizationViewModel @Inject constructor(
         setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val authData = signInRepository.signIn(state.value.user)
+                val authData = signInNetworkRepository.signIn(state.value.user)
                 when (authData) {
                     is Either.Left -> {
                         when (authData.value) {

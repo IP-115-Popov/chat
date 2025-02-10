@@ -8,13 +8,13 @@ import com.eltex.chat.data.mappers.LoginResponseToAuthDataMapper
 import com.eltex.chat.data.mappers.LoginUiModelToLoginRequestMapper
 import com.eltex.chat.feature.authorization.models.LoginUiModel
 import com.eltex.chat.feature.authorization.models.SignInError
-import com.eltex.chat.feature.authorization.repository.SignInRepository
+import com.eltex.chat.feature.authorization.repository.SignInNetworkRepository
 import com.eltex.chat.feature.authorization.models.AuthData
 import javax.inject.Inject
 
-class SignInRepositoryImpl @Inject constructor(
+class SignInNetworkRepositoryImpl @Inject constructor(
     private val authorizationApi: AuthorizationApi
-) : SignInRepository {
+) : SignInNetworkRepository {
     override suspend fun signIn(loginUiRequest: LoginUiModel): Either<SignInError, AuthData> {
         val response = authorizationApi.signIn(
             loginRequest = LoginUiModelToLoginRequestMapper.map(
