@@ -21,7 +21,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.eltex.chat.R
 import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
-import com.eltex.chat.feature.profile.viewmodel.ProfileState
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
 import com.eltex.chat.ui.theme.CustomTheme
@@ -48,28 +46,13 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
 fun ProfileScreen() {
-
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     val state = profileViewModel.state.collectAsState()
-
-    when (state.value.status) {
-        ProfileStatus.Loading -> {
-            CircularProgressIndicator()
-        }
-
-        is ProfileStatus.Error, ProfileStatus.Idle -> ProfileScreenIdle(state, profileViewModel)
-    }
-}
-
-@Composable
-private fun ProfileScreenIdle(state: State<ProfileState>, profileViewModel: ProfileViewModel) {
-
     val showExitAlertDialog = remember { mutableStateOf(false) }
+
     if (showExitAlertDialog.value) {
-        ExitAlertDialog(
-            onDismissRequest = { showExitAlertDialog.value = false },
-            onExitRequest = {profileViewModel.exitFromProfile()}
-        )
+        ExitAlertDialog(onDismissRequest = { showExitAlertDialog.value = false },
+            onExitRequest = { profileViewModel.exitFromProfile() })
     }
 
     Column(
@@ -126,6 +109,15 @@ private fun ProfileScreenIdle(state: State<ProfileState>, profileViewModel: Prof
         LogoutButton {
             showExitAlertDialog.value = true
         }
+    }
+
+    when (state.value.status) {
+        ProfileStatus.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is ProfileStatus.Error -> {}
+        ProfileStatus.Idle -> {}
     }
 }
 

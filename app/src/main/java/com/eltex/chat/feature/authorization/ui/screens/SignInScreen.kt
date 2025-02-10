@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -47,28 +48,6 @@ fun SignInScreen(
 ) {
     val authorizationViewModel = hiltViewModel<AuthorizationViewModel>()
     val state = authorizationViewModel.state.collectAsState()
-
-    when (state.value.status) {
-        AuthorizationStatus.AuthorizationSuccessful -> {
-            navController.navigate(NavRoutes.Main.route)
-        }
-
-        AuthorizationStatus.Loading, is AuthorizationStatus.Error, AuthorizationStatus.Idle -> SignInStatusIdle(
-            state, authorizationViewModel
-        )
-    }
-
-}
-
-@Composable
-private fun SignInStatusIdle(
-    state: State<AuthorizationUiState>, authorizationViewModel: AuthorizationViewModel
-) {
-    (state.value.status as? AuthorizationStatus.Error)?.let {
-        ErrorSignInAlertDialog(message = it.message,
-            onDismissRequest = { authorizationViewModel.setStatusIdle() })
-    }
-
     val signInButtonEnabled =
         remember { derivedStateOf { state.value.user.user.isNotEmpty() && state.value.user.password.isNotEmpty() } }
 
@@ -132,6 +111,29 @@ private fun SignInStatusIdle(
                 )
             }
         }
+    }
+
+    when (state.value.status) {
+        AuthorizationStatus.AuthorizationSuccessful -> {
+            navController.navigate(NavRoutes.Main.route)
+        }
+
+        AuthorizationStatus.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is AuthorizationStatus.Error -> {
+            (state.value.status as? AuthorizationStatus.Error)?.let {
+                ErrorSignInAlertDialog(message = it.message,
+                    onDismissRequest = { authorizationViewModel.setStatusIdle() })
+            }
+        }
+
+        AuthorizationStatus.Idle -> {}
     }
 }
 
