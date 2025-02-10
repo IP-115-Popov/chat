@@ -2,7 +2,7 @@ package com.eltex.chat.data.storage
 
 
 import android.content.Context
-import com.eltex.chat.models.AuthData
+import com.eltex.chat.feature.authorization.models.AuthData
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

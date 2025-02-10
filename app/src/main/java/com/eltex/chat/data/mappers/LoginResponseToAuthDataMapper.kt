@@ -1,13 +1,15 @@
 package com.eltex.chat.data.mappers
 
-import com.eltex.chat.data.models.LoginResponse
-import com.eltex.chat.models.AuthData
+import com.eltex.chat.data.models.authdata.LoginResponse
+import com.eltex.chat.feature.authorization.models.AuthData
 
 object LoginResponseToAuthDataMapper {
-    fun map(loginResponse: LoginResponse): AuthData =
+    fun map(loginResponse: LoginResponse): AuthData = with(loginResponse) {
         AuthData(
-            authToken = loginResponse.data.authToken,
-            userId = loginResponse.data.userId,
-            avatarUrl = loginResponse.data.me.avatarUrl
+            authToken = data.authToken,
+            name = data.me.name,
+            userId = data.userId,
+            avatarUrl = data.me.avatarUrl
         )
+    }
 }

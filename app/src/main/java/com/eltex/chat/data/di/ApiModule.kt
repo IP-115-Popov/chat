@@ -2,6 +2,7 @@ package com.eltex.chat.data.di
 
 import com.eltex.chat.data.api.AuthorizationApi
 import com.eltex.chat.data.api.OkHttpClientFactory
+import com.eltex.chat.data.api.ProfileInfoApi
 import com.eltex.chat.data.api.RetrofitFactory
 import dagger.Module
 import dagger.Provides
@@ -25,4 +26,7 @@ class ApiModule {
 
     @Provides
     fun provideAuthorizationApi(retrofit: Retrofit): AuthorizationApi = retrofit.create<AuthorizationApi>()
+
+    @Provides
+    fun provideProfileInfoApi(retrofit: Retrofit): ProfileInfoApi = retrofit.create<ProfileInfoApi>()
 }

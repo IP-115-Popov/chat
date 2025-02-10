@@ -1,4 +1,4 @@
-package com.eltex.chat.data.models
+package com.eltex.chat.data.models.authdata
 
 data class Data(
     val authToken: String,

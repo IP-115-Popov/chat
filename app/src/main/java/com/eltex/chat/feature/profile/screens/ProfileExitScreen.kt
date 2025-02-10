@@ -63,9 +63,9 @@ fun ProfileScreen() {
 
         var imageLoadError by remember { mutableStateOf(false) }
 
-        if (state.value.authData?.avatarUrl != null && !imageLoadError) {
+        if ((!state.value.profileUiModel?.avatarUrl.isNullOrEmpty()) && !imageLoadError) {
             AsyncImage(
-                model = state.value.authData?.avatarUrl,
+                model = state.value.profileUiModel?.avatarUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -91,7 +91,7 @@ fun ProfileScreen() {
         }
 
         Text(
-            text = "Татьяна Иванова",
+            text =  state.value.profileUiModel?.name ?: " ФИО",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .offset(y = (8 - 59).dp),
@@ -103,7 +103,6 @@ fun ProfileScreen() {
         LogoutButton {
             println("Logout clicked")
         }
-
     }
 }
 
