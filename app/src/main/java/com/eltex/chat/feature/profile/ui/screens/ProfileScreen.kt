@@ -139,7 +139,8 @@ fun LogoutButton(onClick: () -> Unit) {
         .padding(horizontal = 16.dp)
         .height(48.dp)
         .background(
-            CustomTheme.basicPalette.white, RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp)
+            CustomTheme.basicPalette.white,
+            RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp)
         )
         .clickable { onClick() }) {
         Row(

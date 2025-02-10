@@ -69,7 +69,7 @@ class ProfileViewModel @Inject constructor(
                     profileNetworkInfoRepository.getProfileInfo(
                         userId = profileUiModel.id,
                         authToken = profileUiModel.authToken,
-                        )
+                    )
 
                 when (profileInfo) {
                     is Either.Left -> {
