@@ -10,6 +10,8 @@ data class BasicPalette(
     val white1: Color,
     val lightGrey: Color,
     val grey: Color,
+    val grey2: Color,
+    val darkGray: Color,
     val black: Color,
     val lightBlue: Color,
     val lightGreen: Color,
@@ -18,6 +20,7 @@ data class BasicPalette(
 
 data class CustomRobotoTypography(
     val titleMedium: TextStyle,
+    val titleLarge: TextStyle,
     val bodyMedium: TextStyle,
 )
 

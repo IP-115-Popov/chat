@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.profile.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,48 +58,56 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(CustomTheme.basicPalette.white1)
     ) {
-        Image(
-            imageVector = ImageVector.vectorResource(R.drawable.subtract),
-            contentDescription = null,
+        Box(
             modifier = Modifier
+                .height(142.dp)
                 .fillMaxWidth()
-                .height(142.dp),
-            contentScale = ContentScale.Crop
+                .background(CustomTheme.basicPalette.blue),
         )
 
-        var imageLoadError by remember { mutableStateOf(false) }
+        Box(
+            modifier = Modifier
+                .size(124.dp)
+                .offset(y = -62.dp)
+                .background(color = CustomTheme.basicPalette.white1, shape = CircleShape)
+                .align(Alignment.CenterHorizontally),
+            contentAlignment = Alignment.Center,
+        ) {
+            var imageLoadError by remember { mutableStateOf(false) }
 
-        if ((!state.value.profileUiModel?.avatarUrl.isNullOrEmpty()) && !imageLoadError) {
-            AsyncImage(model = state.value.profileUiModel?.avatarUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .offset(y = -59.dp)
-                    .size(118.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.CenterHorizontally),
-                onError = {
-                    imageLoadError = true
-                })
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .offset(y = -59.dp)
-                    .size(118.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.CenterHorizontally),
-                contentScale = ContentScale.FillWidth
-            )
+            if ((!state.value.profileUiModel?.avatarUrl.isNullOrEmpty()) && !imageLoadError) {
+                AsyncImage(model = state.value.profileUiModel?.avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(118.dp)
+                        .clip(CircleShape),
+
+                    onError = {
+                        imageLoadError = true
+                    })
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(118.dp)
+                        .background(CustomTheme.basicPalette.grey2, shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.value.profileUiModel?.name ?: "ФИО",
+                        style = CustomTheme.typographyRoboto.titleLarge,
+                        color = CustomTheme.basicPalette.darkGray,
+                        maxLines = 1,
+                    )
+                }
+            }
         }
-
         Text(
             text = state.value.profileUiModel?.name ?: " ФИО",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .offset(y = (8 - 59).dp),
-            style = CustomTheme.typographySfPro.titleMedium
+            style = CustomTheme.typographyRoboto.titleMedium
         )
 
         Spacer(modifier = Modifier.height(190.dp))

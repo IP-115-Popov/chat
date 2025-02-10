@@ -25,6 +25,12 @@ val simpleRobotoTypography = CustomRobotoTypography(
         fontSize = 14.sp,
         lineHeight = 20.sp,
     ),
+
+    titleLarge = robotoTextStyle.copy(
+        fontWeight = FontWeight(600),
+        fontSize = 32.sp,
+        lineHeight = 60.sp,
+    ),
 )
 
 val simpleSfProDisplayTypography = CustomSfProDisplayTypography(
