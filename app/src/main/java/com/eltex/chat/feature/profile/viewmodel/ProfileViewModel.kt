@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
-import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import com.eltex.chat.feature.profile.models.ProfileUiModel
-import com.eltex.chat.feature.profile.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -23,73 +22,47 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val profileNetworkInfoRepository: ProfileNetworkInfoRepository,
-    private val authDataRepository: AuthDataRepository,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            getUserFromStorage()
-            updateUserFromServer()
-        }
+        getUser()
     }
 
-    private suspend fun getUserFromStorage() {
-        try {
-            val authData = authDataRepository.getAuthData()
-
-            authData?.let {
-                withContext(Dispatchers.Main) {
-                    _state.update {
-                        it.copy(
-                            profileUiModel = ProfileUiModel(
-                                id = authData.userId,
-                                avatarUrl = authData.avatarUrl,
-                                name = authData.name,
-                                authToken = authData.authToken,
-                            )
-                        )
-                    }
-                    setStatus(ProfileStatus.Idle)
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("ProfileViewModel", "Error getting user from local storage", e)
-            setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))
-        }
-    }
-
-    private suspend fun updateUserFromServer() {
+    private fun getUser() {
         setStatus(ProfileStatus.Loading)
-        state.value.profileUiModel?.let { profileUiModel ->
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val profileInfo =
-                    profileNetworkInfoRepository.getProfileInfo(
-                        userId = profileUiModel.id,
-                        authToken = profileUiModel.authToken,
-                    )
+                val result = getProfileInfoUseCase.execute()
 
-                when (profileInfo) {
+                when (result) {
                     is Either.Left -> {
-                        setStatus(ProfileStatus.Error(profileInfo.value))
+                        setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))
                     }
 
                     is Either.Right -> {
                         withContext(Dispatchers.Main) {
                             _state.update {
                                 it.copy(
-                                    profileUiModel = profileInfo.value
+                                    profileUiModel = ProfileUiModel(
+                                        id = result.value.id,
+                                        avatarUrl = result.value.avatarUrl,
+                                        name = result.value.name,
+                                        authToken = result.value.authToken,
+                                    )
                                 )
                             }
                             setStatus(ProfileStatus.Idle)
                         }
                     }
+
+                    else -> {}
                 }
             } catch (e: Exception) {
-                Log.e("ProfileViewModel", "Error getting user from server", e)
-                setStatus(ProfileStatus.Error(context.getString(R.string.connection_is_missing)))
+                Log.e("ProfileViewModel", "Error getting user from local storage", e)
+                setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))
             }
         }
     }

@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
-import com.eltex.chat.feature.authorization.models.SignInError
-import com.eltex.chat.feature.authorization.repository.AuthDataRepository
-import com.eltex.chat.feature.authorization.repository.SignInNetworkRepository
-import com.eltex.chat.feature.authorization.repository.TokenRepository
+import com.eltex.domain.feature.autorization.usecase.SyncAuthDataUseCase
+import com.eltex.domain.feature.autorization.usecase.SignInUseCase
+import com.eltex.domain.models.LoginModel
+import com.eltex.domain.models.SignInError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val signInNetworkRepository: SignInNetworkRepository,
-    private val authDataRepository: AuthDataRepository,
-    private val tokenRepository: TokenRepository,
+    private val signInUseCase: SignInUseCase,
+    private val syncAuthDataUseCase: SyncAuthDataUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AuthorizationUiState())
     val state: StateFlow<AuthorizationUiState> = _state.asStateFlow()
@@ -36,10 +35,12 @@ class AuthorizationViewModel @Inject constructor(
     private fun syncToken() {
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
-                val authData = authDataRepository.getAuthData()
-                authData?.let {
-                    setStatus(AuthorizationStatus.AuthorizationSuccessful)
-                    tokenRepository.setToken(authData.authToken)
+                val authData = syncAuthDataUseCase.execute()
+                when (authData) {
+                    is Either.Right -> {
+                        setStatus(AuthorizationStatus.AuthorizationSuccessful)
+                    }
+                    else -> {}
                 }
             }
         }
@@ -49,7 +50,10 @@ class AuthorizationViewModel @Inject constructor(
         setStatus(AuthorizationStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val authData = signInNetworkRepository.signIn(state.value.user)
+                val authData = signInUseCase.execute(LoginModel(
+                    user = state.value.user.user,
+                    password =  state.value.user.password
+                ))
                 when (authData) {
                     is Either.Left -> {
                         when (authData.value) {
@@ -62,16 +66,11 @@ class AuthorizationViewModel @Inject constructor(
                             }
                         }
                     }
-
                     is Either.Right -> {
-                        setStatus(AuthorizationStatus.Idle)
-                        tokenRepository.setToken(authData.value.authToken)
-                        authDataRepository.saveAuthData(authData.value)
                         setStatus(AuthorizationStatus.AuthorizationSuccessful)
-
                     }
+                    else -> {}
                 }
-
             } catch (e: Exception) {
                 setStatus(AuthorizationStatus.Error(context.getString(R.string.connection_is_missing)))
             }

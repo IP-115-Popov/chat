@@ -35,7 +35,7 @@ fun Main() {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(bottomBar = {
-        if (currentRoute != NavRoutes.Splash.route) {
+        if (currentRoute != NavRoutes.Splash.route && currentRoute != NavRoutes.Authorization.route) {
             BottomNavigationBar(navController)
         }
     }) { innerPadding ->
