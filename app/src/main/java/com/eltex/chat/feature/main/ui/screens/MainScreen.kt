@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.screens
+package com.eltex.chat.feature.main.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
-import com.eltex.chat.feature.main.components.MainScreenTopBar
-import com.eltex.chat.feature.main.components.SearchField
+import com.eltex.chat.feature.main.ui.components.MainScreenTopBar
+import com.eltex.chat.feature.main.ui.components.SearchField
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable

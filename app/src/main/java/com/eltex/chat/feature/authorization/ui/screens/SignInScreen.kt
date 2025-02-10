@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.authorization.screens
+package com.eltex.chat.feature.authorization.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
-import com.eltex.chat.feature.authorization.components.ErrorSignInAlertDialog
+import com.eltex.chat.feature.authorization.ui.components.ErrorSignInAlertDialog
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationStatus
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationUiState
 import com.eltex.chat.feature.authorization.viewmodel.AuthorizationViewModel

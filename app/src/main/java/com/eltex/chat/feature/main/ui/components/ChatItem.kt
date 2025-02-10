@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.components
+package com.eltex.chat.feature.main.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

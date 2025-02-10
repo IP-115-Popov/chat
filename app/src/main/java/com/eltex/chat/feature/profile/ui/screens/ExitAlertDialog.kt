@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.profile.screens
+package com.eltex.chat.feature.profile.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
