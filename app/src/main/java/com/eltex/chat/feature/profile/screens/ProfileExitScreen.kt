@@ -91,7 +91,7 @@ fun ProfileScreen() {
         }
 
         Text(
-            text =  state.value.profileUiModel?.name ?: " ФИО",
+            text = state.value.profileUiModel?.name ?: " ФИО",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .offset(y = (8 - 59).dp),

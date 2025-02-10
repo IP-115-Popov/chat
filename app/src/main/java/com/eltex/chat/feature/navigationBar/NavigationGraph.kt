@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.eltex.chat.feature.authorization.screens.SignInScreen
-import com.eltex.chat.feature.profile.screens.ProfileScreen
 import com.eltex.chat.feature.main.screens.MainScreen
+import com.eltex.chat.feature.profile.screens.ProfileScreen
 import com.eltex.chat.ui.components.SplashScreen
 
 @Composable

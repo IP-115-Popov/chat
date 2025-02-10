@@ -1,8 +1,8 @@
 package com.eltex.chat.data.repository
 
 import com.eltex.chat.data.storage.SharedPreferencesAuthDataStorage
-import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import com.eltex.chat.feature.authorization.models.AuthData
+import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import javax.inject.Inject
 
 

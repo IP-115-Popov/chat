@@ -6,10 +6,10 @@ import arrow.core.right
 import com.eltex.chat.data.api.AuthorizationApi
 import com.eltex.chat.data.mappers.LoginResponseToAuthDataMapper
 import com.eltex.chat.data.mappers.LoginUiModelToLoginRequestMapper
+import com.eltex.chat.feature.authorization.models.AuthData
 import com.eltex.chat.feature.authorization.models.LoginUiModel
 import com.eltex.chat.feature.authorization.models.SignInError
 import com.eltex.chat.feature.authorization.repository.SignInNetworkRepository
-import com.eltex.chat.feature.authorization.models.AuthData
 import javax.inject.Inject
 
 class SignInNetworkRepositoryImpl @Inject constructor(

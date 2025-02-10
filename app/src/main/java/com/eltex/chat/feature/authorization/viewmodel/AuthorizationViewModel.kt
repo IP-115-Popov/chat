@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.authorization.models.SignInError
+import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import com.eltex.chat.feature.authorization.repository.SignInNetworkRepository
 import com.eltex.chat.feature.authorization.repository.TokenRepository
-import com.eltex.chat.feature.authorization.repository.AuthDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
