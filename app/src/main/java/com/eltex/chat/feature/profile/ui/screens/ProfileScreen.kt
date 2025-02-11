@@ -40,6 +40,7 @@ import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
 import com.eltex.chat.ui.theme.CustomTheme
+import com.eltex.chat.utils.getInitials
 
 
 @Composable
@@ -94,7 +95,7 @@ fun ProfileScreen() {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = state.value.profileUiModel?.name ?: "ФИО",
+                        text = state.value.profileUiModel?.name?.getInitials() ?: "ФИО",
                         style = CustomTheme.typographyRoboto.titleLarge,
                         color = CustomTheme.basicPalette.darkGray,
                         maxLines = 1,
@@ -103,7 +104,7 @@ fun ProfileScreen() {
             }
         }
         Text(
-            text = state.value.profileUiModel?.name ?: " ФИО",
+            text = state.value.profileUiModel?.name ?: "",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .offset(y = (8 - 59).dp),
