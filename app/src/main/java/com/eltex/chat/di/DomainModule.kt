@@ -1,6 +1,7 @@
 package com.eltex.chat.di
 
-import com.eltex.domain.feature.profile.repository.ImageRepository
+import com.eltex.domain.feature.profile.repository.ImageLocalRepository
+import com.eltex.domain.feature.profile.repository.ImageNetworkRepository
 import com.eltex.domain.feature.signin.repository.AuthDataRepository
 import com.eltex.domain.feature.signin.repository.SignInNetworkRepository
 import com.eltex.domain.feature.signin.repository.TokenRepository
@@ -54,10 +55,12 @@ class DomainModule {
 
     @Provides
     fun provideGetImageUseCase(
-        imageRepository: ImageRepository,
+        imageLocalRepository: ImageLocalRepository,
+        imageNetworkRepository: ImageNetworkRepository,
     ): GetImageUseCase {
         return GetImageUseCase(
-            imageRepository = imageRepository,
+            imageNetworkRepository = imageNetworkRepository,
+            imageLocalRepository = imageLocalRepository,
         )
     }
 }

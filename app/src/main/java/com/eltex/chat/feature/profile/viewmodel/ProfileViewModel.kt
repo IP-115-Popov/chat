@@ -34,8 +34,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         getUser()
-        Log.i("my-log", "profileUiModel == null - " + (state.value.profileUiModel == null).toString())
-        Log.i("my-log", "avatarUrl == null - " + (state.value.profileUiModel?.avatarUrl == null).toString())
 
         viewModelScope.launch {
             state.map { it.profileUiModel?.avatarUrl }
@@ -48,14 +46,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun loadImage(imageUrl: String) {
+    private fun loadImage(imageUrl: String) {
         setStatus(ProfileStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 when (val getImageResult = getImageUseCase.execute(imageUrl)) {
                     is Either.Left -> {
                         withContext(Dispatchers.Main) {
-                            setStatus(ProfileStatus.Error("Error loading image"))
+                            setStatus(ProfileStatus.Error("Error loading Avatar"))
                         }
                     }
 
@@ -77,7 +75,7 @@ class ProfileViewModel @Inject constructor(
                     else -> {}
                 }
             } catch (e: Exception) {
-                Log.e("ProfileViewModel", "Error getting Avatar", e)
+                Log.e("ProfileViewModel", "Error loading Avatar", e)
                 withContext(Dispatchers.Main) {
                     setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))
                 }
