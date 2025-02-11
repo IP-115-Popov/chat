@@ -16,4 +16,5 @@ kotlin {
 dependencies {
     //Either
     implementation(libs.arrow.core)
+    implementation(libs.kotlinx.coroutines.android)
 }

@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.viewmodel.uistate
+package com.eltex.chat.feature.main.viewmodel
 
 sealed interface MessageStatus {
     object yourLastMessageIsRead : MessageStatus

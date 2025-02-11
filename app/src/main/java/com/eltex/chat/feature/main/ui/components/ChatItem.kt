@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
-import com.eltex.chat.feature.main.viewmodel.uistate.MessageStatus
+import com.eltex.chat.feature.main.viewmodel.MessageStatus
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
