@@ -6,14 +6,14 @@ import arrow.core.right
 import com.eltex.domain.feature.signin.repository.AuthDataRepository
 import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.models.AuthData
-import com.eltex.domain.models.ProfileInfoError
+import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
 
 class GetProfileInfoUseCase(
     private val profileNetworkInfoRepository: ProfileNetworkInfoRepository,
     private val authDataRepository: AuthDataRepository,
 ) {
-    suspend fun execute(): Either<ProfileInfoError, ProfileModel> {
+    suspend fun execute(): Either<DataError, ProfileModel> {
         val authData: AuthData? = authDataRepository.getAuthData()
         if (authData != null) {
             val result = profileNetworkInfoRepository.getProfileInfo(
@@ -36,7 +36,7 @@ class GetProfileInfoUseCase(
                 }
             }
         } else {
-            return ProfileInfoError.LocalStorage.left()
+            return DataError.LocalStorage.left()
         }
     }
 }

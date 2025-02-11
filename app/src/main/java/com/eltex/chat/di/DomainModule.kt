@@ -1,11 +1,13 @@
 package com.eltex.chat.di
 
+import com.eltex.domain.feature.profile.repository.ImageRepository
 import com.eltex.domain.feature.signin.repository.AuthDataRepository
 import com.eltex.domain.feature.signin.repository.SignInNetworkRepository
 import com.eltex.domain.feature.signin.repository.TokenRepository
 import com.eltex.domain.feature.signin.usecase.SyncAuthDataUseCase
 import com.eltex.domain.feature.signin.usecase.SignInUseCase
 import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.feature.profile.usecase.GetImageUseCase
 import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
 import dagger.Module
 import dagger.Provides
@@ -47,6 +49,15 @@ class DomainModule {
         return SyncAuthDataUseCase(
             authDataRepository = authDataRepository,
             tokenRepository = tokenRepository,
+        )
+    }
+
+    @Provides
+    fun provideGetImageUseCase(
+        imageRepository: ImageRepository,
+    ): GetImageUseCase {
+        return GetImageUseCase(
+            imageRepository = imageRepository,
         )
     }
 }
