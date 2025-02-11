@@ -29,7 +29,9 @@ class MainViewModel @Inject constructor (
             val res = getChatListUseCase.execute()
             getChatListUseCase.execute().onEach {
                 _state.update {
-                    it.copy(chatList = it.chatList + res.first())
+                    val resfirst =  res.first()
+                    Log.i("MainViewModel", resfirst.toString())
+                    it.copy(chatList = it.chatList + resfirst)
                 }
             }.launchIn(viewModelScope)
         }

@@ -3,52 +3,70 @@ package com.eltex.data.websockets
 import android.util.Log
 import com.eltex.domain.repository.ChatDTO
 import com.eltex.domain.repository.ChatRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import javax.inject.Inject
 
-class ChatRepositoryImpl @Inject constructor() : ChatRepository {
+class ChatRepositoryImpl @Inject constructor(
+    private val webSocketManager: WebSocketManager
+) : ChatRepository {
 
-    private var webSocketManager: RocketChatWebSocket? = null
-
-    init {
-        val listener = RocketChatWebSocketListener { json ->
-            //Обработка входящего сообщения
-            if (json.has("msg") && json.getString("msg") == "ping") {
-                webSocketManager?.sendMessage("""{"msg": "pong"}""")
-            } else if (json.has("msg") && json.getString("msg") == "connected") {
-                // После подключения отправляем сообщение login
-                // ВНИМАНИЕ: Замените username и password на реальные значения!
-                webSocketManager?.sendMessage("""
-                    {
-                        "msg": "method",
-                        "method": "login",
-                        "id": "42",
-                        "params": [
-                            { "resume": "BWwRWJIIlxlMO1R24-KSWxD1KqBjILlVGArnmtG9uU5" }
-                        ]
-                    }
-                """.trimIndent())
-            } else if (json.has("msg") && json.getString("msg") == "result" && json.getString("id") == "42") {
-                Log.i("WebSocket", "Login successful!")
-                webSocketManager?.sendMessage("""
-                    {
-                        "msg": "method",
-                        "method": "rooms/get",
-                        "id": "42",
-                        "params": [ { date: 1480377601 } ]
-                    }
-                """.trimIndent())
-                // Теперь можно отправлять другие команды, например, subscribe
-                // webSocketManager?.sendMessage("""{"msg": "sub", "id": "1", "name": "stream-room-messages", "params": ["GENERAL"]}""")
-            }
+    override suspend fun getChat(): Flow<ChatDTO> = callbackFlow {
+        val listener: (JSONObject) -> Unit = { json ->
+            Log.i("ChatRepositoryImpl", json.toString())
+//            try {
+//                if (json.has("msg") && json.getString("msg") == "result") {
+//                    if (json.has("result")) {
+//                        val result = json.getJSONObject("result")
+//                        val chatDTO = parseChatDTO(result)
+//                        trySend(chatDTO)
+//
+//                    } else {
+//                        Log.w("ChatRepository", "No 'result' field in JSON: $json")
+//                        close(Exception("No 'result' field in JSON"))
+//                    }
+//                } else {
+//                    Log.d("ChatRepository", "Unhandled message: $json")
+//                }
+//            } catch (e: Exception) {
+//                Log.e("ChatRepository", "Error processing JSON: $json", e)
+//                close(e)
+//            }
         }
-        webSocketManager = RocketChatWebSocket(listener)
-        webSocketManager?.connect()
+
+        webSocketManager.addListener(listener)
+
+        // Отправляем запрос на получение чата
+        withContext(Dispatchers.IO) {
+            delay(5000)
+            Log.i("ChatRepositoryImpl", "sendMessage get Chat")
+            webSocketManager.sendMessage(
+                """
+                {
+                    "msg": "method",
+                    "method": "rooms/get",
+                    "id": "42",
+                    "params": [ { "data": 0 } ]
+                }
+            """.trimIndent()
+            )
+        }
+
+        awaitClose {
+            webSocketManager.removeListener(listener)
+            Log.d("ChatRepository", "Flow closed, listener removed")
+        }
     }
 
-    override suspend fun getChat(): Flow<ChatDTO> {
-        //getRooms(webSocket: WebSocket)
-        return listOf(ChatDTO(name = "", id = "", lastMessage = "")).asFlow()
+    private fun parseChatDTO(json: JSONObject): ChatDTO {
+        val id = json.getString("_id")
+        val name = json.getString("name")
+
+        return ChatDTO(id = id, name = name, lastMessage = "")
     }
 }
