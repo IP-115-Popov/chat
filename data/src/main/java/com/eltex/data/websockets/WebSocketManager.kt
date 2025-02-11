@@ -7,7 +7,7 @@ import javax.inject.Inject
 class WebSocketManager @Inject constructor() {
 
     private var webSocketManager: RocketChatWebSocket? = null
-    private var isConnected = false
+    var isConnected = false
 
     private val listeners: MutableList<(JSONObject) -> Unit> = mutableListOf()
 

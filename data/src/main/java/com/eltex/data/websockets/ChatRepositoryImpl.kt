@@ -1,8 +1,10 @@
 package com.eltex.data.websockets
 
 import android.util.Log
+import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.repository.ChatDTO
 import com.eltex.domain.repository.ChatRepository
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
@@ -16,27 +18,39 @@ class ChatRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatRepository {
 
+    private val gson = Gson()
+
     override suspend fun getChat(): Flow<ChatDTO> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.i("ChatRepositoryImpl", json.toString())
-//            try {
-//                if (json.has("msg") && json.getString("msg") == "result") {
-//                    if (json.has("result")) {
-//                        val result = json.getJSONObject("result")
-//                        val chatDTO = parseChatDTO(result)
-//                        trySend(chatDTO)
-//
-//                    } else {
-//                        Log.w("ChatRepository", "No 'result' field in JSON: $json")
-//                        close(Exception("No 'result' field in JSON"))
-//                    }
-//                } else {
-//                    Log.d("ChatRepository", "Unhandled message: $json")
-//                }
-//            } catch (e: Exception) {
-//                Log.e("ChatRepository", "Error processing JSON: $json", e)
-//                close(e)
-//            }
+            try {
+                if (json.has("msg") && json.getString("msg") == "result") {
+                    if (json.has("result")) {
+                        try {
+                            val result = gson.fromJson(json.toString(), Result::class.java)
+
+                            if (result != null) {
+                                trySend(ChatDTO(
+                                    id = result._id,
+                                    name = result.fname,
+                                    lastMessage = result.lastMessage.msg
+                                ))
+                            }
+                        } catch (e: Exception) {
+                            Log.e("ChatRepository", "Gson error: ${e.message}", e)
+                            close(e)
+                        }
+                    } else {
+                        Log.w("ChatRepository", "No 'result' field in JSON: $json")
+                        close(Exception("No 'result' field in JSON"))
+                    }
+                } else {
+                    Log.d("ChatRepository", "Unhandled message: $json")
+                }
+            } catch (e: Exception) {
+                Log.e("ChatRepository", "Error processing JSON: $json", e)
+                close(e)
+            }
         }
 
         webSocketManager.addListener(listener)
