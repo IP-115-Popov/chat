@@ -3,7 +3,6 @@ package com.eltex.data.websockets
 import android.util.Log
 import okhttp3.*
 import okhttp3.WebSocket
-import okio.ByteString
 import java.util.concurrent.TimeUnit
 
 class RocketChatWebSocket(
@@ -23,7 +22,7 @@ class RocketChatWebSocket(
             .build()
 
         request = Request.Builder()
-            .url("wss://apiexplorer.support.rocket.chat/websocket")
+            .url("wss://eltexios2025.rocket.chat/websocket")
             .build()
 
         try {

@@ -25,20 +25,20 @@ class ChatRepositoryImpl @Inject constructor() : ChatRepository {
                         "method": "login",
                         "id": "42",
                         "params": [
-                            {
-                                "user": {
-                                    "username": "him"
-                                },
-                                "password": {
-                                     "digest": "52c53f4abbfe42e1ccd4fd9d864453ee57f8efbd4c9ecec6d88bd83d7f7a9c02",
-                                     "algorithm":"sha-256"
-                                }
-                            }
+                            { "resume": "BWwRWJIIlxlMO1R24-KSWxD1KqBjILlVGArnmtG9uU5" }
                         ]
                     }
                 """.trimIndent())
             } else if (json.has("msg") && json.getString("msg") == "result" && json.getString("id") == "42") {
                 Log.i("WebSocket", "Login successful!")
+                webSocketManager?.sendMessage("""
+                    {
+                        "msg": "method",
+                        "method": "rooms/get",
+                        "id": "42",
+                        "params": [ { date: 1480377601 } ]
+                    }
+                """.trimIndent())
                 // Теперь можно отправлять другие команды, например, subscribe
                 // webSocketManager?.sendMessage("""{"msg": "sub", "id": "1", "name": "stream-room-messages", "params": ["GENERAL"]}""")
             }
