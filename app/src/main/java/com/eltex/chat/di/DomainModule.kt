@@ -1,15 +1,15 @@
 package com.eltex.chat.di
 
-import com.eltex.domain.feature.profile.repository.ImageLocalRepository
-import com.eltex.domain.feature.profile.repository.ImageNetworkRepository
-import com.eltex.domain.feature.signin.repository.AuthDataRepository
-import com.eltex.domain.feature.signin.repository.SignInNetworkRepository
-import com.eltex.domain.feature.signin.repository.TokenRepository
-import com.eltex.domain.feature.signin.usecase.SyncAuthDataUseCase
-import com.eltex.domain.feature.signin.usecase.SignInUseCase
-import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
-import com.eltex.domain.feature.profile.usecase.GetImageUseCase
-import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
+import com.eltex.domain.repository.ImageLocalRepository
+import com.eltex.domain.repository.ImageNetworkRepository
+import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.repository.SignInNetworkRepository
+import com.eltex.domain.repository.TokenRepository
+import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.SignInUseCase
+import com.eltex.domain.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.usecase.GetImageUseCase
+import com.eltex.domain.usecase.GetProfileInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -5,7 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.mappers.LoginModelToLoginRequestMapper
-import com.eltex.domain.feature.signin.repository.SignInNetworkRepository
+import com.eltex.domain.repository.SignInNetworkRepository
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError

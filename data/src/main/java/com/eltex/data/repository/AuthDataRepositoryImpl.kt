@@ -1,7 +1,7 @@
 package com.eltex.data.repository
 
 import com.eltex.data.storage.SharedPreferencesAuthDataStorage
-import com.eltex.domain.feature.signin.repository.AuthDataRepository
+import com.eltex.domain.repository.AuthDataRepository
 import com.eltex.domain.models.AuthData
 import javax.inject.Inject
 

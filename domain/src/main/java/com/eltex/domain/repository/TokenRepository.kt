@@ -1,4 +1,4 @@
-package com.eltex.domain.feature.signin.repository
+package com.eltex.domain.repository
 
 interface TokenRepository {
     suspend fun setToken(authToken: String)

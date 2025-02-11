@@ -4,7 +4,7 @@ import android.util.Log
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.eltex.domain.feature.profile.repository.ImageNetworkRepository
+import com.eltex.domain.repository.ImageNetworkRepository
 import com.eltex.domain.models.DataError
 import okhttp3.OkHttpClient
 import okhttp3.Request

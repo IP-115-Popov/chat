@@ -1,10 +1,10 @@
-package com.eltex.domain.feature.signin.usecase
+package com.eltex.domain.usecase
 
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.eltex.domain.feature.signin.repository.AuthDataRepository
-import com.eltex.domain.feature.signin.repository.TokenRepository
+import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.repository.TokenRepository
 import com.eltex.domain.models.AuthData
 
 class SyncAuthDataUseCase(

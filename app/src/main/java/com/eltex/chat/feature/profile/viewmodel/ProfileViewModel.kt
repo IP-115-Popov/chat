@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
-import com.eltex.domain.feature.profile.usecase.GetImageUseCase
-import com.eltex.domain.feature.profile.usecase.GetProfileInfoUseCase
+import com.eltex.domain.usecase.GetImageUseCase
+import com.eltex.domain.usecase.GetProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

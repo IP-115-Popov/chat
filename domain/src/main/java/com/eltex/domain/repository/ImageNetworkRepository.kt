@@ -1,4 +1,4 @@
-package com.eltex.domain.feature.profile.repository
+package com.eltex.domain.repository
 
 import arrow.core.Either
 import com.eltex.domain.models.DataError

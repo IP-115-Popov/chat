@@ -6,7 +6,7 @@ import arrow.core.right
 import com.eltex.data.api.ProfileInfoApi
 import com.eltex.data.mappers.ProfileInfoRequestToProfileModelMapper
 import com.eltex.data.models.profileinfo.ProfileInfoRequest
-import com.eltex.domain.feature.profile.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
 import retrofit2.Response

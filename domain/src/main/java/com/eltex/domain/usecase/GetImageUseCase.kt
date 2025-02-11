@@ -1,8 +1,8 @@
-package com.eltex.domain.feature.profile.usecase
+package com.eltex.domain.usecase
 
 import arrow.core.Either
-import com.eltex.domain.feature.profile.repository.ImageLocalRepository
-import com.eltex.domain.feature.profile.repository.ImageNetworkRepository
+import com.eltex.domain.repository.ImageLocalRepository
+import com.eltex.domain.repository.ImageNetworkRepository
 import com.eltex.domain.models.DataError
 
 class GetImageUseCase(
