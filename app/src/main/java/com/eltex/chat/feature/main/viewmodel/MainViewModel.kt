@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
                 _connectionState.value = state
                 when (state) {
                     is WebSocketConnectionState.Connected -> {
-                        get()
+                        loadChat()
                     }
 
                     is WebSocketConnectionState.Disconnected -> {
@@ -80,8 +80,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun get() {
+    fun loadChat() {
         setStatus(status = MainUiStatus.Loading)
+        get()
+    }
+    fun refreshChat() {
+        setStatus(status = MainUiStatus.IsRefreshing)
+        get()
+    }
+    private fun get() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val res = getChatListUseCase.execute()
