@@ -26,7 +26,6 @@ class ChatRepositoryImpl @Inject constructor(
         val listener: (JSONObject) -> Unit = { json ->
             Log.i("ChatRepositoryImpl", json.toString())
             try {
-                Log.i("gson", "(json.has(\"fname\"")
                 if (json.has("result")) {
                     try {
                         Log.i("gson",json.toString())
@@ -55,7 +54,6 @@ class ChatRepositoryImpl @Inject constructor(
 
         // Отправляем запрос на получение чата
         withContext(Dispatchers.IO) {
-            Log.i("ChatRepositoryImpl", "sendMessage get Chat")
             webSocketManager.sendMessage(
                 """
                 {

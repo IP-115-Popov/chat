@@ -3,6 +3,7 @@ package com.eltex.chat.feature.main.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,23 +30,21 @@ class MainViewModel @Inject constructor (
     }
      fun get() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("getChatListUseCase", "execute")
             val res = getChatListUseCase.execute()
             getChatListUseCase.execute().onEach {
-                Log.i("onEach", "execute")
                 _state.update {
-                    val resfirst =  res.first().first()
-                    val message = ChatUIModel (
-                         id  = resfirst.id,
-                     name = resfirst.name,
-                     lastMessage = resfirst.lastMessage,
-                     lm = resfirst.lm, //Временная метка последнего сообщения.
-                     unread = resfirst.unread, //Количество непрочитанных сообщений в комнате.
-                     otrAck = "", //Статус подтверждения получения неофициального сообщения.
-                     avatarUrl = "",
-                    )
-                    Log.i("MainViewModel", resfirst.toString())
-                    it.copy(chatList = it.chatList + message)
+                    val resfirst =  res.first().map { it
+                        ChatUIModel (
+                            id  = it.id,
+                            name = it.name,
+                            lastMessage = it.lastMessage,
+                            lm = it.lm?.let {instant ->   InstantFormatter.formatInstantToRelativeString(instant)} ?: "",
+                            unread = it.unread, //Количество непрочитанных сообщений в комнате.
+                            otrAck = "", //Статус подтверждения получения неофициального сообщения.
+                            avatarUrl = "",
+                        )
+                    }
+                    it.copy(chatList = resfirst)
                 }
             }.launchIn(viewModelScope)
         }
