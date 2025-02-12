@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,9 +28,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
 import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.ui.components.SearchField
+import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus
 import com.eltex.chat.ui.theme.CustomTheme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun MainScreen() {
@@ -41,12 +46,14 @@ fun MainScreen() {
             Modifier
                 .height(48.dp)
                 .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue))
+                .background(CustomTheme.basicPalette.blue)
+        )
         Box(
             Modifier
                 .height(44.dp)
                 .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue)) {
+                .background(CustomTheme.basicPalette.blue)
+        ) {
             Text(
                 text = stringResource(R.string.chats),
                 style = CustomTheme.typographySfPro.titleMedium,
@@ -78,57 +85,79 @@ fun MainScreen() {
                 onClearClick = {},
             )
         }
-        Button(onClick = { mainViewModel.get() }) {
-            Text("Get")
-        }
-        Column {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                itemsIndexed(state.value.chatList) { index, chat ->
-                    //Text(text = it.name ?: "")
+        val swipeRefreshState =
+            rememberSwipeRefreshState(isRefreshing = (state.value.status is MainUiStatus.IsRefreshing))
+        SwipeRefresh(state = swipeRefreshState,
+            onRefresh = { mainViewModel.get() },
+            indicator = { state, refrashTrigger ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = refrashTrigger,
+                    contentColor = CustomTheme.basicPalette.blue
+                )
+            }) {
+            Column {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    itemsIndexed(state.value.chatList) { index, chat ->
+                        //Text(text = it.name ?: "")
 
-                    if (index == state.value.chatList.size - 1) {
+                        if (index == state.value.chatList.size - 1) {
 
-                    }
-                    when (index) {
-                        0 -> {
-                            ChatItem(
-                                imageText = chat.name,
-                                title = chat.name,
-                                message = chat.lastMessage,
-                                time = chat.lm,
-                                messageStatus = MessageStatus.missedMessages(chat.unread),
-                                bottomLine = false
-                            )
-                            HorizontalDivider()
                         }
+                        when (index) {
+                            0 -> {
+                                ChatItem(
+                                    imageText = chat.name,
+                                    title = chat.name,
+                                    message = chat.lastMessage,
+                                    time = chat.lm,
+                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    bottomLine = false
+                                )
+                                HorizontalDivider()
+                            }
 
-                        state.value.chatList.size - 1 -> {
-                            ChatItem(
-                                imageText = chat.name,
-                                title = chat.name,
-                                message = chat.lastMessage,
-                                time = chat.lm,
-                                messageStatus = MessageStatus.missedMessages(chat.unread),
-                                bottomLine = false
-                            )
-                        }
+                            state.value.chatList.size - 1 -> {
+                                ChatItem(
+                                    imageText = chat.name,
+                                    title = chat.name,
+                                    message = chat.lastMessage,
+                                    time = chat.lm,
+                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    bottomLine = false
+                                )
+                            }
 
-                        else -> {
-                            ChatItem(
-                                imageText = chat.name,
-                                title = chat.name,
-                                message = chat.lastMessage,
-                                time = chat.lm,
-                                messageStatus = MessageStatus.missedMessages(chat.unread),
-                                bottomLine = true
-                            )
+                            else -> {
+                                ChatItem(
+                                    imageText = chat.name,
+                                    title = chat.name,
+                                    message = chat.lastMessage,
+                                    time = chat.lm,
+                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    bottomLine = true
+                                )
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    when (state.value.status) {
+        MainUiStatus.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    color = CustomTheme.basicPalette.blue
+                )
+            }
+
+        }
+
+        is MainUiStatus.Error, MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
         }
     }
 }

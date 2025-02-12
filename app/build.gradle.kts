@@ -70,4 +70,6 @@ dependencies {
     implementation(libs.arrow.core)
     //AsyncImage
     implementation(libs.coil.compose)
+    //Swiperefresh
+    implementation(libs.accompanist.swiperefresh)
 }

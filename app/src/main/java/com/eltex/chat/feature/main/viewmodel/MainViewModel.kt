@@ -3,6 +3,7 @@ package com.eltex.chat.feature.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.main.models.ChatUIModel
+import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
@@ -38,7 +39,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             connectWebSocketUseCase.execute().collect { state ->
                 _connectionState.value = state
-                // Handle the state in the UI
                 when (state) {
                     is WebSocketConnectionState.Connected -> {
                         get()
@@ -72,7 +72,16 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun setStatus(status: MainUiStatus) {
+        _state.update {
+            it.copy(
+                status = status
+            )
+        }
+    }
+
     fun get() {
+        setStatus(status = MainUiStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val res = getChatListUseCase.execute()
@@ -95,8 +104,10 @@ class MainViewModel @Inject constructor(
                         }
                         it.copy(chatList = resfirst)
                     }
+                    setStatus(status = MainUiStatus.Idle)
                 }
             } catch (e: Exception) {
+                setStatus(status = MainUiStatus.Error("GetChat Error"))
                 e.printStackTrace()
             }
         }

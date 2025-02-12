@@ -120,7 +120,9 @@ fun SignInScreen(
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    color = CustomTheme.basicPalette.blue
+                )
             }
         }
 
