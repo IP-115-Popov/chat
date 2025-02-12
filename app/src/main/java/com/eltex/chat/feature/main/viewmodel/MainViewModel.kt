@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
 
@@ -26,27 +27,35 @@ class MainViewModel @Inject constructor (
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
     init {
-        get()
+        //get()
     }
      fun get() {
         viewModelScope.launch(Dispatchers.IO) {
-            val res = getChatListUseCase.execute()
-            getChatListUseCase.execute().onEach {
-                _state.update {
-                    val resfirst =  res.first().map { it
-                        ChatUIModel (
-                            id  = it.id,
-                            name = it.name,
-                            lastMessage = it.lastMessage,
-                            lm = it.lm?.let {instant ->   InstantFormatter.formatInstantToRelativeString(instant)} ?: "",
-                            unread = it.unread, //Количество непрочитанных сообщений в комнате.
-                            otrAck = "", //Статус подтверждения получения неофициального сообщения.
-                            avatarUrl = "",
-                        )
+            try {
+                val res = getChatListUseCase.execute()
+                withContext(Dispatchers.Main) {
+                    _state.update {
+                        val resfirst = res.first().map {
+                            ChatUIModel(
+                                id = it.id,
+                                name = it.name,
+                                lastMessage = it.lastMessage,
+                                lm = it.lm?.let { instant ->
+                                    InstantFormatter.formatInstantToRelativeString(
+                                        instant
+                                    )
+                                } ?: "",
+                                unread = it.unread, //Количество непрочитанных сообщений в комнате.
+                                otrAck = "", //Статус подтверждения получения неофициального сообщения.
+                                avatarUrl = "",
+                            )
+                        }
+                        it.copy(chatList = resfirst)
                     }
-                    it.copy(chatList = resfirst)
                 }
-            }.launchIn(viewModelScope)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }
