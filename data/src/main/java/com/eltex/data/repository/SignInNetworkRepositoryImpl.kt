@@ -6,10 +6,10 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.mappers.LoginModelToLoginRequestMapper
-import com.eltex.domain.repository.SignInNetworkRepository
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
+import com.eltex.domain.repository.SignInNetworkRepository
 import javax.inject.Inject
 
 class SignInNetworkRepositoryImpl @Inject constructor(
@@ -38,7 +38,7 @@ class SignInNetworkRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e("SignInNetworkRepositoryImpl","e ${e.message}")
+            Log.e("SignInNetworkRepositoryImpl", "e ${e.message}")
             e.printStackTrace()
             return SignInError.ConnectionMissing.left()
         }
