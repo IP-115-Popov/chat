@@ -3,9 +3,9 @@ package com.eltex.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import com.eltex.domain.models.AuthData
 import com.eltex.domain.repository.AuthDataRepository
 import com.eltex.domain.repository.TokenRepository
-import com.eltex.domain.models.AuthData
 
 class SyncAuthDataUseCase(
     private val authDataRepository: AuthDataRepository,

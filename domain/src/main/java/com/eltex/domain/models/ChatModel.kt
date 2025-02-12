@@ -1,7 +1,5 @@
 package com.eltex.domain.models
 
-import java.time.Instant
-
 
 data class ChatModel(
     val id: String,

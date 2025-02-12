@@ -3,11 +3,11 @@ package com.eltex.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
+import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.repository.ProfileNetworkInfoRepository
 
 class GetProfileInfoUseCase(
     private val profileNetworkInfoRepository: ProfileNetworkInfoRepository,
