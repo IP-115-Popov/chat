@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetChatListUseCase(
     private val chatRepository: ChatRepository
 ) {
-    suspend fun execute(): Flow<ChatModel> = chatRepository.getChat()
+    suspend fun execute(): Flow<List<ChatModel>> = chatRepository.getChat()
 }

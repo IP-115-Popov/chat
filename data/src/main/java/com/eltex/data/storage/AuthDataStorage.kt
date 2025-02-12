@@ -1,8 +1,8 @@
 package com.eltex.data.storage
 
-import com.eltex.domain.models.AuthData
+import com.eltex.data.models.AuthDataEntity
 
 interface AuthDataStorage {
-    fun saveAuthData(authData: AuthData)
-    fun getAuthData(): AuthData?
+    fun saveAuthData(authData: AuthDataEntity)
+    fun getAuthData(): AuthDataEntity?
 }

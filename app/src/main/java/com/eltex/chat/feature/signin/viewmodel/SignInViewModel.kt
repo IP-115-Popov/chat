@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.signin.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -74,6 +75,8 @@ class SignInViewModel @Inject constructor(
                     else -> {}
                 }
             } catch (e: Exception) {
+                Log.e("ViewModel", e.message ?: "")
+                e.printStackTrace()
                 setStatus(SignInStatus.Error(context.getString(R.string.connection_is_missing)))
             }
         }

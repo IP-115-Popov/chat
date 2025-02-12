@@ -31,8 +31,9 @@ class MainViewModel @Inject constructor (
             Log.i("getChatListUseCase", "execute")
             val res = getChatListUseCase.execute()
             getChatListUseCase.execute().onEach {
+                Log.i("onEach", "execute")
                 _state.update {
-                    val resfirst =  res.first()
+                    val resfirst =  res.first().first()
                     val message = ChatUIModel (
                          id  = resfirst.id,
                      name = resfirst.name,

@@ -1,67 +1,24 @@
 package com.eltex.data.websockets
 
 import android.util.Log
+import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.repository.ChatRepository
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.TypeAdapter
-import com.google.gson.TypeAdapterFactory
-import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
-import java.io.IOException
 import javax.inject.Inject
 
-
-data class aboba (
-   val  msg: String,
-   val  id: String,
-   val  result: ChatResponse,
-)
-internal class IgnoreFailureTypeAdapterFactory : TypeAdapterFactory {
-    override fun <T> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T> {
-        val delegate = gson.getDelegateAdapter(this, type)
-        return createCustomTypeAdapter(delegate)
-    }
-
-    private fun <T> createCustomTypeAdapter(delegate: TypeAdapter<T>): TypeAdapter<T> {
-        return object : TypeAdapter<T>() {
-            @Throws(IOException::class)
-            override fun write(out: JsonWriter?, value: T) {
-                delegate.write(out, value)
-            }
-
-            @Throws(IOException::class)
-            override fun read(`in`: JsonReader): T? {
-                try {
-                    return delegate.read(`in`)
-                } catch (e: java.lang.Exception) {
-                    `in`.skipValue()
-                    return null
-                }
-            }
-        }
-    }
-}
 class ChatRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatRepository {
 
-    private val gson = GsonBuilder()
-        .setLenient()
-        .registerTypeAdapterFactory(IgnoreFailureTypeAdapterFactory())
-        .create();
-
-    override suspend fun getChat(): Flow<ChatModel> = callbackFlow {
+    override suspend fun getChat(): Flow<List<ChatModel>> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.i("ChatRepositoryImpl", json.toString())
             try {
@@ -69,17 +26,14 @@ class ChatRepositoryImpl @Inject constructor(
                 if (json.has("result")) {
                     try {
                         Log.i("gson",json.toString())
-                        val result = gson.fromJson(json.toString(), ChatResponse::class.java).result.firstOrNull()
+                        val result = Json.decodeFromString<ChatResponse>(json.toString()).result
 
-                        if (result != null) {
-                            trySend(ChatModel(
-                                id = result._id,
-                                name = result.fname ?: "",
-                                lastMessage = result.lastMessage.msg,
-                                 lm= result.lm.`$date`.toString(),
-                                 unread=result.usersCount,
-                                avatarUrl=result.avatarETag,
-                            ))
+                        if (result.isNotEmpty()) {
+                            trySend(
+                                result.map { chat ->
+                                    ChatResultToChatModelMapper.map(chat)
+                                }
+                            )
                         }
                     } catch (e: Exception) {
                         Log.e("ChatRepository", "Gson error: ${e.message}", e)

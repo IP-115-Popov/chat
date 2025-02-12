@@ -1,5 +1,9 @@
 package com.eltex.data.models.chat
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Result(
     val _id: String,
     val _updatedAt: UpdatedAt,
@@ -20,6 +24,6 @@ data class Result(
     val topic: String,
     val ts: TsX,
     val u: UX,
-    val usernames: List<Any?>,
+    //val usernames: List<@Contextual Any?>,
     val usersCount: Int
 )

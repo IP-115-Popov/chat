@@ -4,5 +4,5 @@ import com.eltex.domain.models.ChatModel
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun getChat(): Flow<ChatModel>
+    suspend fun getChat(): Flow<List<ChatModel>>
 }
