@@ -10,4 +10,5 @@ data class Result(
     val lm: Lm? = null,
     val usersCount: Int = 0,
     val avatarETag: String? = null,
+    val name: String? = null,
 )
