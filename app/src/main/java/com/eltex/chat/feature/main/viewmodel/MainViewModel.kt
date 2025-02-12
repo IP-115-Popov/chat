@@ -3,10 +3,12 @@ package com.eltex.chat.feature.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.main.models.ChatUIModel
+import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
-    private val connectWebSocketUseCase: ConnectWebSocketUseCase
+    private val connectWebSocketUseCase: ConnectWebSocketUseCase,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -33,6 +36,20 @@ class MainViewModel @Inject constructor(
 
     init {
         connectToWebSocket()
+        loadProfileInfo()
+    }
+
+    private fun loadProfileInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val profileModel = getProfileInfoUseCase.execute()
+            profileModel.onRight { getProfileInfoResult ->
+                _state.update {
+                    it.copy(
+                        profileUiModel = ProfileModelToProfileUiMapper.map(getProfileInfoResult)
+                    )
+                }
+            }
+        }
     }
 
     private fun connectToWebSocket() {
@@ -95,9 +112,10 @@ class MainViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _state.update {
                         val resfirst = res.first().map {
+                            val name = it.name ?: it.usernames?.first { it != state.value.profileUiModel?.name } ?: ""
                             ChatUIModel(
                                 id = it.id,
-                                name = it.name,
+                                name = name,
                                 lastMessage = it.lastMessage,
                                 lm = it.lm?.let { instant ->
                                     InstantFormatter.formatInstantToRelativeString(
@@ -107,6 +125,7 @@ class MainViewModel @Inject constructor(
                                 unread = it.unread, //Количество непрочитанных сообщений в комнате.
                                 otrAck = "", //Статус подтверждения получения неофициального сообщения.
                                 avatarUrl = "",
+                                usernames = it.usernames
                             )
                         }
                         it.copy(chatList = resfirst)
