@@ -5,6 +5,7 @@ import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.repository.ChatRepository
+import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatRepository {
+    val soket = webSocketManager as WebSocketManagerImpl
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true

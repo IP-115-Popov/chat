@@ -12,6 +12,8 @@ import com.eltex.domain.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
+import com.eltex.domain.websocket.ConnectWebSocketUseCase
+import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -72,6 +74,15 @@ class DomainModule {
     ): GetChatListUseCase {
         return GetChatListUseCase(
             chatRepository = chatRepository
+        )
+    }
+
+    @Provides
+    fun provideConnectWebSocketUseCase(
+        webSocketManager: WebSocketManager,
+    ): ConnectWebSocketUseCase {
+        return ConnectWebSocketUseCase(
+            webSocketManager = webSocketManager
         )
     }
 }

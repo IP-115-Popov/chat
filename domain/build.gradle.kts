@@ -17,4 +17,5 @@ dependencies {
     //Either
     implementation(libs.arrow.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.json)
 }

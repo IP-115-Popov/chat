@@ -10,6 +10,7 @@ import com.eltex.chat.feature.signin.mapper.LoginUiToLoginModelMapper
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.models.SignInError
+import com.eltex.domain.websocket.ConnectWebSocketUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val signInUseCase: SignInUseCase,
     private val syncAuthDataUseCase: SyncAuthDataUseCase,
+    private val connectWebSocketUseCase: ConnectWebSocketUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInUiState())
     val state: StateFlow<SignInUiState> = _state.asStateFlow()
@@ -40,6 +42,7 @@ class SignInViewModel @Inject constructor(
                     val authData = syncAuthDataUseCase.execute()
                     when (authData) {
                         is Either.Right -> {
+                            connectWebSocket()
                             setStatus(SignInStatus.SignInSuccessful)
                         }
 
@@ -48,6 +51,10 @@ class SignInViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun connectWebSocket() {
+        connectWebSocketUseCase.execute()
     }
 
     fun signIn() {
@@ -70,6 +77,7 @@ class SignInViewModel @Inject constructor(
                         }
                     }
                     is Either.Right -> {
+                        connectWebSocket()
                         setStatus(SignInStatus.SignInSuccessful)
                     }
                     else -> {}

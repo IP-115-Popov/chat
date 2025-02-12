@@ -1,17 +1,30 @@
 package com.eltex.data.websockets
 
 import android.util.Log
+import com.eltex.domain.websocket.WebSocketConnectionState
 import org.json.JSONObject
+import com.eltex.domain.websocket.WebSocketManager
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class WebSocketManager @Inject constructor() {
+@Singleton
+class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
 
     private var webSocketManager: RocketChatWebSocket? = null
-    var isConnected = false
+    //var isConnected = false
+
+    private val _connectionState = MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
+    override val connectionState: Flow<WebSocketConnectionState> = _connectionState.asStateFlow()
 
     private val listeners: MutableList<(JSONObject) -> Unit> = mutableListOf()
 
     init {
+        Log.i("WebSocketManagerImpl","WebSocketManagerImpl Created!!!")
+
         val listener = RocketChatWebSocketListener { json ->
             if (json.has("msg")) {
                 when (json.getString("msg")) {
@@ -46,7 +59,11 @@ class WebSocketManager @Inject constructor() {
                     }
                     "added" -> {
                         if (json.has("collection") && json.getString("collection") == "users") {
-                            isConnected = true
+                            //isConnected = true
+                            _connectionState.update {
+                                Log.i("WebSocketManagerImpl","connected")
+                                WebSocketConnectionState.Connected
+                            }
                         }
                     }
                     else -> {
@@ -57,20 +74,40 @@ class WebSocketManager @Inject constructor() {
             listeners.forEach { it(json) }
         }
         webSocketManager = RocketChatWebSocket(listener)
-        webSocketManager?.connect()
+        //webSocketManager?.connect()
     }
 
-    fun addListener(listener: (JSONObject) -> Unit) {
+    override fun addListener(listener: (JSONObject) -> Unit) {
+
         listeners.add(listener)
     }
 
-    fun removeListener(listener: (JSONObject) -> Unit) {
+    override fun removeListener(listener: (JSONObject) -> Unit) {
         listeners.remove(listener)
     }
 
-    fun sendMessage(json: String) {
-        if (isConnected) {
+    override fun sendMessage(json: String) {
+        if (_connectionState.value is WebSocketConnectionState.Connected) {
             webSocketManager?.sendMessage(json)
+        }
+    }
+
+    override fun connect() {
+        Log.i("WebSocketManagerImpl","connect init")
+        if (_connectionState.value is WebSocketConnectionState.Disconnected) {
+            Log.i("WebSocketManagerImpl","connect start")
+            webSocketManager?.connect()
+            _connectionState.update {
+                Log.i("WebSocketManagerImpl","connecting")
+                WebSocketConnectionState.Connecting
+            }
+        }
+    }
+
+    override fun disconnect() {
+        webSocketManager?.close()
+        _connectionState.update {
+            WebSocketConnectionState.Disconnected
         }
     }
 }

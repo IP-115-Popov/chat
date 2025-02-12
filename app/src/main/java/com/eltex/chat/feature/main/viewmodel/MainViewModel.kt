@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
+import com.eltex.domain.websocket.ConnectWebSocketUseCase
+import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,16 +22,60 @@ import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor (
-    private val getChatListUseCase: GetChatListUseCase
+class MainViewModel @Inject constructor(
+    private val getChatListUseCase: GetChatListUseCase,
+    private val connectWebSocketUseCase: ConnectWebSocketUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
+    private val _connectionState =
+        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
+    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
+
     init {
-        //get()
+        connectToWebSocket()
     }
-     fun get() {
+
+    private fun connectToWebSocket() {
+        viewModelScope.launch {
+            connectWebSocketUseCase.execute().collect { state ->
+                _connectionState.value = state
+                // Handle the state in the UI
+                when (state) {
+                    is WebSocketConnectionState.Connected -> {
+                        get()
+                    }
+
+                    is WebSocketConnectionState.Disconnected -> {
+                        _state.update {
+                            it.copy(
+                                status = MainUiStatus.Error("WebSocket Disconnected")
+                            )
+                        }
+                    }
+
+                    is WebSocketConnectionState.Connecting -> {
+                        _state.update {
+                            it.copy(
+                                status = MainUiStatus.Loading
+                            )
+                        }
+                    }
+
+                    is WebSocketConnectionState.Error -> {
+                        _state.update {
+                            it.copy(
+                                status = MainUiStatus.Error("WebSocket connection error")
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun get() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val res = getChatListUseCase.execute()
