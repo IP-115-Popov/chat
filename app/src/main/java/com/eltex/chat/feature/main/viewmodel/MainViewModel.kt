@@ -24,14 +24,26 @@ class MainViewModel @Inject constructor (
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
     init {
+        get()
+    }
+     fun get() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("getChatListUseCase", "execute")
             val res = getChatListUseCase.execute()
             getChatListUseCase.execute().onEach {
                 _state.update {
                     val resfirst =  res.first()
+                    val message = ChatUIModel (
+                         id  = resfirst.id,
+                     name = resfirst.name,
+                     lastMessage = resfirst.lastMessage,
+                     lm = resfirst.lm, //Временная метка последнего сообщения.
+                     unread = resfirst.unread, //Количество непрочитанных сообщений в комнате.
+                     otrAck = "", //Статус подтверждения получения неофициального сообщения.
+                     avatarUrl = "",
+                    )
                     Log.i("MainViewModel", resfirst.toString())
-                    it.copy(chatList = it.chatList + resfirst)
+                    it.copy(chatList = it.chatList + message)
                 }
             }.launchIn(viewModelScope)
         }

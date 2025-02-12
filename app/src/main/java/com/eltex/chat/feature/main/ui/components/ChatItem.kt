@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,8 @@ fun ChatItem(
     title: String,
     message: String,
     time: String,
-    messageStatus: MessageStatus
+    messageStatus: MessageStatus,
+    bottomLine: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -133,17 +135,19 @@ fun ChatItem(
                     Spacer(Modifier.size(16.dp))
                 }
             }
+            if (bottomLine) HorizontalDivider()
         }
     }
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ChatItemPreview() {
     CustomTheme {
         ChatItem(
             imageText = "ФИ", title = "Избранное", message = "Текст сообщения", time = "15:30",
-            messageStatus = MessageStatus.missedMessages(9)
+            messageStatus = MessageStatus.missedMessages(9),
+            bottomLine = true
         )
     }
 }

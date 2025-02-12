@@ -35,12 +35,15 @@ class SignInViewModel @Inject constructor(
     private fun syncToken() {
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
-                val authData = syncAuthDataUseCase.execute()
-                when (authData) {
-                    is Either.Right -> {
-                        setStatus(SignInStatus.SignInSuccessful)
+                runCatching {
+                    val authData = syncAuthDataUseCase.execute()
+                    when (authData) {
+                        is Either.Right -> {
+                            setStatus(SignInStatus.SignInSuccessful)
+                        }
+
+                        else -> {}
                     }
-                    else -> {}
                 }
             }
         }
