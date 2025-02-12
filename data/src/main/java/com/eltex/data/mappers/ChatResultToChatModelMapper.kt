@@ -9,7 +9,7 @@ object ChatResultToChatModelMapper {
         id = result._id,
         name = result.fname ?: "",
         lastMessage = result.lastMessage?.msg ?: "",
-        lm= result.lm?.`$date`?.let {  Instant.ofEpochSecond(it)},
+        lm= result.lm?.`$date`,//result.lm?.`$date`?.let {  Instant.ofEpochSecond(it)},
         unread=result.usersCount,
         avatarUrl=result.avatarETag,
     )
