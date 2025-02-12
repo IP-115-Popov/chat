@@ -72,4 +72,7 @@ dependencies {
     implementation(libs.coil.compose)
     //Swiperefresh
     implementation(libs.accompanist.swiperefresh)
+    //media
+    implementation(libs.glide)
+    implementation(libs.androidsvg)
 }

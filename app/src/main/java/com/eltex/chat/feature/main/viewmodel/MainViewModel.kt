@@ -8,6 +8,7 @@ import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel

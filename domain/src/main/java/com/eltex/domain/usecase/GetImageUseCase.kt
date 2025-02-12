@@ -11,7 +11,7 @@ class GetImageUseCase(
 ) {
     suspend fun execute(imageUrl: String): Either<DataError, ByteArray> {
         val getImgResult = imageNetworkRepository.getImageByteArray(imageUrl)
-        getImgResult.isRight { img: ByteArray ->
+        getImgResult.onRight { img: ByteArray ->
             imageLocalRepository.saveImageData(imageUrl = imageUrl, data = img)
             return getImgResult
         }
