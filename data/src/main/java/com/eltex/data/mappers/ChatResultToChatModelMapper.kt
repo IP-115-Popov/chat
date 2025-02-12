@@ -7,8 +7,8 @@ object ChatResultToChatModelMapper {
     fun map(result: Result) : ChatModel =  ChatModel(
         id = result._id,
         name = result.fname ?: "",
-        lastMessage = result.lastMessage.msg ?: "",
-        lm= result.lm.`$date`.toString(),
+        lastMessage = result.lastMessage?.msg ?: "",
+        lm= (result.lm?.`$date` ?: "").toString(),
         unread=result.usersCount,
         avatarUrl=result.avatarETag,
     )

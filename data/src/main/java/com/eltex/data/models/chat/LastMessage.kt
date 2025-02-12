@@ -8,11 +8,11 @@ data class LastMessage(
     val _id: String,
     val _updatedAt: UpdatedAt,
     //val channels: List<@Contextual Any?>,
-    val md: List<Md>,
+    //val md: List<Md>,
     //val mentions: List<@Contextual Any?>,
     val msg: String,
-    val rid: String,
-    val ts: TsX,
-    val u: UX,
+    //val rid: String,
+    //val ts: TsX,
+    //val u: UX,
     //val urls: List<@Contextual Any?>
 )

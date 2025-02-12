@@ -1,29 +1,28 @@
 package com.eltex.data.models.chat
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Result(
     val _id: String,
-    val _updatedAt: UpdatedAt,
-    val announcement: String,
-    val avatarETag: String,
-    val broadcast: Boolean,
-    val default: Boolean,
-    val description: String,
-    val encrypted: Boolean,
-    val fname: String,
-    val lastMessage: LastMessage,
-    val lm: Lm,
-    val msgs: Int,
-    val name: String,
-    val ro: Boolean,
-    val sysMes: Boolean,
-    val t: String,
-    val topic: String,
-    val ts: TsX,
-    val u: UX,
-    //val usernames: List<@Contextual Any?>,
-    val usersCount: Int
+    val fname: String? = null,
+    val lastMessage: LastMessage? = null,
+    val lm: Lm? = null,
+    val usersCount: Int = 0,
+    val avatarETag: String? = null,
+
+//    val _updatedAt: UpdatedAt,
+//    val announcement: String,
+//    val broadcast: Boolean,
+//    val default: Boolean,
+//    val description: String,
+//    val encrypted: Boolean,
+//    val msgs: Int,
+//    val name: String,
+//    val ro: Boolean,
+//    val sysMes: Boolean,
+//    val t: String,
+//    val topic: String,
+//    val ts: TsX,
+//    val u: UX
 )
