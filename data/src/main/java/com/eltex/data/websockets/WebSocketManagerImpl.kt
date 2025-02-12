@@ -13,9 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
-
     private var webSocketManager: RocketChatWebSocket? = null
-    //var isConnected = false
 
     private val _connectionState = MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
     override val connectionState: Flow<WebSocketConnectionState> = _connectionState.asStateFlow()

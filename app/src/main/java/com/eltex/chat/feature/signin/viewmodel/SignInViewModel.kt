@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.signin.mapper.LoginUiToLoginModelMapper
-import com.eltex.domain.usecase.SyncAuthDataUseCase
-import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.models.SignInError
+import com.eltex.domain.usecase.SignInUseCase
+import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.websocket.ConnectWebSocketUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -76,10 +76,12 @@ class SignInViewModel @Inject constructor(
                             }
                         }
                     }
+
                     is Either.Right -> {
                         connectWebSocket()
                         setStatus(SignInStatus.SignInSuccessful)
                     }
+
                     else -> {}
                 }
             } catch (e: Exception) {

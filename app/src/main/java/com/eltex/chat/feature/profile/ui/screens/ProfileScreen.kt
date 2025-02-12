@@ -76,7 +76,10 @@ fun ProfileScreen() {
             contentAlignment = Alignment.Center,
         ) {
 
-            ProfileAvatar(avatarImg = state.value.avatarImg, name = state.value.profileUiModel?.name)
+            ProfileAvatar(
+                avatarImg = state.value.avatarImg,
+                name = state.value.profileUiModel?.name
+            )
         }
         Text(
             text = state.value.profileUiModel?.name ?: "",

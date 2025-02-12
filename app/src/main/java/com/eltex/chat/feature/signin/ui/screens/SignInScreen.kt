@@ -32,10 +32,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
 import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.feature.signin.viewmodel.SignInViewModel
-import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.components.PasswordTextField
 import com.eltex.chat.ui.components.SimpleTextField
 import com.eltex.chat.ui.theme.CustomTheme

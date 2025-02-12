@@ -1,8 +1,11 @@
 package com.eltex.chat.formatters
 
-import java.time.*
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 object InstantFormatter {
     private val zoneId: ZoneId = ZoneId.systemDefault() // Или ZoneId.of("Europe/Moscow")
@@ -27,6 +30,7 @@ object InstantFormatter {
                 val secondLetter = dayOfWeek.substring(1, 2).lowercase(locale)
                 firstLetter + secondLetter
             }
+
             else -> zonedDateTime.format(dateFormatter)
         }
     }

@@ -58,9 +58,12 @@ fun ChatItem(
             )
         }
         Spacer(Modifier.size(8.dp))
-        Column( modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(vertical = 14.dp).padding(end = 16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 14.dp)
+                    .padding(end = 16.dp),
             ) {
                 Row(
                     modifier = Modifier

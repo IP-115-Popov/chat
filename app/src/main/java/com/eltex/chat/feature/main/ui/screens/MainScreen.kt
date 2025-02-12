@@ -37,8 +37,16 @@ fun MainScreen() {
     val state = mainViewModel.state.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(Modifier.height(48.dp).fillMaxWidth().background(CustomTheme.basicPalette.blue))
-        Box(Modifier.height(44.dp).fillMaxWidth().background(CustomTheme.basicPalette.blue)){
+        Box(
+            Modifier
+                .height(48.dp)
+                .fillMaxWidth()
+                .background(CustomTheme.basicPalette.blue))
+        Box(
+            Modifier
+                .height(44.dp)
+                .fillMaxWidth()
+                .background(CustomTheme.basicPalette.blue)) {
             Text(
                 text = stringResource(R.string.chats),
                 style = CustomTheme.typographySfPro.titleMedium,
@@ -48,7 +56,10 @@ fun MainScreen() {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_add),
                 contentDescription = null,
-                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp).clickable {  },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 16.dp)
+                    .clickable { },
                 tint = CustomTheme.basicPalette.white
             )
 
@@ -67,7 +78,7 @@ fun MainScreen() {
                 onClearClick = {},
             )
         }
-        Button(onClick = {mainViewModel.get()}) {
+        Button(onClick = { mainViewModel.get() }) {
             Text("Get")
         }
         Column {
@@ -75,7 +86,7 @@ fun MainScreen() {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                itemsIndexed(state.value.chatList) { index, chat  ->
+                itemsIndexed(state.value.chatList) { index, chat ->
                     //Text(text = it.name ?: "")
 
                     if (index == state.value.chatList.size - 1) {
@@ -93,6 +104,7 @@ fun MainScreen() {
                             )
                             HorizontalDivider()
                         }
+
                         state.value.chatList.size - 1 -> {
                             ChatItem(
                                 imageText = chat.name,
@@ -103,6 +115,7 @@ fun MainScreen() {
                                 bottomLine = false
                             )
                         }
+
                         else -> {
                             ChatItem(
                                 imageText = chat.name,
