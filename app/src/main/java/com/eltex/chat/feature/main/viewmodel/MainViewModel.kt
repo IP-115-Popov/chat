@@ -2,9 +2,10 @@ package com.eltex.chat.feature.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
-import com.eltex.domain.websocket.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

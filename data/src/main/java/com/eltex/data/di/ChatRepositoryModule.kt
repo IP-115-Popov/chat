@@ -1,6 +1,6 @@
 package com.eltex.data.di
 
-import com.eltex.data.websockets.ChatRepositoryImpl
+import com.eltex.data.repository.ChatRepositoryImpl
 import com.eltex.domain.repository.ChatRepository
 import dagger.Binds
 import dagger.Module

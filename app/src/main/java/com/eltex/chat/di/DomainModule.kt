@@ -12,7 +12,7 @@ import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
-import com.eltex.domain.websocket.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
 import dagger.Provides

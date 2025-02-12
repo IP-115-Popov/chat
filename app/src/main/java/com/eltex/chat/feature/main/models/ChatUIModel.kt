@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.viewmodel
+package com.eltex.chat.feature.main.models
 
 data class ChatUIModel(
     val id: String,

@@ -1,4 +1,4 @@
-package com.eltex.data.websockets
+package com.eltex.data.repository
 
 import android.util.Log
 import com.eltex.data.mappers.ChatResultToChatModelMapper
@@ -18,7 +18,6 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatRepository {
-    val soket = webSocketManager as WebSocketManagerImpl
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true

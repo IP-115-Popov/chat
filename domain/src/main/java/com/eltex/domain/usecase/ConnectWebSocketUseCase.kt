@@ -1,6 +1,8 @@
-package com.eltex.domain.websocket
+package com.eltex.domain.usecase
 
 import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.websocket.WebSocketConnectionState
+import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.flow.Flow
 
 class ConnectWebSocketUseCase(

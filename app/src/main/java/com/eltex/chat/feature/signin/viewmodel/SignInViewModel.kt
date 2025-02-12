@@ -10,7 +10,7 @@ import com.eltex.chat.feature.signin.mapper.LoginUiToLoginModelMapper
 import com.eltex.domain.models.SignInError
 import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
-import com.eltex.domain.websocket.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
