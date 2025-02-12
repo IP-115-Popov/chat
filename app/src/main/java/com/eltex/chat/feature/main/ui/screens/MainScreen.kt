@@ -107,8 +107,6 @@ fun MainScreen() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     itemsIndexed(state.value.chatList) { index, chat ->
-                        //Text(text = it.name ?: "")
-
                         if (index == state.value.chatList.size - 1) {
 
                         }
@@ -119,7 +117,7 @@ fun MainScreen() {
                                     title = chat.name,
                                     message = chat.lastMessage,
                                     time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    messageStatus = MessageStatus.missedMessages(0),
                                     bottomLine = false
                                 )
                                 HorizontalDivider()
@@ -131,7 +129,7 @@ fun MainScreen() {
                                     title = chat.name,
                                     message = chat.lastMessage,
                                     time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    messageStatus = MessageStatus.missedMessages(0),
                                     bottomLine = false
                                 )
                             }
@@ -142,7 +140,7 @@ fun MainScreen() {
                                     title = chat.name,
                                     message = chat.lastMessage,
                                     time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(chat.unread),
+                                    messageStatus = MessageStatus.missedMessages(0),
                                     bottomLine = true
                                 )
                             }
