@@ -20,6 +20,8 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
 
     private val listeners: MutableList<(JSONObject) -> Unit> = mutableListOf()
 
+
+
     init {
         Log.i("WebSocketManagerImpl","WebSocketManagerImpl Created!!!")
 
@@ -28,21 +30,6 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
                 when (json.getString("msg")) {
                     "ping" -> {
                         webSocketManager?.sendMessage("""{"msg": "pong"}""")
-                    }
-
-                    "connected" -> {
-                        webSocketManager?.sendMessage(
-                            """
-                            {
-                                "msg": "method",
-                                "method": "login",
-                                "id": "42",
-                                "params": [
-                                    { "resume": "BWwRWJIIlxlMO1R24-KSWxD1KqBjILlVGArnmtG9uU5" }
-                                ]
-                            }
-                        """.trimIndent()
-                        )
                     }
 
                     "result" -> {
@@ -90,10 +77,30 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
         }
     }
 
-    override fun connect() {
+    override fun connect(authToken: String) {
         Log.i("WebSocketManagerImpl","connect init")
         if (_connectionState.value is WebSocketConnectionState.Disconnected) {
             Log.i("WebSocketManagerImpl","connect start")
+
+            addListener{ json ->
+                if (json.has("msg")) {
+                    if (json.getString("msg") == "connected") {
+                        webSocketManager?.sendMessage(
+                            """
+                            {
+                                "msg": "method",
+                                "method": "login",
+                                "id": "42",
+                                "params": [
+                                    { "resume": "$authToken" }
+                                ]
+                            }
+                        """.trimIndent()
+                        )
+                    }
+                }
+            }
+
             webSocketManager?.connect()
             _connectionState.update {
                 Log.i("WebSocketManagerImpl","connecting")

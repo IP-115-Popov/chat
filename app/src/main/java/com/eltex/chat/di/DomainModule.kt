@@ -80,9 +80,11 @@ class DomainModule {
     @Provides
     fun provideConnectWebSocketUseCase(
         webSocketManager: WebSocketManager,
+        authDataRepository: AuthDataRepository,
     ): ConnectWebSocketUseCase {
         return ConnectWebSocketUseCase(
-            webSocketManager = webSocketManager
+            webSocketManager = webSocketManager,
+            authDataRepository = authDataRepository,
         )
     }
 }

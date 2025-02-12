@@ -53,7 +53,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun connectWebSocket() {
+    private suspend fun connectWebSocket() {
         connectWebSocketUseCase.execute()
     }
 

@@ -6,7 +6,7 @@ import org.json.JSONObject
 interface WebSocketManager {
     val connectionState: Flow<WebSocketConnectionState>
 
-    fun connect()
+    fun connect(authToken: String)
 
     fun disconnect()
 
