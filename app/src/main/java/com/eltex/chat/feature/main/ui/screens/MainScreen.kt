@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +24,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
-import com.eltex.chat.feature.main.ui.components.BottomSheetScreen
+import com.eltex.chat.feature.main.ui.components.BottomCreatedChatScreen
 import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.ui.components.SearchField
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
@@ -40,22 +44,27 @@ import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen() {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val state = mainViewModel.state.collectAsState()
-    val expandedBottomSheet = remember { mutableStateOf(false) }
 
-//    BottomSheetScreen(
-//        contacts = state.value.userList,
-//        expanded = expandedBottomSheet.value ,
-//        onContactSelected = {},
-//        searchValue = "",
-//        onSearchValueChange = {},
-//        onDismiss = {},
-//        onSearchValueClearClick = {},
-//    ) {
+    val coroutineScope = rememberCoroutineScope()
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = { true })
+
+    BottomCreatedChatScreen(
+        onContactClick = {},
+        searchValue = "",
+        onSearchValueChange = {},
+        onSearchClearClick = {},
+        contacts = emptyList(),
+        modalBottomSheetState = modalBottomSheetState,
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 Modifier
@@ -81,7 +90,14 @@ fun MainScreen() {
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
-                        .clickable {expandedBottomSheet.value = true },
+                        .clickable {
+                            coroutineScope.launch {
+                            if (modalBottomSheetState.isVisible) {
+                                modalBottomSheetState.hide()
+                            } else {
+                                modalBottomSheetState.show()
+                            }
+                        } },
                     tint = CustomTheme.basicPalette.white
                 )
 
@@ -161,7 +177,7 @@ fun MainScreen() {
                     }
                 }
             }
-        //}
+        }
     }
     when (state.value.status) {
         MainUiStatus.Loading -> {
