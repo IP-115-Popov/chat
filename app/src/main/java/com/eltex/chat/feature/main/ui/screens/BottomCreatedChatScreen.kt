@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.main.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -129,8 +130,10 @@ fun BottomCreatedChatScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(state.value.userList) { contact ->
-                        ContactItem(contact = contact)
-                        createChatViewModel.onContactSelected(contact)
+                        ContactItem(contact = contact, onSelect = { it ->
+                            createChatViewModel.onContactSelected(it)
+                            coroutineScope.launch { modalBottomSheetState.hide() }
+                        })
                     }
                 }
             }
@@ -141,13 +144,18 @@ fun BottomCreatedChatScreen(
 
 @Composable
 fun ContactItem(
-    contact: UserUiModel
+    contact: UserUiModel,
+    onSelect: (UserUiModel)->Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 7.dp)
+            .clickable {
+                onSelect(contact)
+            },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier

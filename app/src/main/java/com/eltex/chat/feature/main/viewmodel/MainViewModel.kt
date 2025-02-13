@@ -9,6 +9,7 @@ import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
@@ -56,7 +57,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun connectToWebSocket() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             connectWebSocketUseCase.execute().collect { state ->
                 _connectionState.value = state
                 when (state) {

@@ -7,5 +7,11 @@ import kotlinx.coroutines.flow.Flow
 class CreateChatUseCase(
     private val chatRepository: ChatRepository
 ) {
-    suspend fun execute(chatName: String): Flow<List<ChatModel>> = chatRepository.createChat(chatName = chatName)
+    suspend fun execute(
+        chatName: String,
+    ): Flow<List<ChatModel>> {
+
+        val a = chatRepository.createChat(chatName = chatName)
+        return  a
+    }
 }

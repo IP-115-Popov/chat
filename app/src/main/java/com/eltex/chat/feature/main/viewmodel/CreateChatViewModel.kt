@@ -8,6 +8,7 @@ import com.eltex.chat.feature.main.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.models.UserUiModel
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
+import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,10 @@ class CreateChatViewModel @Inject constructor(
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
 
+    private val _connectionState =
+        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
+    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
+
     init {
         searchUser()
     }
@@ -40,7 +45,11 @@ class CreateChatViewModel @Inject constructor(
     }
     fun onContactSelected(userUiModel: UserUiModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            createChatUseCase.execute(userUiModel.name)
+            createChatUseCase.execute(
+                userUiModel.username,
+            ).collect{
+                Log.i("CreateChatViewModel", "create chat")
+            }
         }
         Log.i("CreateChatViewModel", "create chat")
     }

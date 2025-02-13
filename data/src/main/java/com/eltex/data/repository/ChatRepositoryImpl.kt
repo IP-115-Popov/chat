@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createChat(chatName: String) : Flow<List<ChatModel>> = callbackFlow {
+        Log.i("gson", "createChat Flow")
         val listener: (JSONObject) -> Unit = { json ->
                 if (json.has("result")) {
                     Log.i("gson", json.toString())
@@ -101,23 +103,23 @@ class ChatRepositoryImpl @Inject constructor(
             )
         }
 
-        withContext(Dispatchers.IO) {
-            webSocketManager.sendMessage(
-                """
-                {
-                     "msg": "sub",
-                      "id": "2",
-                      "name": "users.list",
-                      "params": [
-                            {
-                              "count": 20,
-                              "offset": 0
-                            }
-                      ]
-                }
-            """.trimIndent()
-            )
-        }
+//        withContext(Dispatchers.IO) {
+//            webSocketManager.sendMessage(
+//                """
+//                {
+//                     "msg": "method",
+//                      "id": "2",
+//                      "name": "users.list",
+//                      "params": [
+//                            {
+//                              "count": 20,
+//                              "offset": 0
+//                            }
+//                      ]
+//                }
+//            """.trimIndent()
+//            )
+//        }
 
         awaitClose {
             webSocketManager.removeListener(listener)
