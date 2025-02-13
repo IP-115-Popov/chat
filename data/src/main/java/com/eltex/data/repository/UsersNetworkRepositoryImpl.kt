@@ -13,7 +13,10 @@ import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
 import com.eltex.domain.models.UserModel
 import com.eltex.domain.repository.UsersNetworkRepository
+import org.json.JSONObject
 import retrofit2.Response
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 class UsersNetworkRepositoryImpl @Inject constructor(
@@ -27,10 +30,15 @@ class UsersNetworkRepositoryImpl @Inject constructor(
         xAuthToken: String
     ): Either<DataError, List<UserModel>> {
 
+        val jsonQuery = JSONObject()
+            .put("name", JSONObject().put("\$regex", query))
+
+        Log.i("UsersNetworkRepositoryImpl", jsonQuery.toString())
+
         val response: Response<UsersResponse>
 
         try {
-            response = usersApi.getUsersList(count = count, offset = offset, query = query , userId = userId, xAuthToken = xAuthToken)
+            response = usersApi.getUsersList(count = count, offset = offset, query = jsonQuery.toString() , userId = userId, xAuthToken = xAuthToken)
         } catch (e: Exception) {
             Log.e("response",e.message ?: "")
             e.printStackTrace()

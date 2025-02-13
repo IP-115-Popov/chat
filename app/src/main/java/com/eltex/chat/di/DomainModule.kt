@@ -14,6 +14,7 @@ import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
@@ -100,4 +101,14 @@ class DomainModule {
             authDataRepository = authDataRepository,
         )
     }
+
+    @Provides
+    fun provideCreateChatUseCase(
+        chatRepository: ChatRepository,
+    ): CreateChatUseCase {
+        return CreateChatUseCase(
+            chatRepository = chatRepository,
+        )
+    }
+
 }
