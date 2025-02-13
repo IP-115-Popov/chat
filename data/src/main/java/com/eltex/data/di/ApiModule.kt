@@ -4,6 +4,7 @@ import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.api.OkHttpClientFactory
 import com.eltex.data.api.ProfileInfoApi
 import com.eltex.data.api.RetrofitFactory
+import com.eltex.data.api.UsersApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,4 +32,8 @@ class ApiModule {
     @Provides
     fun provideProfileInfoApi(retrofit: Retrofit): ProfileInfoApi =
         retrofit.create<ProfileInfoApi>()
+
+    @Provides
+    fun provideUsersApi(retrofit: Retrofit): UsersApi =
+        retrofit.create<UsersApi>()
 }

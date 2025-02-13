@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.main.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.main.models.ChatUIModel
@@ -10,6 +11,7 @@ import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
+import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ class MainViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
+    private val getUsersListUseCase: GetUsersListUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -38,6 +41,15 @@ class MainViewModel @Inject constructor(
     init {
         connectToWebSocket()
         loadProfileInfo()
+        viewModelScope.launch(Dispatchers.IO) {
+           val userlist = getUsersListUseCase.execute("", count = 20, offset = 0)
+            userlist.onRight { it ->
+                Log.i("MainViewModel", it.joinToString())
+            }
+            userlist.onLeft {
+                Log.i("MainViewModel", "getUsersListUseCase left")
+            }
+        }
     }
 
     private fun loadProfileInfo() {

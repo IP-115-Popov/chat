@@ -7,12 +7,14 @@ import com.eltex.domain.repository.ImageNetworkRepository
 import com.eltex.domain.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.repository.SignInNetworkRepository
 import com.eltex.domain.repository.TokenRepository
+import com.eltex.domain.repository.UsersNetworkRepository
 import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
 import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
 import dagger.Provides
@@ -84,6 +86,17 @@ class DomainModule {
     ): ConnectWebSocketUseCase {
         return ConnectWebSocketUseCase(
             webSocketManager = webSocketManager,
+            authDataRepository = authDataRepository,
+        )
+    }
+
+    @Provides
+    fun provideGetUsersListUseCase(
+        usersNetworkRepository: UsersNetworkRepository,
+        authDataRepository: AuthDataRepository,
+    ): GetUsersListUseCase {
+        return GetUsersListUseCase(
+            usersNetworkRepository = usersNetworkRepository,
             authDataRepository = authDataRepository,
         )
     }

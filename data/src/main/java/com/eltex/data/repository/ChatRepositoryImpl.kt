@@ -23,6 +23,40 @@ class ChatRepositoryImpl @Inject constructor(
         ignoreUnknownKeys = true
     }
 
+    override suspend fun createChat(chatName: String) : Flow<List<ChatModel>> = callbackFlow {
+        val listener: (JSONObject) -> Unit = { json ->
+                if (json.has("result")) {
+                    Log.i("gson", json.toString())
+                }
+        }
+
+        webSocketManager.addListener(listener)
+
+        Log.i("createPrivateGroup", "createPrivateGroup")
+        // Отправляем запрос на получение чата
+        withContext(Dispatchers.IO) {
+            webSocketManager.sendMessage(
+                """
+                {
+                    "msg": "method",
+                    "method": "createPrivateGroup",
+                    "id": "42",
+                    "params": [ 
+                        "$chatName"
+                    ]
+                }
+            """.trimIndent()
+            )
+        }
+
+
+
+        awaitClose {
+            webSocketManager.removeListener(listener)
+            Log.d("ChatRepository", "Flow closed, listener removed")
+        }
+    }
+
     override suspend fun getChat(): Flow<List<ChatModel>> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.i("ChatRepositoryImpl", json.toString())
@@ -62,6 +96,24 @@ class ChatRepositoryImpl @Inject constructor(
                     "method": "rooms/get",
                     "id": "42",
                     "params": [ { "data": 0 } ]
+                }
+            """.trimIndent()
+            )
+        }
+
+        withContext(Dispatchers.IO) {
+            webSocketManager.sendMessage(
+                """
+                {
+                     "msg": "sub",
+                      "id": "2",
+                      "name": "users.list",
+                      "params": [
+                            {
+                              "count": 20,
+                              "offset": 0
+                            }
+                      ]
                 }
             """.trimIndent()
             )

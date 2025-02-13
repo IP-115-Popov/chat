@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
     suspend fun getChat(): Flow<List<ChatModel>>
+    suspend fun createChat(chatName: String) : Flow<List<ChatModel>>
 }
