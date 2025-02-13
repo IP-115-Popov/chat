@@ -1,17 +1,19 @@
 package com.eltex.domain.usecase
 
-import com.eltex.domain.models.ChatModel
-import com.eltex.domain.repository.ChatRepository
-import kotlinx.coroutines.flow.Flow
+import com.eltex.domain.repository.ChatCreationNetworkRepository
 
 class CreateChatUseCase(
-    private val chatRepository: ChatRepository
+    private val chatCreationNetworkRepository: ChatCreationNetworkRepository
 ) {
     suspend fun execute(
-        chatName: String,
-    ): Flow<List<ChatModel>> {
-
-        val a = chatRepository.createChat(chatName = chatName)
-        return  a
+        xAuthToken: String,
+        userId: String,
+        username: String,
+    ) {
+        chatCreationNetworkRepository.createChat(
+            xAuthToken = xAuthToken,
+            userId = userId,
+            userName = username
+        )
     }
 }

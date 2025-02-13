@@ -1,6 +1,7 @@
 package com.eltex.chat.di
 
 import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.repository.ChatCreationNetworkRepository
 import com.eltex.domain.repository.ChatRepository
 import com.eltex.domain.repository.ImageLocalRepository
 import com.eltex.domain.repository.ImageNetworkRepository
@@ -104,10 +105,10 @@ class DomainModule {
 
     @Provides
     fun provideCreateChatUseCase(
-        chatRepository: ChatRepository,
+        chatCreationNetworkRepository: ChatCreationNetworkRepository,
     ): CreateChatUseCase {
         return CreateChatUseCase(
-            chatRepository = chatRepository,
+            chatCreationNetworkRepository = chatCreationNetworkRepository,
         )
     }
 

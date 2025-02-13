@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.main.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.models.UserUiModel
+import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
+import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class CreateChatViewModel @Inject constructor(
     private val getUsersListUseCase: GetUsersListUseCase,
     private val createChatUseCase: CreateChatUseCase,
+    private val syncAuthDataUseCase: SyncAuthDataUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
@@ -33,6 +36,23 @@ class CreateChatViewModel @Inject constructor(
 
     init {
         searchUser()
+        syncAuthData()
+    }
+
+    private fun syncAuthData() {
+        runCatching {
+            viewModelScope.launch(Dispatchers.IO) {
+                runCatching {
+                    syncAuthDataUseCase.execute().onRight{ authData ->
+                        _state.update {
+                            it.copy(
+                                authData = authData
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun setSearchValue(value: String) {
@@ -43,12 +63,15 @@ class CreateChatViewModel @Inject constructor(
         }
         searchUser()
     }
+
     fun onContactSelected(userUiModel: UserUiModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            createChatUseCase.execute(
-                userUiModel.username,
-            ).collect{
-                Log.i("CreateChatViewModel", "create chat")
+            state.value.authData?.let { authData ->
+                createChatUseCase.execute(
+                    xAuthToken = authData.authToken,
+                    userId = authData.userId,
+                    username = userUiModel.username
+                )
             }
         }
         Log.i("CreateChatViewModel", "create chat")
@@ -56,11 +79,13 @@ class CreateChatViewModel @Inject constructor(
 
     private fun searchUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userlist = getUsersListUseCase.execute(state.value.searchValue, count = 20, offset = 0)
+            val userlist =
+                getUsersListUseCase.execute(state.value.searchValue, count = 20, offset = 0)
             when (userlist) {
                 is Either.Left -> {
                     Log.i("CreateChatViewModel", "getUsersListUseCase left")
                 }
+
                 is Either.Right -> {
                     val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }
                     withContext(Dispatchers.Main) {
@@ -71,6 +96,7 @@ class CreateChatViewModel @Inject constructor(
                         }
                     }
                 }
+
                 else -> {}
             }
         }

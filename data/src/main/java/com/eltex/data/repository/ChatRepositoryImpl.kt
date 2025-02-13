@@ -24,14 +24,14 @@ class ChatRepositoryImpl @Inject constructor(
         ignoreUnknownKeys = true
     }
 
-    override suspend fun createChat(chatName: String) : Flow<List<ChatModel>> = callbackFlow {
+    override suspend fun createChat(chatName: String, userNameList: List<String>) : Flow<List<ChatModel>> = callbackFlow {
         Log.i("gson", "createChat Flow")
         val listener: (JSONObject) -> Unit = { json ->
                 if (json.has("result")) {
                     Log.i("gson", json.toString())
                 }
         }
-
+        val userNameListJson = Json.encodeToString(userNameList)
         webSocketManager.addListener(listener)
 
         Log.i("createPrivateGroup", "createPrivateGroup")
@@ -42,9 +42,10 @@ class ChatRepositoryImpl @Inject constructor(
                 {
                     "msg": "method",
                     "method": "createPrivateGroup",
-                    "id": "42",
-                    "params": [ 
+                    "id": "43",
+                    "params": [
                         "$chatName"
+                        $userNameListJson
                     ]
                 }
             """.trimIndent()
