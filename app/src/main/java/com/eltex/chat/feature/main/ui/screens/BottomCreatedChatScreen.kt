@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.ui.components
+package com.eltex.chat.feature.main.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
 import com.eltex.chat.feature.main.models.UserUiModel
+import com.eltex.chat.feature.main.ui.components.SearchField
+import com.eltex.chat.feature.main.viewmodel.CreateChatViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.getInitials
 import kotlinx.coroutines.launch
@@ -41,14 +45,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomCreatedChatScreen(
-    onContactClick: (UserUiModel) -> Unit,
-    searchValue: String,
-    onSearchValueChange: (String) -> Unit,
-    onSearchClearClick: () -> Unit,
-    contacts: List<UserUiModel>,
     modalBottomSheetState: ModalBottomSheetState,
     content: @Composable () -> Unit
 ) {
+    val createChatViewModel = hiltViewModel<CreateChatViewModel>()
+    val state = createChatViewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheetLayout(sheetState = modalBottomSheetState,
@@ -107,10 +108,10 @@ fun BottomCreatedChatScreen(
                 ) {
                     Spacer(Modifier.size(8.dp))
                     SearchField(
-                        value = searchValue,
+                        value = state.value.searchValue,
                         placeholderText = stringResource(R.string.chat_search_placeholder),
-                        onValueChange = onSearchValueChange,
-                        onClearClick = onSearchClearClick,
+                        onValueChange = {createChatViewModel.setSearchValue(it)},
+                        onClearClick ={createChatViewModel.setSearchValue("")},
                     )
                 }
 
@@ -127,9 +128,9 @@ fun BottomCreatedChatScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(contacts) { contact ->
+                    items(state.value.userList) { contact ->
                         ContactItem(contact = contact)
-                        onContactClick(contact)
+                        createChatViewModel.onContactSelected(contact)
                     }
                 }
             }
@@ -175,11 +176,6 @@ fun BottomSheetScreenPreview() {
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
                 confirmStateChange = { true })
         BottomCreatedChatScreen(
-            onContactClick = {},
-            searchValue = "",
-            onSearchValueChange = {},
-            onSearchClearClick = {},
-            contacts = emptyList(),
             modalBottomSheetState = modalBottomSheetState,
             content = {
                 Box(modifier = Modifier.fillMaxSize()) {

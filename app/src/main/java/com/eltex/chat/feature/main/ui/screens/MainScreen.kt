@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -34,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
-import com.eltex.chat.feature.main.ui.components.BottomCreatedChatScreen
 import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.ui.components.SearchField
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
@@ -58,11 +55,6 @@ fun MainScreen() {
             confirmStateChange = { true })
 
     BottomCreatedChatScreen(
-        onContactClick = {},
-        searchValue = "",
-        onSearchValueChange = {},
-        onSearchClearClick = {},
-        contacts = emptyList(),
         modalBottomSheetState = modalBottomSheetState,
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
