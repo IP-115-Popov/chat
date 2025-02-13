@@ -29,7 +29,6 @@ class MainViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
-    private val getUsersListUseCase: GetUsersListUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -41,15 +40,6 @@ class MainViewModel @Inject constructor(
     init {
         connectToWebSocket()
         loadProfileInfo()
-        viewModelScope.launch(Dispatchers.IO) {
-           val userlist = getUsersListUseCase.execute("", count = 20, offset = 0)
-            userlist.onRight { it ->
-                Log.i("MainViewModel", it.joinToString())
-            }
-            userlist.onLeft {
-                Log.i("MainViewModel", "getUsersListUseCase left")
-            }
-        }
     }
 
     private fun loadProfileInfo() {
