@@ -75,4 +75,6 @@ dependencies {
     //media
     implementation(libs.glide)
     implementation(libs.androidsvg)
+
+    implementation("androidx.compose.material:material:1.5.4")
 }

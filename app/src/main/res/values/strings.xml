@@ -14,4 +14,6 @@
     <string name="Unauthorized">Неправильный логин или пароль.</string>
     <string name="ok">Ок</string>
     <string name="data_error">Ошибка хранения данных</string>
+    <string name="cancel">Отменить</string>
+    <string name="new_chat">Новый чат</string>
 </resources>

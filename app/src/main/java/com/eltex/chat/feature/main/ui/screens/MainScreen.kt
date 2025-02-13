@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
+import com.eltex.chat.feature.main.ui.components.BottomSheetScreen
 import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.ui.components.SearchField
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
@@ -43,114 +45,124 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun MainScreen() {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val state = mainViewModel.state.collectAsState()
+    val expandedBottomSheet = remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(
-            Modifier
-                .height(48.dp)
-                .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue)
-        )
-        Box(
-            Modifier
-                .height(44.dp)
-                .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue)
-        ) {
-            Text(
-                text = stringResource(R.string.chats),
-                style = CustomTheme.typographySfPro.titleMedium,
-                modifier = Modifier.align(Alignment.Center),
-                color = CustomTheme.basicPalette.white
+//    BottomSheetScreen(
+//        contacts = state.value.userList,
+//        expanded = expandedBottomSheet.value ,
+//        onContactSelected = {},
+//        searchValue = "",
+//        onSearchValueChange = {},
+//        onDismiss = {},
+//        onSearchValueClearClick = {},
+//    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                Modifier
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .background(CustomTheme.basicPalette.blue)
             )
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_add),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 16.dp)
-                    .clickable { },
-                tint = CustomTheme.basicPalette.white
-            )
-
-        }
-        Box(
-            modifier = Modifier
-                .height(44.dp)
-                .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue)
-                .padding(horizontal = 16.dp)
-        ) {
-            SearchField(
-                value = "",
-                placeholderText = stringResource(R.string.chat_search_placeholder),
-                onValueChange = {},
-                onClearClick = {},
-            )
-        }
-
-        val isRefreshing by remember { derivedStateOf { (state.value.status is MainUiStatus.IsRefreshing) } }
-        val swipeRefreshState =
-            rememberSwipeRefreshState(isRefreshing = isRefreshing)
-
-        SwipeRefresh(state = swipeRefreshState,
-            onRefresh = { mainViewModel.refreshChat() },
-            indicator = { state, refrashTrigger ->
-                SwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refrashTrigger,
-                    contentColor = CustomTheme.basicPalette.blue
+            Box(
+                Modifier
+                    .height(44.dp)
+                    .fillMaxWidth()
+                    .background(CustomTheme.basicPalette.blue)
+            ) {
+                Text(
+                    text = stringResource(R.string.chats),
+                    style = CustomTheme.typographySfPro.titleMedium,
+                    modifier = Modifier.align(Alignment.Center),
+                    color = CustomTheme.basicPalette.white
                 )
-            }) {
-            Column {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    itemsIndexed(state.value.chatList) { index, chat ->
-                        if (index == state.value.chatList.size - 1) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_add),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp)
+                        .clickable {expandedBottomSheet.value = true },
+                    tint = CustomTheme.basicPalette.white
+                )
 
-                        }
-                        when (index) {
-                            0 -> {
-                                ChatItem(
-                                    imageText = chat.name,
-                                    title = chat.name,
-                                    message = chat.lastMessage,
-                                    time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(0),
-                                    bottomLine = false
-                                )
-                                HorizontalDivider()
+            }
+            Box(
+                modifier = Modifier
+                    .height(44.dp)
+                    .fillMaxWidth()
+                    .background(CustomTheme.basicPalette.blue)
+                    .padding(horizontal = 16.dp)
+            ) {
+                SearchField(
+                    value = "",
+                    placeholderText = stringResource(R.string.chat_search_placeholder),
+                    onValueChange = {},
+                    onClearClick = {},
+                )
+            }
+
+            val isRefreshing by remember { derivedStateOf { (state.value.status is MainUiStatus.IsRefreshing) } }
+            val swipeRefreshState =
+                rememberSwipeRefreshState(isRefreshing = isRefreshing)
+
+            SwipeRefresh(state = swipeRefreshState,
+                onRefresh = { mainViewModel.refreshChat() },
+                indicator = { state, refrashTrigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refrashTrigger,
+                        contentColor = CustomTheme.basicPalette.blue
+                    )
+                }) {
+                Column {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        itemsIndexed(state.value.chatList) { index, chat ->
+                            if (index == state.value.chatList.size - 1) {
+
                             }
+                            when (index) {
+                                0 -> {
+                                    ChatItem(
+                                        imageText = chat.name,
+                                        title = chat.name,
+                                        message = chat.lastMessage,
+                                        time = chat.lm,
+                                        messageStatus = MessageStatus.missedMessages(0),
+                                        bottomLine = false
+                                    )
+                                    HorizontalDivider()
+                                }
 
-                            state.value.chatList.size - 1 -> {
-                                ChatItem(
-                                    imageText = chat.name,
-                                    title = chat.name,
-                                    message = chat.lastMessage,
-                                    time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(0),
-                                    bottomLine = false
-                                )
-                            }
+                                state.value.chatList.size - 1 -> {
+                                    ChatItem(
+                                        imageText = chat.name,
+                                        title = chat.name,
+                                        message = chat.lastMessage,
+                                        time = chat.lm,
+                                        messageStatus = MessageStatus.missedMessages(0),
+                                        bottomLine = false
+                                    )
+                                }
 
-                            else -> {
-                                ChatItem(
-                                    imageText = chat.name,
-                                    title = chat.name,
-                                    message = chat.lastMessage,
-                                    time = chat.lm,
-                                    messageStatus = MessageStatus.missedMessages(0),
-                                    bottomLine = true
-                                )
+                                else -> {
+                                    ChatItem(
+                                        imageText = chat.name,
+                                        title = chat.name,
+                                        message = chat.lastMessage,
+                                        time = chat.lm,
+                                        messageStatus = MessageStatus.missedMessages(0),
+                                        bottomLine = true
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+        //}
     }
-
     when (state.value.status) {
         MainUiStatus.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

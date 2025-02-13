@@ -39,7 +39,16 @@ val simpleSfProDisplayTypography = CustomSfProDisplayTypography(
         fontSize = 17.sp,
         lineHeight = 22.sp,
     ),
-
+    textMedium = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(500),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
+    textSemibold = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(600),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
     bodyMedium = sfProDisplayTextStyle.copy(
         fontWeight = FontWeight(400),
         fontSize = 14.sp,

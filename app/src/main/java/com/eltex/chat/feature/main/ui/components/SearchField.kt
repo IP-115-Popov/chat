@@ -2,6 +2,7 @@ package com.eltex.chat.feature.main.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -82,7 +83,9 @@ fun SearchField(
             Icon(
                 modifier = Modifier
                     .padding(4.dp)
-                    .size(16.dp),
+                    .size(16.dp).clickable {
+                        onClearClick()
+                    },
                 imageVector = ImageVector.vectorResource(R.drawable.ic_clear),
                 contentDescription = null,
                 tint = CustomTheme.basicPalette.grey,
