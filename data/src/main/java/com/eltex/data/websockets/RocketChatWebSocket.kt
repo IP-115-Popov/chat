@@ -22,7 +22,7 @@ class RocketChatWebSocket(
             .build()
 
         request = Request.Builder()
-            .url("wss://eltexios2025.rocket.chat/websocket")
+            .url("wss://eltex2025.rocket.chat/websocket")
             .build()
 
         try {
