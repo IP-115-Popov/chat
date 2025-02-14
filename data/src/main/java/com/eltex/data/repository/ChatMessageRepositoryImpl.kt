@@ -1,6 +1,9 @@
 package com.eltex.data.repository
 
 import android.util.Log
+import com.eltex.data.mappers.MessageResponseToMessageMapper
+import com.eltex.data.models.message.MessageResponse
+import com.eltex.domain.models.Message
 import com.eltex.domain.repository.ChatMessageRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
@@ -25,31 +28,21 @@ class ChatMessageRepositoryImpl @Inject constructor(
     private var subscriptionId: String? = null
 
     // Функция для подписки на поток сообщений комнаты
-     override suspend fun subscribeToRoomMessages(roomId: String): Flow<String> = callbackFlow {
+     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.d("RoomMessages", "Raw JSON: $json")
 
             try {
                 if (json.getString("msg") == "changed" && json.getString("collection") == "stream-room-messages") {
-                    Log.i("RoomMessages", "JSON: $json")
 
-//                    val fields = json.getJSONObject("fields")
-//                    val args = fields.getJSONArray("args")
-//
-//                    // Проверяем, что сообщение относится к нужной комнате
-//                    if (args.length() > 0) {
-//                        val messageJson = args.getJSONObject(0)
-//                        if (messageJson.getString("rid") == roomId) {
-//                            try {
-//                                val message = jsonSerializator.decodeFromString<Message>(messageJson.toString())
-//                                val messageModel = MessageToMessageModelMapper.map(message)
-//                                trySend(messageModel)
-//                            } catch (e: Exception) {
-//                                Log.e("RoomMessages", "Gson mapping error: ${e.message}", e)
-//                            }
-//                        }
-//                    }
+                    val fields = json.getString("fields")
 
+                    try {
+                        val result = jsonSerializator.decodeFromString<MessageResponse>(fields)
+                        trySend(MessageResponseToMessageMapper.map(result))
+                    } catch (e: Exception) {
+                        Log.e("WebSocked", "ChatMessageRepository json error: ${e.message}", e)
+                    }
                 }
 
             } catch (e: Exception) {

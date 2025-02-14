@@ -21,6 +21,7 @@ import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
+import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
@@ -49,18 +50,12 @@ fun ChatScreen(
             onMoreClick = {},
         )
     }) { innerPadding ->
-        val arr = listOf(
-            "kdpogfkpodkgoks",
-            "kdpogfkpodkgoks",
-            "kdpogfkpodkgoks",
-            "kdpogfkpodkgoks",
-            "kdpogfkpodkgoks",
-            "kdpogfkpodkgoks",
-        )
         LazyColumn(Modifier.padding(innerPadding).padding(horizontal = 16.dp).fillMaxSize().background(color = CustomTheme.basicPalette.white)) {
-            items(arr) {
+            items(state.value.messages) { message ->
                 MessageItem(
-                    it,it,"15:30"
+                    text = message.msg,
+                    title = message.name,
+                    time = InstantFormatter.formatInstantToRelativeString(message.date)
                 )
                 Spacer(Modifier.padding(11.dp))
             }
