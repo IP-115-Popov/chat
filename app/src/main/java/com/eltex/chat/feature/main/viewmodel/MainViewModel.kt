@@ -1,18 +1,13 @@
 package com.eltex.chat.feature.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
-import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.formatters.InstantFormatter
-import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
-import com.eltex.domain.usecase.CreateChatUseCase
-import com.eltex.domain.usecase.GetImageUseCase
+import com.eltex.domain.usecase.GetChatListUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
-import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

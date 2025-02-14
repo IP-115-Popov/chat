@@ -1,8 +1,10 @@
 package com.eltex.data.websockets
 
 import android.util.Log
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
 
 class RocketChatWebSocket(

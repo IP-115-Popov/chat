@@ -2,16 +2,11 @@ package com.eltex.chat.feature.profile.viewmodel
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.compose.animation.core.Transition
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import com.eltex.chat.R

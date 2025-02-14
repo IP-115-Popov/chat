@@ -2,12 +2,12 @@ package com.eltex.data.websockets
 
 import android.util.Log
 import com.eltex.domain.websocket.WebSocketConnectionState
-import org.json.JSONObject
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 

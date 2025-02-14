@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.main.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.models.UserUiModel
-import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase

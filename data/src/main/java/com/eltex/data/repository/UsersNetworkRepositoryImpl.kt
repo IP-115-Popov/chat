@@ -5,18 +5,13 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.UsersApi
-import com.eltex.data.mappers.ProfileInfoRequestToProfileModelMapper
 import com.eltex.data.mappers.UserDTOToUserModelMapper
-import com.eltex.data.models.profileinfo.ProfileInfoRequest
 import com.eltex.data.models.users.UsersResponse
 import com.eltex.domain.models.DataError
-import com.eltex.domain.models.ProfileModel
 import com.eltex.domain.models.UserModel
 import com.eltex.domain.repository.UsersNetworkRepository
 import org.json.JSONObject
 import retrofit2.Response
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 class UsersNetworkRepositoryImpl @Inject constructor(

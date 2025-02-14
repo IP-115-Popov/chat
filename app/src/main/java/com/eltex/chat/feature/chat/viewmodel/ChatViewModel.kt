@@ -1,7 +1,6 @@
 package com.eltex.chat.feature.chat.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.domain.usecase.GetMessageFromChatUseCase

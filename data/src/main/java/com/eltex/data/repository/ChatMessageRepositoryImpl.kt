@@ -1,18 +1,13 @@
 package com.eltex.data.repository
 
 import android.util.Log
-import com.eltex.data.mappers.ChatResultToChatModelMapper
-import com.eltex.data.models.chat.ChatResponse
-import com.eltex.domain.models.ChatModel
 import com.eltex.domain.repository.ChatMessageRepository
-import com.eltex.domain.repository.ChatRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.util.UUID
