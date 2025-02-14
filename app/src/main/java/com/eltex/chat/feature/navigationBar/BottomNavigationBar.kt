@@ -56,11 +56,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 isSelected = currentRoute == NavRoutes.Main.route,
                 onClick = {
                     navController.navigate(NavRoutes.Main.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
                         launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )
@@ -70,11 +66,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 isSelected = currentRoute == NavRoutes.Profile.route,
                 onClick = {
                     navController.navigate(NavRoutes.Profile.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
                         launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )

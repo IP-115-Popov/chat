@@ -201,11 +201,11 @@ private fun navToChat(
     chat: ChatUIModel
 ) {
     navController.navigate(NavRoutes.Chat.route + "/${chat.id}") {
-        popUpTo(navController.graph.findStartDestination().id) {
+        popUpTo(NavRoutes.Chat.route) {
+            inclusive = true
             saveState = true
         }
         launchSingleTop = true
-        restoreState = true
     }
 }
 

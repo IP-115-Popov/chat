@@ -19,9 +19,9 @@ class ChatViewModel @Inject constructor(
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
 
-    init {
+    fun getChat(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            getMessageFromChatUseCase.execute(roomId =  "").collect{
+            getMessageFromChatUseCase.execute(roomId = roomId).collect{
                 Log.i("ChatViewModel", it)
             }
         }
