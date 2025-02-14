@@ -8,14 +8,16 @@ import androidx.compose.ui.text.TextStyle
 data class BasicPalette(
     val white: Color,
     val white1: Color,
+    val white2: Color,
     val lightGrey: Color,
     val grey: Color,
     val grey2: Color,
     val darkGray: Color,
     val black: Color,
-    val lightBlue: Color,
     val lightGreen: Color,
     val blue: Color,
+    val lightBlue: Color,
+    val lightBlue2: Color,
 )
 
 data class CustomRobotoTypography(
@@ -34,6 +36,8 @@ data class CustomSfProDisplayTypography(
     val caption1Regular: TextStyle,
     val textSemibold: TextStyle,
     val textMedium: TextStyle,
+    val caption3Regular: TextStyle,
+    val caption1Medium: TextStyle,
 )
 
 

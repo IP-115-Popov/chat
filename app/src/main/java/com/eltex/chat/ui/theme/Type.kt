@@ -83,4 +83,16 @@ val simpleSfProDisplayTypography = CustomSfProDisplayTypography(
         fontSize = 13.sp,
         lineHeight = 20.sp,
     ),
+
+    caption3Regular = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(400),
+        fontSize = 9.sp,
+        lineHeight = 14.sp,
+    ),
+
+    caption1Medium= sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(500),
+        fontSize = 13.sp,
+        lineHeight = 20.sp,
+    ),
 )
