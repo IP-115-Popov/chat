@@ -13,6 +13,6 @@ internal object RetrofitFactory {
     }
 
     fun getRetrofit(client: OkHttpClient): Retrofit =
-        Retrofit.Builder().client(client).baseUrl("https://eltexios2025.rocket.chat")
+        Retrofit.Builder().client(client).baseUrl("https://eltex2025.rocket.chat/")
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType())).build()
 }

@@ -2,6 +2,7 @@ package com.eltex.chat.di
 
 import com.eltex.domain.repository.AuthDataRepository
 import com.eltex.domain.repository.ChatCreationNetworkRepository
+import com.eltex.domain.repository.ChatMessageRepository
 import com.eltex.domain.repository.ChatRepository
 import com.eltex.domain.repository.ImageLocalRepository
 import com.eltex.domain.repository.ImageNetworkRepository
@@ -16,6 +17,7 @@ import com.eltex.domain.usecase.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.CreateChatUseCase
+import com.eltex.domain.usecase.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
@@ -112,4 +114,12 @@ class DomainModule {
         )
     }
 
+    @Provides
+    fun provideGetMessageFromChatUseCase(
+        chatMessageRepository: ChatMessageRepository,
+    ): GetMessageFromChatUseCase {
+        return GetMessageFromChatUseCase(
+            chatMessageRepository = chatMessageRepository,
+        )
+    }
 }

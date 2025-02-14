@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.eltex.chat.feature.chat.ui.screens.ChatScreen
 import com.eltex.chat.feature.main.ui.screens.MainScreen
 import com.eltex.chat.feature.profile.ui.screens.ProfileScreen
 import com.eltex.chat.feature.signin.ui.screens.SignInScreen
@@ -18,8 +19,17 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         modifier = modifier
     ) {
         composable(NavRoutes.Authorization.route) { SignInScreen(navController) }
-        composable(NavRoutes.Main.route) { MainScreen() }
+        composable(NavRoutes.Main.route) { MainScreen(navController) }
         composable(NavRoutes.Profile.route) { ProfileScreen() }
+        composable(NavRoutes.Profile.route+ "/{roomId}") { stackEntry ->
+            val roomId = stackEntry.arguments?.getString("roomId")
+            roomId?.let {
+                ChatScreen(
+                    navController = navController,
+                    roomId = roomId,
+                )
+            }
+        }
         composable(NavRoutes.Splash.route) {
             SplashScreen(
                 navController = navController,

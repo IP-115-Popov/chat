@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.main.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,12 +37,13 @@ fun ChatItem(
     time: String,
     messageStatus: MessageStatus,
     bottomLine: Boolean = true,
+    onClick: ()->Unit = {}
 ) {
     Row(
         modifier = Modifier
             .height(72.dp)
             .fillMaxWidth()
-            .padding(start = 16.dp),
+            .padding(start = 16.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

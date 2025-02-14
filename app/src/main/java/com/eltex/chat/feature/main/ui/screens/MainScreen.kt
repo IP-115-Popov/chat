@@ -31,12 +31,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.ui.components.SearchField
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -45,7 +50,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val state = mainViewModel.state.collectAsState()
 
@@ -138,7 +143,10 @@ fun MainScreen() {
                                         message = chat.lastMessage,
                                         time = chat.lm,
                                         messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = false
+                                        bottomLine = false,
+                                        onClick = {
+                                            navToChat(navController, chat)
+                                        }
                                     )
                                     HorizontalDivider()
                                 }
@@ -150,7 +158,8 @@ fun MainScreen() {
                                         message = chat.lastMessage,
                                         time = chat.lm,
                                         messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = false
+                                        bottomLine = false,
+                                        onClick = {navToChat(navController, chat)}
                                     )
                                 }
 
@@ -161,7 +170,8 @@ fun MainScreen() {
                                         message = chat.lastMessage,
                                         time = chat.lm,
                                         messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = true
+                                        bottomLine = true,
+                                        onClick = {navToChat(navController, chat)}
                                     )
                                 }
                             }
@@ -186,11 +196,24 @@ fun MainScreen() {
     }
 }
 
+private fun navToChat(
+    navController: NavController,
+    chat: ChatUIModel
+) {
+    navController.navigate(NavRoutes.Chat.route + "/${chat.id}") {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainScreenPreview() {
     CustomTheme {
-        MainScreen()
+        MainScreen(navController = rememberNavController())
     }
 }

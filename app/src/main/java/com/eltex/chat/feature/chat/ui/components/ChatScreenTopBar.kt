@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.chat.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +31,9 @@ import com.eltex.chat.utils.getInitials
 
 @Composable
 fun ChatScreenTopBar(
-    navController: NavController,
+    onBackClick: ()->Unit,
     title: String,
+    onMoreClick: ()->Unit
 ) {
     Column(Modifier.background(CustomTheme.basicPalette.blue)) {
         Box(Modifier.height(48.dp).fillMaxWidth())
@@ -48,7 +50,9 @@ fun ChatScreenTopBar(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
                     tint = CustomTheme.basicPalette.white,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp).clickable {
+                        onBackClick()
+                    }
                 )
                 Spacer(Modifier.size(8.dp))
                 Box(
@@ -74,6 +78,9 @@ fun ChatScreenTopBar(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_more_24),
                 tint = CustomTheme.basicPalette.white,
                 contentDescription = null,
+                modifier = Modifier.clickable {
+                    onMoreClick()
+                }
             )
         }
     }
@@ -84,8 +91,9 @@ fun ChatScreenTopBar(
 fun ChatScreenTopBarPreview() {
     CustomTheme {
         ChatScreenTopBar(
-            navController = rememberNavController(),
-            title = "Константин Константин"
+            {},
+            title = "Константин Константин",
+            {},
         )
     }
 }
@@ -94,8 +102,9 @@ fun ChatScreenTopBarPreview() {
 fun ChatScreenTopBarPreview2() {
     CustomTheme {
         ChatScreenTopBar(
-            navController = rememberNavController(),
-            title = "КонстантинКонстантинКонстантинКонстантинКонстантинКонстантин"
+            {},
+            title = "КонстантинКонстантинКонстантинКонстантинКонстантинКонстантин",
+            {},
         )
     }
 }
