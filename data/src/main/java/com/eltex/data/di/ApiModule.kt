@@ -2,6 +2,7 @@ package com.eltex.data.di
 
 import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.api.ChatCreationApi
+import com.eltex.data.api.HistoryChatApi
 import com.eltex.data.api.OkHttpClientFactory
 import com.eltex.data.api.ProfileInfoApi
 import com.eltex.data.api.RetrofitFactory
@@ -35,10 +36,13 @@ class ApiModule {
         retrofit.create<ProfileInfoApi>()
 
     @Provides
-    fun provideUsersApi(retrofit: Retrofit): UsersApi =
-        retrofit.create<UsersApi>()
+    fun provideUsersApi(retrofit: Retrofit): UsersApi = retrofit.create<UsersApi>()
 
     @Provides
     fun provideChatCreationApi(retrofit: Retrofit): ChatCreationApi =
         retrofit.create<ChatCreationApi>()
+
+    @Provides
+    fun provideHistoryChatApi(retrofit: Retrofit): HistoryChatApi =
+        retrofit.create<HistoryChatApi>()
 }

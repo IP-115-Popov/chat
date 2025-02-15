@@ -8,5 +8,6 @@ data class ChatModel(
     val lm: Long?, //Временная метка последнего сообщения.
     val unread: Int, //Количество непрочитанных сообщений в комнате.
     val avatarUrl: String?,
-    val usernames: List<String>?
+    val usernames: List<String>?,
+    val t: String,
 )

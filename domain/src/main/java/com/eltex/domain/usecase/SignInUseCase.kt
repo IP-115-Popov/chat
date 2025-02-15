@@ -8,11 +8,11 @@ import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
 import com.eltex.domain.repository.AuthDataRepository
 import com.eltex.domain.repository.SignInNetworkRepository
-import com.eltex.domain.repository.TokenRepository
+import com.eltex.domain.repository.HeaderRepository
 
 class SignInUseCase(
     private val signInNetworkRepository: SignInNetworkRepository,
-    private val tokenRepository: TokenRepository,
+    private val headerRepository: HeaderRepository,
     private val authDataRepository: AuthDataRepository,
 ) {
     suspend fun execute(loginModel: LoginModel): Either<SignInError, AuthData> {
@@ -24,7 +24,7 @@ class SignInUseCase(
 
             is Either.Right -> {
                 authDataRepository.saveAuthData(result.value)
-                tokenRepository.setToken(result.value.authToken)
+                headerRepository.setToken(result.value.authToken)
                 result.value.right()
             }
         }

@@ -12,6 +12,10 @@ internal object OkHttpClientFactory {
         authInterceptor.updateToken(token)
     }
 
+    fun setApiUserId(userId: String) {
+        authInterceptor.updateUserId(userId)
+    }
+
     fun getOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)

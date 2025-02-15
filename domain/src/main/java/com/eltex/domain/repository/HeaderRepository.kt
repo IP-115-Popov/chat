@@ -1,5 +1,6 @@
 package com.eltex.domain.repository
 
-interface TokenRepository {
+interface HeaderRepository {
     suspend fun setToken(authToken: String)
+    suspend fun setUserID(userID: String)
 }

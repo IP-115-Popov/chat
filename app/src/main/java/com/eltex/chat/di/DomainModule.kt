@@ -6,13 +6,15 @@ import com.eltex.domain.repository.ChatMessageRepository
 import com.eltex.domain.repository.ChatRepository
 import com.eltex.domain.repository.ImageLocalRepository
 import com.eltex.domain.repository.ImageNetworkRepository
+import com.eltex.domain.repository.MessageHistoryRepository
 import com.eltex.domain.repository.ProfileNetworkInfoRepository
 import com.eltex.domain.repository.SignInNetworkRepository
-import com.eltex.domain.repository.TokenRepository
+import com.eltex.domain.repository.HeaderRepository
 import com.eltex.domain.repository.UsersNetworkRepository
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetChatListUseCase
+import com.eltex.domain.usecase.GetHistoryChatUseCase
 import com.eltex.domain.usecase.GetImageUseCase
 import com.eltex.domain.usecase.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.GetProfileInfoUseCase
@@ -42,12 +44,12 @@ class DomainModule {
     @Provides
     fun provideSignInUseCase(
         signInNetworkRepository: SignInNetworkRepository,
-        tokenRepository: TokenRepository,
+        headerRepository: HeaderRepository,
         authDataRepository: AuthDataRepository,
     ): SignInUseCase {
         return SignInUseCase(
             signInNetworkRepository = signInNetworkRepository,
-            tokenRepository = tokenRepository,
+            headerRepository = headerRepository,
             authDataRepository = authDataRepository
         )
     }
@@ -55,11 +57,11 @@ class DomainModule {
     @Provides
     fun provideSyncAuthDataUseCase(
         authDataRepository: AuthDataRepository,
-        tokenRepository: TokenRepository,
+        headerRepository: HeaderRepository,
     ): SyncAuthDataUseCase {
         return SyncAuthDataUseCase(
             authDataRepository = authDataRepository,
-            tokenRepository = tokenRepository,
+            headerRepository = headerRepository,
         )
     }
 
@@ -120,6 +122,15 @@ class DomainModule {
     ): GetMessageFromChatUseCase {
         return GetMessageFromChatUseCase(
             chatMessageRepository = chatMessageRepository,
+        )
+    }
+
+    @Provides
+    fun provideGetHistoryChatUseCase(
+        messageHistoryRepository: MessageHistoryRepository,
+    ): GetHistoryChatUseCase {
+        return GetHistoryChatUseCase(
+            messageHistoryRepository = messageHistoryRepository,
         )
     }
 }

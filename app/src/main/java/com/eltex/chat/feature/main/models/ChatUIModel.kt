@@ -8,5 +8,6 @@ data class ChatUIModel(
     val unread: Int, //Количество непрочитанных сообщений в комнате.
     val otrAck: String, //Статус подтверждения получения неофициального сообщения.
     val avatarUrl: String?,
-    val usernames: List<String>?
+    val usernames: List<String>?,
+    val t: String,
 )

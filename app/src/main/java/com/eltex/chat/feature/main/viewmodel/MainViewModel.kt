@@ -124,7 +124,8 @@ class MainViewModel @Inject constructor(
                                 unread = it.unread, //Количество непрочитанных сообщений в комнате.
                                 otrAck = "", //Статус подтверждения получения неофициального сообщения.
                                 avatarUrl = "",
-                                usernames = it.usernames
+                                usernames = it.usernames,
+                                t = it.t,
                             )
                         }
                         it.copy(chatList = resfirst)
