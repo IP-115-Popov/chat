@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class ChatMessageRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
-): ChatMessageRepository {
+) : ChatMessageRepository {
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true
@@ -28,7 +28,7 @@ class ChatMessageRepositoryImpl @Inject constructor(
     private var subscriptionId: String? = null
 
     // Функция для подписки на поток сообщений комнаты
-     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
+    override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.d("RoomMessages", "Raw JSON: $json")
 

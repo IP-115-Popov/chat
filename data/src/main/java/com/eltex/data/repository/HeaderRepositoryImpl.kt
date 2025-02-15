@@ -8,6 +8,7 @@ class HeaderRepositoryImpl @Inject constructor() : HeaderRepository {
     override suspend fun setToken(authToken: String) {
         OkHttpClientFactory.setApiToken(authToken)
     }
+
     override suspend fun setUserID(userID: String) {
         OkHttpClientFactory.setApiUserId(userID)
     }

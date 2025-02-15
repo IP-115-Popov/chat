@@ -24,12 +24,15 @@ class ChatRepositoryImpl @Inject constructor(
         ignoreUnknownKeys = true
     }
 
-    override suspend fun createChat(chatName: String, userNameList: List<String>) : Flow<List<ChatModel>> = callbackFlow {
+    override suspend fun createChat(
+        chatName: String,
+        userNameList: List<String>
+    ): Flow<List<ChatModel>> = callbackFlow {
         Log.i("gson", "createChat Flow")
         val listener: (JSONObject) -> Unit = { json ->
-                if (json.has("result")) {
-                    Log.i("gson", json.toString())
-                }
+            if (json.has("result")) {
+                Log.i("gson", json.toString())
+            }
         }
         val userNameListJson = Json.encodeToString(userNameList)
         webSocketManager.addListener(listener)
@@ -66,8 +69,9 @@ class ChatRepositoryImpl @Inject constructor(
             try {
                 if (json.has("result")) {
                     try {
-                        Log.i("gson",json.toString())
-                        val result = jsonSerializator.decodeFromString<ChatResponse>(json.toString()).result
+                        Log.i("gson", json.toString())
+                        val result =
+                            jsonSerializator.decodeFromString<ChatResponse>(json.toString()).result
 
                         if (result.isNotEmpty()) {
                             trySend(

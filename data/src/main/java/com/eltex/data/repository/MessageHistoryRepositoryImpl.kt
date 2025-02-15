@@ -4,11 +4,10 @@ import android.util.Log
 import com.eltex.data.api.HistoryChatApi
 import com.eltex.data.mappers.MessageDTOToMessageMapper
 import com.eltex.data.models.hitorymessge.HistoryMsgResponse
-import com.eltex.data.models.profileinfo.ProfileInfoRequest
 import com.eltex.domain.models.Message
 import com.eltex.domain.repository.MessageHistoryRepository
-import javax.inject.Inject
 import retrofit2.Response
+import javax.inject.Inject
 
 class MessageHistoryRepositoryImpl @Inject constructor(
     private val historyChatApi: HistoryChatApi

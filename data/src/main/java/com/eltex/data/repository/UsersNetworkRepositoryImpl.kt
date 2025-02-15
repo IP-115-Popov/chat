@@ -33,9 +33,15 @@ class UsersNetworkRepositoryImpl @Inject constructor(
         val response: Response<UsersResponse>
 
         try {
-            response = usersApi.getUsersList(count = count, offset = offset, query = jsonQuery.toString() , userId = userId, xAuthToken = xAuthToken)
+            response = usersApi.getUsersList(
+                count = count,
+                offset = offset,
+                query = jsonQuery.toString(),
+                userId = userId,
+                xAuthToken = xAuthToken
+            )
         } catch (e: Exception) {
-            Log.e("response",e.message ?: "")
+            Log.e("response", e.message ?: "")
             e.printStackTrace()
             return DataError.ConnectionMissing.left()
         }

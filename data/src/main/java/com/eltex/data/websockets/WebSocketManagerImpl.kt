@@ -15,15 +15,15 @@ import javax.inject.Singleton
 class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
     private var webSocketManager: RocketChatWebSocket? = null
 
-    private val _connectionState = MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
+    private val _connectionState =
+        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
     override val connectionState: Flow<WebSocketConnectionState> = _connectionState.asStateFlow()
 
     private val listeners: MutableList<(JSONObject) -> Unit> = mutableListOf()
 
 
-
     init {
-        Log.i("WebSocketManagerImpl","WebSocketManagerImpl Created!!!")
+        Log.i("WebSocketManagerImpl", "WebSocketManagerImpl Created!!!")
 
         val listener = RocketChatWebSocketListener { json ->
             if (json.has("msg")) {
@@ -42,15 +42,17 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
                             }
                         }
                     }
+
                     "added" -> {
                         if (json.has("collection") && json.getString("collection") == "users") {
                             //isConnected = true
                             _connectionState.update {
-                                Log.i("WebSocketManagerImpl","connected")
+                                Log.i("WebSocketManagerImpl", "connected")
                                 WebSocketConnectionState.Connected
                             }
                         }
                     }
+
                     else -> {
                         Log.d("WebSocket", "Unhandled message: ${json.toString()}")
                     }
@@ -78,11 +80,11 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
     }
 
     override fun connect(authToken: String) {
-        Log.i("WebSocketManagerImpl","connect init")
+        Log.i("WebSocketManagerImpl", "connect init")
         if (_connectionState.value is WebSocketConnectionState.Disconnected) {
-            Log.i("WebSocketManagerImpl","connect start")
+            Log.i("WebSocketManagerImpl", "connect start")
 
-            addListener{ json ->
+            addListener { json ->
                 if (json.has("msg")) {
                     if (json.getString("msg") == "connected") {
                         webSocketManager?.sendMessage(
@@ -103,7 +105,7 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
 
             webSocketManager?.connect()
             _connectionState.update {
-                Log.i("WebSocketManagerImpl","connecting")
+                Log.i("WebSocketManagerImpl", "connecting")
                 WebSocketConnectionState.Connecting
             }
         }

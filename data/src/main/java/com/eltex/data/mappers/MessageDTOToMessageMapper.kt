@@ -15,6 +15,7 @@ object MessageDTOToMessageMapper {
             name = u.username,
         )
     }
+
     private fun parseDateStringToLong(dateString: String): Long? {
         return try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

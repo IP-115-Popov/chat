@@ -14,5 +14,5 @@ interface ChatCreationApi {
         @Header("X-User-Id") userId: String,
         @Header("X-Auth-Token") xAuthToken: String,
         @Body createChatRequest: CreateChatRequest
-    ):  Response<CreatedChatResponse>
+    ): Response<CreatedChatResponse>
 }
