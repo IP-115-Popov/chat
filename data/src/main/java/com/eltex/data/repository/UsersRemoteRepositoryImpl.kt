@@ -9,14 +9,14 @@ import com.eltex.data.mappers.UserDTOToUserModelMapper
 import com.eltex.data.models.users.UsersResponse
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.UserModel
-import com.eltex.domain.repository.UsersNetworkRepository
+import com.eltex.domain.repository.UsersRemoteRepository
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
-class UsersNetworkRepositoryImpl @Inject constructor(
+class UsersRemoteRepositoryImpl @Inject constructor(
     private val usersApi: UsersApi
-) : UsersNetworkRepository {
+) : UsersRemoteRepository {
     override suspend fun getUsersList(
         count: Int,
         offset: Int,

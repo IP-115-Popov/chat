@@ -3,13 +3,13 @@ package com.eltex.data.repository
 import com.eltex.data.models.AuthDataEntity
 import com.eltex.data.storage.SharedPreferencesAuthDataStorage
 import com.eltex.domain.models.AuthData
-import com.eltex.domain.repository.AuthDataRepository
+import com.eltex.domain.repository.AuthDataLocalRepository
 import javax.inject.Inject
 
 
-class AuthDataRepositoryImpl @Inject constructor(
+class AuthDataLocalRepositoryImpl @Inject constructor(
     private val sharedPreferencesAuthDataStorage: SharedPreferencesAuthDataStorage
-) : AuthDataRepository {
+) : AuthDataLocalRepository {
 
     override suspend fun saveAuthData(authData: AuthData) {
         val authDataEntity = AuthDataEntity(

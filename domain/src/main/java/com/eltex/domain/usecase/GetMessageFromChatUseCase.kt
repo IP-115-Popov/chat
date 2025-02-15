@@ -1,10 +1,10 @@
 package com.eltex.domain.usecase
 
-import com.eltex.domain.repository.ChatMessageRepository
+import com.eltex.domain.repository.ChatMessageRemoteRepository
 
 class GetMessageFromChatUseCase(
-    private val chatMessageRepository: ChatMessageRepository
+    private val chatMessageRemoteRepository: ChatMessageRemoteRepository
 ) {
     suspend fun execute(roomId: String) =
-        chatMessageRepository.subscribeToRoomMessages(roomId = roomId)
+        chatMessageRemoteRepository.subscribeToRoomMessages(roomId = roomId)
 }

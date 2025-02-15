@@ -5,13 +5,13 @@ import com.eltex.data.api.HistoryChatApi
 import com.eltex.data.mappers.MessageDTOToMessageMapper
 import com.eltex.data.models.hitorymessge.HistoryMsgResponse
 import com.eltex.domain.models.Message
-import com.eltex.domain.repository.MessageHistoryRepository
+import com.eltex.domain.repository.MessageHistoryRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class MessageHistoryRepositoryImpl @Inject constructor(
+class MessageHistoryRemoteRepositoryImpl @Inject constructor(
     private val historyChatApi: HistoryChatApi
-) : MessageHistoryRepository {
+) : MessageHistoryRemoteRepository {
     override suspend fun getMessageHistory(
         roomId: String, roomType: String, offset: Int, count: Int
     ): List<Message> {

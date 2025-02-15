@@ -6,19 +6,19 @@ import arrow.core.right
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.UserModel
-import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.UsersNetworkRepository
+import com.eltex.domain.repository.AuthDataLocalRepository
+import com.eltex.domain.repository.UsersRemoteRepository
 
 class GetUsersListUseCase(
-    private val usersNetworkRepository: UsersNetworkRepository,
-    private val authDataRepository: AuthDataRepository,
+    private val usersRemoteRepository: UsersRemoteRepository,
+    private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
     suspend fun execute(
         query: String, count: Int, offset: Int
     ): Either<DataError, List<UserModel>> {
-        val authData: AuthData? = authDataRepository.getAuthData()
+        val authData: AuthData? = authDataLocalRepository.getAuthData()
         if (authData != null) {
-            val result = usersNetworkRepository.getUsersList(
+            val result = usersRemoteRepository.getUsersList(
                 query = query,
                 count = count,
                 offset = offset,

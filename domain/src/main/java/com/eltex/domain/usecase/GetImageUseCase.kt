@@ -3,14 +3,14 @@ package com.eltex.domain.usecase
 import arrow.core.Either
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.ImageLocalRepository
-import com.eltex.domain.repository.ImageNetworkRepository
+import com.eltex.domain.repository.ImageRemoteRepository
 
 class GetImageUseCase(
-    private val imageNetworkRepository: ImageNetworkRepository,
+    private val imageRemoteRepository: ImageRemoteRepository,
     private val imageLocalRepository: ImageLocalRepository
 ) {
     suspend fun execute(imageUrl: String): Either<DataError, ByteArray> {
-        val getImgResult = imageNetworkRepository.getImageByteArray(imageUrl)
+        val getImgResult = imageRemoteRepository.getImageByteArray(imageUrl)
         getImgResult.onRight { img: ByteArray ->
             imageLocalRepository.saveImageData(imageUrl = imageUrl, data = img)
             return getImgResult

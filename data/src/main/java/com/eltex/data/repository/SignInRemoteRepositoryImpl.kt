@@ -9,12 +9,12 @@ import com.eltex.data.mappers.LoginModelToLoginRequestMapper
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
-import com.eltex.domain.repository.SignInNetworkRepository
+import com.eltex.domain.repository.SignInRemoteRepository
 import javax.inject.Inject
 
-class SignInNetworkRepositoryImpl @Inject constructor(
+class SignInRemoteRepositoryImpl @Inject constructor(
     private val authorizationApi: AuthorizationApi
-) : SignInNetworkRepository {
+) : SignInRemoteRepository {
     override suspend fun signIn(loginModel: LoginModel): Either<SignInError, AuthData> {
         try {
             val response = authorizationApi.signIn(

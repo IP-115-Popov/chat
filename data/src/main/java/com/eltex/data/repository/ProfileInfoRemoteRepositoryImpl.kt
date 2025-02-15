@@ -8,13 +8,13 @@ import com.eltex.data.mappers.ProfileInfoRequestToProfileModelMapper
 import com.eltex.data.models.profileinfo.ProfileInfoRequest
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
-import com.eltex.domain.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.repository.ProfileInfoRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class ProfileNetworkInfoRepositoryImpl @Inject constructor(
+class ProfileInfoRemoteRepositoryImpl @Inject constructor(
     private val profileInfoApi: ProfileInfoApi
-) : ProfileNetworkInfoRepository {
+) : ProfileInfoRemoteRepository {
     override suspend fun getProfileInfo(
         userId: String,
         authToken: String,

@@ -1,16 +1,16 @@
 package com.eltex.chat.di
 
-import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.ChatCreationNetworkRepository
-import com.eltex.domain.repository.ChatMessageRepository
-import com.eltex.domain.repository.ChatRepository
-import com.eltex.domain.repository.HeaderRepository
+import com.eltex.domain.repository.AuthDataLocalRepository
+import com.eltex.domain.repository.ChatCreationRemoteRepository
+import com.eltex.domain.repository.ChatMessageRemoteRepository
+import com.eltex.domain.repository.ChatRemoteRepository
+import com.eltex.domain.repository.HeaderLocalRepository
 import com.eltex.domain.repository.ImageLocalRepository
-import com.eltex.domain.repository.ImageNetworkRepository
-import com.eltex.domain.repository.MessageHistoryRepository
-import com.eltex.domain.repository.ProfileNetworkInfoRepository
-import com.eltex.domain.repository.SignInNetworkRepository
-import com.eltex.domain.repository.UsersNetworkRepository
+import com.eltex.domain.repository.ImageRemoteRepository
+import com.eltex.domain.repository.MessageHistoryRemoteRepository
+import com.eltex.domain.repository.ProfileInfoRemoteRepository
+import com.eltex.domain.repository.SignInRemoteRepository
+import com.eltex.domain.repository.UsersRemoteRepository
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetChatListUseCase
@@ -32,105 +32,105 @@ import dagger.hilt.android.components.ViewModelComponent
 class DomainModule {
     @Provides
     fun provideGetProfileInfoUseCase(
-        profileNetworkInfoRepository: ProfileNetworkInfoRepository,
-        authDataRepository: AuthDataRepository,
+        profileInfoRemoteRepository: ProfileInfoRemoteRepository,
+        authDataLocalRepository: AuthDataLocalRepository,
     ): GetProfileInfoUseCase {
         return GetProfileInfoUseCase(
-            profileNetworkInfoRepository = profileNetworkInfoRepository,
-            authDataRepository = authDataRepository
+            profileInfoRemoteRepository = profileInfoRemoteRepository,
+            authDataLocalRepository = authDataLocalRepository
         )
     }
 
     @Provides
     fun provideSignInUseCase(
-        signInNetworkRepository: SignInNetworkRepository,
-        headerRepository: HeaderRepository,
-        authDataRepository: AuthDataRepository,
+        signInRemoteRepository: SignInRemoteRepository,
+        headerLocalRepository: HeaderLocalRepository,
+        authDataLocalRepository: AuthDataLocalRepository,
     ): SignInUseCase {
         return SignInUseCase(
-            signInNetworkRepository = signInNetworkRepository,
-            headerRepository = headerRepository,
-            authDataRepository = authDataRepository
+            signInRemoteRepository = signInRemoteRepository,
+            headerLocalRepository = headerLocalRepository,
+            authDataLocalRepository = authDataLocalRepository
         )
     }
 
     @Provides
     fun provideSyncAuthDataUseCase(
-        authDataRepository: AuthDataRepository,
-        headerRepository: HeaderRepository,
+        authDataLocalRepository: AuthDataLocalRepository,
+        headerLocalRepository: HeaderLocalRepository,
     ): SyncAuthDataUseCase {
         return SyncAuthDataUseCase(
-            authDataRepository = authDataRepository,
-            headerRepository = headerRepository,
+            authDataLocalRepository = authDataLocalRepository,
+            headerLocalRepository = headerLocalRepository,
         )
     }
 
     @Provides
     fun provideGetImageUseCase(
         imageLocalRepository: ImageLocalRepository,
-        imageNetworkRepository: ImageNetworkRepository,
+        imageRemoteRepository: ImageRemoteRepository,
     ): GetImageUseCase {
         return GetImageUseCase(
-            imageNetworkRepository = imageNetworkRepository,
+            imageRemoteRepository = imageRemoteRepository,
             imageLocalRepository = imageLocalRepository,
         )
     }
 
     @Provides
     fun provideGetChatListUseCase(
-        chatRepository: ChatRepository,
+        chatRemoteRepository: ChatRemoteRepository,
     ): GetChatListUseCase {
         return GetChatListUseCase(
-            chatRepository = chatRepository
+            chatRemoteRepository = chatRemoteRepository
         )
     }
 
     @Provides
     fun provideConnectWebSocketUseCase(
         webSocketManager: WebSocketManager,
-        authDataRepository: AuthDataRepository,
+        authDataLocalRepository: AuthDataLocalRepository,
     ): ConnectWebSocketUseCase {
         return ConnectWebSocketUseCase(
             webSocketManager = webSocketManager,
-            authDataRepository = authDataRepository,
+            authDataLocalRepository = authDataLocalRepository,
         )
     }
 
     @Provides
     fun provideGetUsersListUseCase(
-        usersNetworkRepository: UsersNetworkRepository,
-        authDataRepository: AuthDataRepository,
+        usersRemoteRepository: UsersRemoteRepository,
+        authDataLocalRepository: AuthDataLocalRepository,
     ): GetUsersListUseCase {
         return GetUsersListUseCase(
-            usersNetworkRepository = usersNetworkRepository,
-            authDataRepository = authDataRepository,
+            usersRemoteRepository = usersRemoteRepository,
+            authDataLocalRepository = authDataLocalRepository,
         )
     }
 
     @Provides
     fun provideCreateChatUseCase(
-        chatCreationNetworkRepository: ChatCreationNetworkRepository,
+        chatCreationRemoteRepository: ChatCreationRemoteRepository,
     ): CreateChatUseCase {
         return CreateChatUseCase(
-            chatCreationNetworkRepository = chatCreationNetworkRepository,
+            chatCreationRemoteRepository = chatCreationRemoteRepository,
         )
     }
 
     @Provides
     fun provideGetMessageFromChatUseCase(
-        chatMessageRepository: ChatMessageRepository,
+        chatMessageRemoteRepository: ChatMessageRemoteRepository,
     ): GetMessageFromChatUseCase {
         return GetMessageFromChatUseCase(
-            chatMessageRepository = chatMessageRepository,
+            chatMessageRemoteRepository = chatMessageRemoteRepository,
         )
     }
 
     @Provides
     fun provideGetHistoryChatUseCase(
-        messageHistoryRepository: MessageHistoryRepository,
+        messageHistoryRemoteRepository: MessageHistoryRemoteRepository,
     ): GetHistoryChatUseCase {
         return GetHistoryChatUseCase(
-            messageHistoryRepository = messageHistoryRepository,
+            messageHistoryRemoteRepository = messageHistoryRemoteRepository,
         )
     }
 }

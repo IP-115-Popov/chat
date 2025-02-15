@@ -1,6 +1,6 @@
 package com.eltex.domain.repository
 
-interface ChatCreationNetworkRepository {
+interface ChatCreationRemoteRepository {
     suspend fun createChat(
         xAuthToken: String, userId: String, userName: String
     )

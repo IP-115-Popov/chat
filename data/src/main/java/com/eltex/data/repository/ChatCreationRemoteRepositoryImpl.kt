@@ -4,13 +4,13 @@ import android.util.Log
 import com.eltex.data.api.ChatCreationApi
 import com.eltex.data.models.createchat.CreateChatRequest
 import com.eltex.data.models.createchat.CreatedChatResponse
-import com.eltex.domain.repository.ChatCreationNetworkRepository
+import com.eltex.domain.repository.ChatCreationRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class ChatCreationNetworkRepositoryImpl @Inject constructor(
+class ChatCreationRemoteRepositoryImpl @Inject constructor(
     private val chatCreationApi: ChatCreationApi
-) : ChatCreationNetworkRepository {
+) : ChatCreationRemoteRepository {
     override suspend fun createChat(xAuthToken: String, userId: String, userName: String) {
         val response: Response<CreatedChatResponse>
         try {

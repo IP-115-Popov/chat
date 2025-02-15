@@ -6,17 +6,17 @@ import arrow.core.right
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
-import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.ProfileNetworkInfoRepository
+import com.eltex.domain.repository.AuthDataLocalRepository
+import com.eltex.domain.repository.ProfileInfoRemoteRepository
 
 class GetProfileInfoUseCase(
-    private val profileNetworkInfoRepository: ProfileNetworkInfoRepository,
-    private val authDataRepository: AuthDataRepository,
+    private val profileInfoRemoteRepository: ProfileInfoRemoteRepository,
+    private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
     suspend fun execute(): Either<DataError, ProfileModel> {
-        val authData: AuthData? = authDataRepository.getAuthData()
+        val authData: AuthData? = authDataLocalRepository.getAuthData()
         if (authData != null) {
-            val result = profileNetworkInfoRepository.getProfileInfo(
+            val result = profileInfoRemoteRepository.getProfileInfo(
                 userId = authData.userId, authToken = authData.authToken
             )
             when (result) {

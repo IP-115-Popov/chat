@@ -4,7 +4,7 @@ import android.util.Log
 import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
-import com.eltex.domain.repository.ChatRepository
+import com.eltex.domain.repository.ChatRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -16,9 +16,9 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import javax.inject.Inject
 
-class ChatRepositoryImpl @Inject constructor(
+class ChatRemoteRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
-) : ChatRepository {
+) : ChatRemoteRepository {
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true

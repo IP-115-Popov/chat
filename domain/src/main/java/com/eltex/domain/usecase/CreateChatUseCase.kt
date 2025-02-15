@@ -1,16 +1,16 @@
 package com.eltex.domain.usecase
 
-import com.eltex.domain.repository.ChatCreationNetworkRepository
+import com.eltex.domain.repository.ChatCreationRemoteRepository
 
 class CreateChatUseCase(
-    private val chatCreationNetworkRepository: ChatCreationNetworkRepository
+    private val chatCreationRemoteRepository: ChatCreationRemoteRepository
 ) {
     suspend fun execute(
         xAuthToken: String,
         userId: String,
         username: String,
     ) {
-        chatCreationNetworkRepository.createChat(
+        chatCreationRemoteRepository.createChat(
             xAuthToken = xAuthToken,
             userId = userId,
             userName = username

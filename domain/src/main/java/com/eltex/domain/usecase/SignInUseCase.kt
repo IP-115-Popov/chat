@@ -6,25 +6,25 @@ import arrow.core.right
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
-import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.HeaderRepository
-import com.eltex.domain.repository.SignInNetworkRepository
+import com.eltex.domain.repository.AuthDataLocalRepository
+import com.eltex.domain.repository.HeaderLocalRepository
+import com.eltex.domain.repository.SignInRemoteRepository
 
 class SignInUseCase(
-    private val signInNetworkRepository: SignInNetworkRepository,
-    private val headerRepository: HeaderRepository,
-    private val authDataRepository: AuthDataRepository,
+    private val signInRemoteRepository: SignInRemoteRepository,
+    private val headerLocalRepository: HeaderLocalRepository,
+    private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
     suspend fun execute(loginModel: LoginModel): Either<SignInError, AuthData> {
-        val result = signInNetworkRepository.signIn(loginModel)
+        val result = signInRemoteRepository.signIn(loginModel)
         return when (result) {
             is Either.Left -> {
                 result.value.left()
             }
 
             is Either.Right -> {
-                authDataRepository.saveAuthData(result.value)
-                headerRepository.setToken(result.value.authToken)
+                authDataLocalRepository.saveAuthData(result.value)
+                headerLocalRepository.setToken(result.value.authToken)
                 result.value.right()
             }
         }
