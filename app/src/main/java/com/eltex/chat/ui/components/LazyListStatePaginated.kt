@@ -13,7 +13,7 @@ fun rememberLazyListStatePaginated(onLoadMore: () -> Unit): LazyListState {
 
     val isAtBottom = remember {
         derivedStateOf {
-            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 3
         }
     }
 

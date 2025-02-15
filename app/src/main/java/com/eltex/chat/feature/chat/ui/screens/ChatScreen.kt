@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -100,13 +101,19 @@ fun ChatScreen(
                 }
                 Spacer(Modifier.padding(11.dp))
             }
-            item {
-                if (state.value.status is ChatStatus.NextPageLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
+            if (state.value.status is ChatStatus.NextPageLoading) {
+                item {
+                    Box(
+                        modifier = Modifier.height(118.dp).fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
+                    }
                 }
             }
         }
