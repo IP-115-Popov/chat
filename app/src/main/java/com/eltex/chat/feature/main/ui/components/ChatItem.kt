@@ -37,13 +37,14 @@ fun ChatItem(
     time: String,
     messageStatus: MessageStatus,
     bottomLine: Boolean = true,
-    onClick: ()->Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .height(72.dp)
             .fillMaxWidth()
-            .padding(start = 16.dp).clickable { onClick() },
+            .padding(start = 16.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

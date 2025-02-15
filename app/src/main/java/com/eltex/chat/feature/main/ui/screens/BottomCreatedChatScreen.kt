@@ -111,8 +111,8 @@ fun BottomCreatedChatScreen(
                     SearchField(
                         value = state.value.searchValue,
                         placeholderText = stringResource(R.string.chat_search_placeholder),
-                        onValueChange = {createChatViewModel.setSearchValue(it)},
-                        onClearClick ={createChatViewModel.setSearchValue("")},
+                        onValueChange = { createChatViewModel.setSearchValue(it) },
+                        onClearClick = { createChatViewModel.setSearchValue("") },
                     )
                 }
 
@@ -145,7 +145,7 @@ fun BottomCreatedChatScreen(
 @Composable
 fun ContactItem(
     contact: UserUiModel,
-    onSelect: (UserUiModel)->Unit,
+    onSelect: (UserUiModel) -> Unit,
 ) {
     Row(
         modifier = Modifier

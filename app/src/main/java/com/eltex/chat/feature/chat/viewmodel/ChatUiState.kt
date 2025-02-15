@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.chat.viewmodel
 
-import androidx.compose.ui.geometry.Offset
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.domain.models.AuthData
 

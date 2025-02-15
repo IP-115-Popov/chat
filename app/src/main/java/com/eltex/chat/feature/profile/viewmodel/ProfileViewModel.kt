@@ -65,11 +65,14 @@ class ProfileViewModel @Inject constructor(
                     is Either.Right -> {
                         val imageBytes = getImageResult.value
                         try {
-                            val svg = SVG.getFromInputStream(ByteArrayInputStream(imageBytes))//getFromBytes(imageBytes)
+                            val svg =
+                                SVG.getFromInputStream(ByteArrayInputStream(imageBytes))//getFromBytes(imageBytes)
 
                             // Определение размеров. Если размеры не указаны в SVG, используйте значения по умолчанию
-                            val width = (svg.documentWidth?.toInt() ?: 200) // Значение по умолчанию, если ширина не указана
-                            val height = (svg.documentHeight?.toInt() ?: 200) // Значение по умолчанию, если высота не указана
+                            val width = (svg.documentWidth?.toInt()
+                                ?: 200) // Значение по умолчанию, если ширина не указана
+                            val height = (svg.documentHeight?.toInt()
+                                ?: 200) // Значение по умолчанию, если высота не указана
 
                             val newBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
                             val newCanvas = Canvas(newBitmap)

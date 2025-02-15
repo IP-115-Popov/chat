@@ -3,7 +3,6 @@ package com.eltex.chat.feature.chat.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
-import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.GetHistoryChatUseCase
 import com.eltex.domain.usecase.GetMessageFromChatUseCase
@@ -39,7 +38,7 @@ class ChatViewModel @Inject constructor(
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    syncAuthDataUseCase.execute().onRight{ authData ->
+                    syncAuthDataUseCase.execute().onRight { authData ->
                         _state.update {
                             it.copy(
                                 authData = authData
@@ -68,9 +67,11 @@ class ChatViewModel @Inject constructor(
                         withContext(Dispatchers.IO) {
                             _state.update { state ->
                                 state.copy(
-                                    messages = listOf(MessageToMessageUiModelMapper.map(
-                                        messsage
-                                    )) + state.messages
+                                    messages = listOf(
+                                        MessageToMessageUiModelMapper.map(
+                                            messsage
+                                        )
+                                    ) + state.messages
                                 )
                             }
                         }
@@ -121,6 +122,7 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
     private fun setStatus(status: ChatStatus) {
         _state.update {
             it.copy(

@@ -66,7 +66,7 @@ fun ChatScreen(
     }) { innerPadding ->
         LazyColumn(
             state = listState,
-            modifier =  Modifier
+            modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
@@ -75,7 +75,10 @@ fun ChatScreen(
         ) {
             items(state.value.messages) { message ->
                 if (state.value.authData?.userId == message.userId) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
                         MessageItem(
                             text = message.msg,
                             title = message.name,
@@ -83,7 +86,10 @@ fun ChatScreen(
                         )
                     }
                 } else {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
                         MyMessageItem(
                             text = message.msg,
                             time = InstantFormatter.formatInstantToRelativeString(message.date),
@@ -105,6 +111,7 @@ fun ChatScreen(
         }
     }
 }
+
 @Preview
 @Composable
 fun ChatScreenPreview() {

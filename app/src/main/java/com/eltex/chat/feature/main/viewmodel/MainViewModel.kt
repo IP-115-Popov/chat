@@ -100,10 +100,12 @@ class MainViewModel @Inject constructor(
         setStatus(status = MainUiStatus.Loading)
         get()
     }
+
     fun refreshChat() {
         setStatus(status = MainUiStatus.IsRefreshing)
         get()
     }
+
     private fun get() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -111,7 +113,9 @@ class MainViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _state.update {
                         val resfirst = res.first().map {
-                            val name = it.name ?: it.usernames?.first { it != state.value.profileUiModel?.name } ?: ""
+                            val name = it.name
+                                ?: it.usernames?.first { it != state.value.profileUiModel?.name }
+                                ?: ""
                             ChatUIModel(
                                 id = it.id,
                                 name = name,

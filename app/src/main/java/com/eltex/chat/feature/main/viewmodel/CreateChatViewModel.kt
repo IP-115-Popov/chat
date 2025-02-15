@@ -42,7 +42,7 @@ class CreateChatViewModel @Inject constructor(
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    syncAuthDataUseCase.execute().onRight{ authData ->
+                    syncAuthDataUseCase.execute().onRight { authData ->
                         _state.update {
                             it.copy(
                                 authData = authData

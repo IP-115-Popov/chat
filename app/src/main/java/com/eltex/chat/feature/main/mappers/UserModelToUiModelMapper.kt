@@ -10,7 +10,7 @@ object UserModelToUiModelMapper {
             active = active,
             name = name,
             status = status,
-             username = username,
+            username = username,
         )
     }
 }

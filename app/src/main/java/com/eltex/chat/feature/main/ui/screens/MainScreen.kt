@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.main.models.ChatUIModel
@@ -89,12 +88,13 @@ fun MainScreen(navController: NavController) {
                         .padding(end = 16.dp)
                         .clickable {
                             coroutineScope.launch {
-                            if (modalBottomSheetState.isVisible) {
-                                modalBottomSheetState.hide()
-                            } else {
-                                modalBottomSheetState.show()
+                                if (modalBottomSheetState.isVisible) {
+                                    modalBottomSheetState.hide()
+                                } else {
+                                    modalBottomSheetState.show()
+                                }
                             }
-                        } },
+                        },
                     tint = CustomTheme.basicPalette.white
                 )
 
@@ -159,7 +159,7 @@ fun MainScreen(navController: NavController) {
                                         time = chat.lm,
                                         messageStatus = MessageStatus.missedMessages(0),
                                         bottomLine = false,
-                                        onClick = {navToChat(navController, chat)}
+                                        onClick = { navToChat(navController, chat) }
                                     )
                                 }
 
@@ -171,7 +171,7 @@ fun MainScreen(navController: NavController) {
                                         time = chat.lm,
                                         messageStatus = MessageStatus.missedMessages(0),
                                         bottomLine = true,
-                                        onClick = {navToChat(navController, chat)}
+                                        onClick = { navToChat(navController, chat) }
                                     )
                                 }
                             }

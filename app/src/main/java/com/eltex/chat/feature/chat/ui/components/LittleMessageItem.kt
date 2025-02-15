@@ -99,13 +99,16 @@ fun LittleMessageItem(
                     textAlign = TextAlign.Start,
                     style = CustomTheme.typographySfPro.bodyMedium,
                     color = CustomTheme.basicPalette.black,
-                    modifier = Modifier.height(20.dp).widthIn(min = 69.dp)
+                    modifier = Modifier
+                        .height(20.dp)
+                        .widthIn(min = 69.dp)
                 )
             },
             time = {
                 Box(
                     Modifier
-                        .height(20.dp).widthIn(min = 33.dp),
+                        .height(20.dp)
+                        .widthIn(min = 33.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
@@ -118,7 +121,6 @@ fun LittleMessageItem(
         )
     }
 }
-
 
 
 @Preview

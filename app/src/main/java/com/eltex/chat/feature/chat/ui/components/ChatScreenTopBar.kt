@@ -28,14 +28,20 @@ import com.eltex.chat.utils.getInitials
 
 @Composable
 fun ChatScreenTopBar(
-    onBackClick: ()->Unit,
+    onBackClick: () -> Unit,
     title: String,
-    onMoreClick: ()->Unit
+    onMoreClick: () -> Unit
 ) {
     Column(Modifier.background(CustomTheme.basicPalette.blue)) {
-        Box(Modifier.height(48.dp).fillMaxWidth())
+        Box(
+            Modifier
+                .height(48.dp)
+                .fillMaxWidth())
         Row(
-            Modifier.height(48.dp).fillMaxWidth().padding(start = 16.dp, end = 26.dp),
+            Modifier
+                .height(48.dp)
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 26.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -47,9 +53,11 @@ fun ChatScreenTopBar(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
                     tint = CustomTheme.basicPalette.white,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp).clickable {
-                        onBackClick()
-                    }
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onBackClick()
+                        }
                 )
                 Spacer(Modifier.size(8.dp))
                 Box(
@@ -94,6 +102,7 @@ fun ChatScreenTopBarPreview() {
         )
     }
 }
+
 @Preview
 @Composable
 fun ChatScreenTopBarPreview2() {

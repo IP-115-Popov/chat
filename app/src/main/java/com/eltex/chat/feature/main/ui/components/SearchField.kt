@@ -83,7 +83,8 @@ fun SearchField(
             Icon(
                 modifier = Modifier
                     .padding(4.dp)
-                    .size(16.dp).clickable {
+                    .size(16.dp)
+                    .clickable {
                         onClearClick()
                     },
                 imageVector = ImageVector.vectorResource(R.drawable.ic_clear),
