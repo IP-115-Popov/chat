@@ -12,7 +12,7 @@ object MessageDTOToMessageMapper {
             userId = u._id,
             msg = msg,
             date = parseDateStringToLong(ts) ?: 0L,
-            name = u.username,
+            name = u.name ?: u.username,
         )
     }
 

@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -48,10 +50,13 @@ fun MyMessageItem(
             text = text,
             textAlign = TextAlign.Start,
             style = CustomTheme.typographySfPro.bodyMedium,
-            color = CustomTheme.basicPalette.black
+            color = CustomTheme.basicPalette.black,
+            modifier = Modifier.widthIn(min = 106.dp).heightIn(min = 20.dp)
         )
-        Spacer(Modifier.size(4.dp))
-        Row(modifier = Modifier.width(Dp.Unspecified)) {
+        Row(modifier = Modifier
+            .height(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = time,
                 style = CustomTheme.typographySfPro.caption3Regular,

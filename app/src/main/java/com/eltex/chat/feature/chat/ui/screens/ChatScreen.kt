@@ -79,10 +79,10 @@ fun ChatScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        MessageItem(
+                        MyMessageItem(
                             text = message.msg,
-                            title = message.name,
-                            time = InstantFormatter.formatInstantToRelativeString(message.date)
+                            time = InstantFormatter.formatInstantToRelativeString(message.date),
+                            read = true,
                         )
                     }
                 } else {
@@ -90,11 +90,12 @@ fun ChatScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        MyMessageItem(
+                        MessageItem(
                             text = message.msg,
-                            time = InstantFormatter.formatInstantToRelativeString(message.date),
-                            read = true,
+                            title = message.name,
+                            time = InstantFormatter.formatInstantToRelativeString(message.date)
                         )
+
                     }
                 }
                 Spacer(Modifier.padding(11.dp))
