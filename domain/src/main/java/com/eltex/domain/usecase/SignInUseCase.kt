@@ -7,8 +7,8 @@ import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
 import com.eltex.domain.repository.AuthDataRepository
-import com.eltex.domain.repository.SignInNetworkRepository
 import com.eltex.domain.repository.HeaderRepository
+import com.eltex.domain.repository.SignInNetworkRepository
 
 class SignInUseCase(
     private val signInNetworkRepository: SignInNetworkRepository,
