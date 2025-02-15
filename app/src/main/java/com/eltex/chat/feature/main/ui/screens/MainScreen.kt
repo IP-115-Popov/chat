@@ -36,7 +36,8 @@ import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.main.ui.components.ChatItem
-import com.eltex.chat.feature.main.ui.components.SearchField
+import com.eltex.chat.feature.createchat.ui.components.SearchField
+import com.eltex.chat.feature.createchat.ui.screens.BottomCreatedChatScreen
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus

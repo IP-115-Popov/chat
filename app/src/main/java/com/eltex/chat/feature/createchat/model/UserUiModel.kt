@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.models
+package com.eltex.chat.feature.createchat.model
 
 data class UserUiModel(
     val _id: String,

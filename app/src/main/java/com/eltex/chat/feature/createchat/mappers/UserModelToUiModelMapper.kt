@@ -1,6 +1,6 @@
-package com.eltex.chat.feature.main.mappers
+package com.eltex.chat.feature.createchat.mappers
 
-import com.eltex.chat.feature.main.models.UserUiModel
+import com.eltex.chat.feature.createchat.model.UserUiModel
 import com.eltex.domain.models.UserModel
 
 object UserModelToUiModelMapper {

@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.ui.screens
+package com.eltex.chat.feature.createchat.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,9 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
-import com.eltex.chat.feature.main.models.UserUiModel
-import com.eltex.chat.feature.main.ui.components.SearchField
-import com.eltex.chat.feature.main.viewmodel.CreateChatViewModel
+import com.eltex.chat.feature.createchat.model.UserUiModel
+import com.eltex.chat.feature.createchat.ui.components.ContactItem
+import com.eltex.chat.feature.createchat.ui.components.SearchField
+import com.eltex.chat.feature.createchat.viewmodel.CreateChatViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.getInitials
 import kotlinx.coroutines.launch
@@ -139,38 +140,6 @@ fun BottomCreatedChatScreen(
             }
         }) {
         content()
-    }
-}
-
-@Composable
-fun ContactItem(
-    contact: UserUiModel,
-    onSelect: (UserUiModel) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .padding(vertical = 7.dp)
-            .clickable {
-                onSelect(contact)
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = contact.name.getInitials(),
-                style = CustomTheme.typographySfPro.titleMedium,
-                color = CustomTheme.basicPalette.white,
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(text = contact.name, style = CustomTheme.typographySfPro.textSemibold)
     }
 }
 

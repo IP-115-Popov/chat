@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.main.viewmodel
+package com.eltex.chat.feature.createchat.viewmodel
 
 sealed interface CreateChatStatus {
     data object Idle : CreateChatStatus

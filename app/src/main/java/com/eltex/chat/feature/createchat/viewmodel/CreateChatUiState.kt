@@ -1,6 +1,6 @@
-package com.eltex.chat.feature.main.viewmodel
+package com.eltex.chat.feature.createchat.viewmodel
 
-import com.eltex.chat.feature.main.models.UserUiModel
+import com.eltex.chat.feature.createchat.model.UserUiModel
 import com.eltex.domain.models.AuthData
 
 data class CreateChatUiState(

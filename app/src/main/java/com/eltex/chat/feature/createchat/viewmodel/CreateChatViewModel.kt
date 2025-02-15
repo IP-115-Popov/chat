@@ -1,11 +1,11 @@
-package com.eltex.chat.feature.main.viewmodel
+package com.eltex.chat.feature.createchat.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.eltex.chat.feature.main.mappers.UserModelToUiModelMapper
-import com.eltex.chat.feature.main.models.UserUiModel
+import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
+import com.eltex.chat.feature.createchat.model.UserUiModel
 import com.eltex.domain.usecase.CreateChatUseCase
 import com.eltex.domain.usecase.GetUsersListUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
