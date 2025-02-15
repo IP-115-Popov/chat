@@ -81,6 +81,7 @@ class ChatViewModel @Inject constructor(
 
     fun loadHistoryChat() {
         if (state.value.status == ChatStatus.NextPageLoading) return
+        if (state.value.isAtEnd) return
 
         setStatus(ChatStatus.NextPageLoading)
         viewModelScope.launch(Dispatchers.IO) {
@@ -96,11 +97,19 @@ class ChatViewModel @Inject constructor(
                     }
 
                     withContext(Dispatchers.IO) {
-                        _state.update { state ->
-                            state.copy(
-                                offset = state.offset + PAGE_SIZE,
-                                messages = state.messages + message
-                            )
+                        if (message.isEmpty()) {
+                            _state.update { state ->
+                                state.copy(
+                                    isAtEnd = true
+                                )
+                            }
+                        } else {
+                            _state.update { state ->
+                                state.copy(
+                                    offset = state.offset + message.size,
+                                    messages = state.messages + message
+                                )
+                            }
                         }
                         setStatus(ChatStatus.Idle)
                     }
