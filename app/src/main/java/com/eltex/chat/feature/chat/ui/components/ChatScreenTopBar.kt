@@ -36,7 +36,8 @@ fun ChatScreenTopBar(
         Box(
             Modifier
                 .height(48.dp)
-                .fillMaxWidth())
+                .fillMaxWidth()
+        )
         Row(
             Modifier
                 .height(48.dp)

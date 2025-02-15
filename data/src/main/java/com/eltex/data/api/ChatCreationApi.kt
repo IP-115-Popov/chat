@@ -4,7 +4,6 @@ import com.eltex.data.models.createchat.CreateChatRequest
 import com.eltex.data.models.createchat.CreatedChatResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 
