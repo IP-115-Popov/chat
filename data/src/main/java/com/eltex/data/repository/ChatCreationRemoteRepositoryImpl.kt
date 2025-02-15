@@ -15,8 +15,6 @@ class ChatCreationRemoteRepositoryImpl @Inject constructor(
         val response: Response<CreatedChatResponse>
         try {
             response = chatCreationApi.createChat(
-                xAuthToken = xAuthToken,
-                userId = userId,
                 createChatRequest = CreateChatRequest(
                     username = userName
                 ),

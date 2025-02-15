@@ -37,8 +37,6 @@ class UsersRemoteRepositoryImpl @Inject constructor(
                 count = count,
                 offset = offset,
                 query = jsonQuery.toString(),
-                userId = userId,
-                xAuthToken = xAuthToken
             )
         } catch (e: Exception) {
             Log.e("response", e.message ?: "")

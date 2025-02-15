@@ -21,7 +21,7 @@ class ProfileInfoRemoteRepositoryImpl @Inject constructor(
     ): Either<DataError, ProfileModel> {
         val response: Response<ProfileInfoRequest>
         try {
-            response = profileInfoApi.getProfileInfo(userId, authToken)
+            response = profileInfoApi.getProfileInfo()
         } catch (e: Exception) {
             return DataError.ConnectionMissing.left()
         }

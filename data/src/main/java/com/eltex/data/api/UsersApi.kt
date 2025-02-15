@@ -12,7 +12,5 @@ interface UsersApi {
         @Query("count") count: Int,
         @Query("offset") offset: Int,
         @Query("query") query: String,
-        @Header("X-User-Id") userId: String,
-        @Header("X-Auth-Token") xAuthToken: String
     ): Response<UsersResponse>
 }
