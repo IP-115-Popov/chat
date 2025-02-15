@@ -11,7 +11,7 @@ import javax.inject.Inject
 class ChatCreationRemoteRepositoryImpl @Inject constructor(
     private val chatCreationApi: ChatCreationApi
 ) : ChatCreationRemoteRepository {
-    override suspend fun createChat(xAuthToken: String, userId: String, userName: String) {
+    override suspend fun createChat(userName: String) {
         val response: Response<CreatedChatResponse>
         try {
             response = chatCreationApi.createChat(

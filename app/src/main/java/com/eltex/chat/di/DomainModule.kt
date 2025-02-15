@@ -33,11 +33,9 @@ class DomainModule {
     @Provides
     fun provideGetProfileInfoUseCase(
         profileInfoRemoteRepository: ProfileInfoRemoteRepository,
-        authDataLocalRepository: AuthDataLocalRepository,
     ): GetProfileInfoUseCase {
         return GetProfileInfoUseCase(
             profileInfoRemoteRepository = profileInfoRemoteRepository,
-            authDataLocalRepository = authDataLocalRepository
         )
     }
 
@@ -99,11 +97,9 @@ class DomainModule {
     @Provides
     fun provideGetUsersListUseCase(
         usersRemoteRepository: UsersRemoteRepository,
-        authDataLocalRepository: AuthDataLocalRepository,
     ): GetUsersListUseCase {
         return GetUsersListUseCase(
             usersRemoteRepository = usersRemoteRepository,
-            authDataLocalRepository = authDataLocalRepository,
         )
     }
 

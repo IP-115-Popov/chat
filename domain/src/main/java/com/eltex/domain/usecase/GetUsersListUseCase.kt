@@ -11,31 +11,12 @@ import com.eltex.domain.repository.UsersRemoteRepository
 
 class GetUsersListUseCase(
     private val usersRemoteRepository: UsersRemoteRepository,
-    private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
     suspend fun execute(
         query: String, count: Int, offset: Int
-    ): Either<DataError, List<UserModel>> {
-        val authData: AuthData? = authDataLocalRepository.getAuthData()
-        if (authData != null) {
-            val result = usersRemoteRepository.getUsersList(
-                query = query,
-                count = count,
-                offset = offset,
-                userId = authData.userId,
-                xAuthToken = authData.authToken,
-            )
-            when (result) {
-                is Either.Left -> {
-                    return result.value.left()
-                }
-
-                is Either.Right -> {
-                    return result.value.right()
-                }
-            }
-        } else {
-            return DataError.LocalStorage.left()
-        }
-    }
+    ): Either<DataError, List<UserModel>> = usersRemoteRepository.getUsersList(
+        query = query,
+        count = count,
+        offset = offset,
+    )
 }

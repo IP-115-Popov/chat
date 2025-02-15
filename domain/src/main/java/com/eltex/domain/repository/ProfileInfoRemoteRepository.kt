@@ -5,5 +5,5 @@ import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
 
 interface ProfileInfoRemoteRepository {
-    suspend fun getProfileInfo(userId: String, authToken: String): Either<DataError, ProfileModel>
+    suspend fun getProfileInfo(): Either<DataError, ProfileModel>
 }

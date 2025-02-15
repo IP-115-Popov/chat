@@ -21,8 +21,6 @@ class UsersRemoteRepositoryImpl @Inject constructor(
         count: Int,
         offset: Int,
         query: String,
-        userId: String,
-        xAuthToken: String
     ): Either<DataError, List<UserModel>> {
 
         val jsonQuery = JSONObject()

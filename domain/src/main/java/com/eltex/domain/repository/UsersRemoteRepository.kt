@@ -6,6 +6,6 @@ import com.eltex.domain.models.UserModel
 
 interface UsersRemoteRepository {
     suspend fun getUsersList(
-        count: Int, offset: Int, query: String, userId: String, xAuthToken: String
+        count: Int, offset: Int, query: String
     ): Either<DataError, List<UserModel>>
 }

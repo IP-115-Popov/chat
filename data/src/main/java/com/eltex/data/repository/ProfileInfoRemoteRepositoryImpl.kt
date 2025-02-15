@@ -15,10 +15,7 @@ import javax.inject.Inject
 class ProfileInfoRemoteRepositoryImpl @Inject constructor(
     private val profileInfoApi: ProfileInfoApi
 ) : ProfileInfoRemoteRepository {
-    override suspend fun getProfileInfo(
-        userId: String,
-        authToken: String,
-    ): Either<DataError, ProfileModel> {
+    override suspend fun getProfileInfo(): Either<DataError, ProfileModel> {
         val response: Response<ProfileInfoRequest>
         try {
             response = profileInfoApi.getProfileInfo()

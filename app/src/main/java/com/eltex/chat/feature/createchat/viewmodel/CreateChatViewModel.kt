@@ -35,23 +35,6 @@ class CreateChatViewModel @Inject constructor(
 
     init {
         searchUser()
-        syncAuthData()
-    }
-
-    private fun syncAuthData() {
-        runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
-                runCatching {
-                    syncAuthDataUseCase.execute().onRight { authData ->
-                        _state.update {
-                            it.copy(
-                                authData = authData
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 
     fun setSearchValue(value: String) {
@@ -65,13 +48,9 @@ class CreateChatViewModel @Inject constructor(
 
     fun onContactSelected(userUiModel: UserUiModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            state.value.authData?.let { authData ->
-                createChatUseCase.execute(
-                    xAuthToken = authData.authToken,
-                    userId = authData.userId,
-                    username = userUiModel.username
-                )
-            }
+            createChatUseCase.execute(
+                username = userUiModel.username
+            )
         }
         Log.i("CreateChatViewModel", "create chat")
     }

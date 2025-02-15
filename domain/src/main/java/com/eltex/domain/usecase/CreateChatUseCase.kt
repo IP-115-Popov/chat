@@ -6,13 +6,9 @@ class CreateChatUseCase(
     private val chatCreationRemoteRepository: ChatCreationRemoteRepository
 ) {
     suspend fun execute(
-        xAuthToken: String,
-        userId: String,
         username: String,
     ) {
         chatCreationRemoteRepository.createChat(
-            xAuthToken = xAuthToken,
-            userId = userId,
             userName = username
         )
     }

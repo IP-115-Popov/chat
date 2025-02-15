@@ -11,32 +11,7 @@ import com.eltex.domain.repository.ProfileInfoRemoteRepository
 
 class GetProfileInfoUseCase(
     private val profileInfoRemoteRepository: ProfileInfoRemoteRepository,
-    private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
-    suspend fun execute(): Either<DataError, ProfileModel> {
-        val authData: AuthData? = authDataLocalRepository.getAuthData()
-        if (authData != null) {
-            val result = profileInfoRemoteRepository.getProfileInfo(
-                userId = authData.userId, authToken = authData.authToken
-            )
-            when (result) {
-                is Either.Left -> {
-                    return with(authData) {
-                        ProfileModel(
-                            id = userId,
-                            name = name,
-                            avatarUrl = avatarUrl,
-                            authToken = authToken,
-                        )
-                    }.right()
-                }
-
-                is Either.Right -> {
-                    return result.value.right()
-                }
-            }
-        } else {
-            return DataError.LocalStorage.left()
-        }
-    }
+    suspend fun execute(): Either<DataError, ProfileModel> =
+        profileInfoRemoteRepository.getProfileInfo()
 }
