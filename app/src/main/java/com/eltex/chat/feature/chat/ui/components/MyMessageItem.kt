@@ -38,35 +38,30 @@ import com.eltex.domain.models.FileModel
 
 @Composable
 fun MyMessageItem(
-    text: String,
-    time: String,
-    read: Boolean,
-    fileModel: FileModel? = null,
-    bitmap: Bitmap? = null
+    text: String, time: String, read: Boolean, fileModel: FileModel? = null, bitmap: Bitmap? = null
 ) {
     Column(
         modifier = Modifier
             .widthIn(max = 321.dp)
             .wrapContentWidth()
             .background(
-                color = CustomTheme.basicPalette.white2,
-                shape = RoundedCornerShape(15.dp)
+                color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
             )
-            .padding(8.dp),
-        horizontalAlignment = Alignment.End
+            .padding(8.dp), horizontalAlignment = Alignment.Start
 
     ) {
-
-        when(fileModel) {
+        when (fileModel) {
             is FileModel.Document -> {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Box(
                         modifier = Modifier
                             .size(24.dp)
                             .background(
-                                color = CustomTheme.basicPalette.blue,
-                                shape = CircleShape
-                            )
+                                color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_file),
@@ -75,9 +70,15 @@ fun MyMessageItem(
                             tint = CustomTheme.basicPalette.white
                         )
                     }
-                    Text(text = fileModel.format ?: "null")
+                    Spacer(Modifier.size(4.dp))
+                    Text(
+                        text = fileModel.title ?: "Null",
+                        style = CustomTheme.typographySfPro.bodyMedium,
+                        color = CustomTheme.basicPalette.black
+                    )
                 }
             }
+
             is FileModel.Img -> {
                 val bitmapPainter = remember(bitmap) {
                     bitmap?.asImageBitmap()?.let { BitmapPainter(it) }
@@ -93,6 +94,7 @@ fun MyMessageItem(
                     )
                 }
             }
+
             is FileModel.Video -> {
                 Box(
                     modifier = Modifier
@@ -107,6 +109,7 @@ fun MyMessageItem(
                     )
                 }
             }
+
             null -> {
 
             }
@@ -121,9 +124,11 @@ fun MyMessageItem(
                 .widthIn(min = 106.dp)
                 .heightIn(min = 20.dp)
         )
-        Row(modifier = Modifier
-            .height(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+
+        Row(
+            modifier = Modifier.height(14.dp).align(Alignment.End),
+            verticalAlignment = Alignment.CenterVertically,
+
         ) {
             Text(
                 text = time,
@@ -134,9 +139,7 @@ fun MyMessageItem(
             Icon(
                 imageVector = if (read) ImageVector.vectorResource(R.drawable.ic_done_all) else ImageVector.vectorResource(
                     R.drawable.ic_done
-                ),
-                contentDescription = null,
-                tint = CustomTheme.basicPalette.lightBlue
+                ), contentDescription = null, tint = CustomTheme.basicPalette.lightBlue
             )
         }
     }
@@ -166,9 +169,7 @@ fun MyMessageItemPreview() {
             )
             Spacer(Modifier.size(4.dp))
             MyMessageItem(
-                read = true,
-                time = "15:50",
-                text = "Короткое сообщение."
+                read = true, time = "15:50", text = "Короткое сообщение."
             )
             Spacer(Modifier.size(4.dp))
             MyMessageItem(

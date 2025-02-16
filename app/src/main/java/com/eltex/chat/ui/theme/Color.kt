@@ -11,7 +11,6 @@ val basicLightPalette = BasicPalette(
     grey2 = getColorFormHex("#B8B8B8"),
     blue = getColorFormHex("#1B416B"),
     lightBlue = getColorFormHex("#329BDE"),
-    lightBlue2 = getColorFormHex("#329BDE"),
     lightGreen = Color.Green,
     black = getColorFormHex("#1B416B"),
     darkGray = getColorFormHex("#1F1F1F"),

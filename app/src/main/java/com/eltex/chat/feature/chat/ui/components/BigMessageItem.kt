@@ -47,7 +47,7 @@ fun BigMessageItem(
             Text(
                 text = title,
                 style = CustomTheme.typographySfPro.caption1Medium,
-                color = CustomTheme.basicPalette.lightBlue2,
+                color = CustomTheme.basicPalette.lightBlue,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )

@@ -1,6 +1,5 @@
 package com.eltex.data.mappers
 
-import android.util.Log
 import com.eltex.data.models.hitorymessge.MessageDTO
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
