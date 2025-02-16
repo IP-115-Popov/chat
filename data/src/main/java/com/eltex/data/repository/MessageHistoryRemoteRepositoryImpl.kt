@@ -22,7 +22,7 @@ class MessageHistoryRemoteRepositoryImpl @Inject constructor(
                 )
 
                 "d" -> historyChatApi.getImHistory(roomId = roomId, offset = offset, count = count)
-                "p" -> historyChatApi.getChannelsHistory(
+                "p" -> historyChatApi.getGroupsHistory(
                     roomId = roomId, offset = offset, count = count
                 )
 
@@ -32,10 +32,11 @@ class MessageHistoryRemoteRepositoryImpl @Inject constructor(
                 }
             }
 
+
             val resMessage = response?.body()?.let { historyMsgResponse ->
                 historyMsgResponse.messages.map { msg ->
                     MessageDTOToMessageMapper.map(msg)
-                } ?: emptyList<Message>()
+                }
             }
 
             if (resMessage != null) {

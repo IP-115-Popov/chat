@@ -5,4 +5,5 @@ data class Message(
     val date: Long,
     val userId: String,
     val name: String,
+    val fileModel: FileModel? = null,
 )

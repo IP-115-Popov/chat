@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.chat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
@@ -106,6 +107,7 @@ class ChatViewModel @Inject constructor(
                             }
                         } else {
                             _state.update { state ->
+                                Log.i("ChatViewModel", message.map { it.fileModel ?: "null" }.joinToString() )
                                 state.copy(
                                     offset = state.offset + message.size,
                                     messages = state.messages + message

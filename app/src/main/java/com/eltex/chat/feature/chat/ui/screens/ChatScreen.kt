@@ -84,6 +84,7 @@ fun ChatScreen(
                             text = message.msg,
                             time = InstantFormatter.formatInstantToRelativeString(message.date),
                             read = true,
+                            fileModel = message.fileModel,
                         )
                     }
                 } else {
@@ -93,7 +94,7 @@ fun ChatScreen(
                     ) {
                         MessageItem(
                             text = message.msg,
-                            title = message.name,
+                            title = message.username,
                             time = InstantFormatter.formatInstantToRelativeString(message.date)
                         )
 
