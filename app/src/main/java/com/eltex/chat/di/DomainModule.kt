@@ -23,7 +23,6 @@ import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.remote.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
-import com.eltex.domain.usecase.local.SaveFileUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
 import dagger.Provides
@@ -68,12 +67,10 @@ class DomainModule {
 
     @Provides
     fun provideGetImageUseCase(
-        fileLocalRepository: FileLocalRepository,
         imageRemoteRepository: ImageRemoteRepository,
     ): GetImageUseCase {
         return GetImageUseCase(
             imageRemoteRepository = imageRemoteRepository,
-            fileLocalRepository = fileLocalRepository,
         )
     }
 
@@ -136,17 +133,10 @@ class DomainModule {
     @Provides
     fun provideLoadDocumentUseCase(
         imageRemoteRepository: ImageRemoteRepository,
+        fileLocalRepository: FileLocalRepository,
     ): LoadDocumentUseCase {
         return LoadDocumentUseCase(
             imageRemoteRepository = imageRemoteRepository,
-        )
-    }
-
-    @Provides
-    fun provideSaveFileUseCase(
-        fileLocalRepository: FileLocalRepository,
-    ): SaveFileUseCase {
-        return SaveFileUseCase(
             fileLocalRepository = fileLocalRepository,
         )
     }

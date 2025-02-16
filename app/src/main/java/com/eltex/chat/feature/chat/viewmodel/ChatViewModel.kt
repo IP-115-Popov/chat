@@ -1,7 +1,5 @@
 package com.eltex.chat.feature.chat.viewmodel
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,9 +10,10 @@ import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
-import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
+import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,8 @@ class ChatViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
     private val syncAuthDataUseCase: SyncAuthDataUseCase,
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
-    private val getImageUseCase: GetImageUseCase
+    private val getImageUseCase: GetImageUseCase,
+    private val loadDocumentUseCase: LoadDocumentUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -125,7 +125,12 @@ class ChatViewModel @Inject constructor(
                                 }
                             }
 
-                            is FileModel.Document, is FileModel.Video, null -> null
+                            is FileModel.Document -> {
+                                kotlin.runCatching {
+                                    loadDocumentUseCase.execute(file.uri)
+                                }
+                                null
+                            } is FileModel.Video, null -> null
                         }
                         MessageToMessageUiModelMapper.map(it).copy(bitmap = bitmap)
                     }

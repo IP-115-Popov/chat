@@ -7,19 +7,7 @@ import com.eltex.domain.repository.remote.ImageRemoteRepository
 
 class GetImageUseCase(
     private val imageRemoteRepository: ImageRemoteRepository,
-    private val fileLocalRepository: FileLocalRepository
 ) {
-    suspend fun execute(imageUrl: String): Either<DataError, ByteArray> {
-        val getImgResult = imageRemoteRepository.getImageByteArray(imageUrl)
-//        getImgResult.onRight { img: ByteArray ->
-//            fileLocalRepository.saveFileData(uri = imageUrl, data = img)
-//            return getImgResult
-//        }
-//
-//        getImgResult.isLeft {
-//            return fileLocalRepository.getFileData(imageUrl)
-//        }
-
-        return getImgResult
-    }
+    suspend fun execute(imageUrl: String): Either<DataError, ByteArray> =
+        imageRemoteRepository.getImageByteArray(imageUrl)
 }

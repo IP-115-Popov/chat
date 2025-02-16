@@ -14,7 +14,7 @@ class FileLocalRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : FileLocalRepository {
     override suspend fun getFileData(uri: String): Either<DataError, ByteArray> {
-        val file = File(context.filesDir, uri)
+        val file = File(context.filesDir, getFileName(uri))
         return if (file.exists()) {
             file.readBytes().right()
         } else {
@@ -23,7 +23,11 @@ class FileLocalRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveFileData(uri: String, data: ByteArray) {
-        val file = File(context.filesDir, uri)
+        val file = File(context.filesDir, getFileName(uri))
         file.writeBytes(data)
+    }
+
+    private fun getFileName(uri: String): String {
+        return "file_${uri.hashCode()}"
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
 import com.eltex.chat.ui.theme.CustomTheme
+import com.eltex.chat.utils.openFile
 import com.eltex.domain.models.FileModel
 
 @Composable
@@ -43,10 +44,10 @@ fun AttachmentItem(
                             color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
                         )
                         .clickable {
-//                            val success = context.openFile(fileModel.uri, fileModel.type)
-//                            if (!success) {
-//                                println("No app found to open this file type")
-//                            }
+                            val success = context.openFile(fileModel.uri, fileModel.type)
+                            if (!success) {
+                                println("No app found to open this file type")
+                            }
                         },
                     contentAlignment = Alignment.Center,
                 ) {
