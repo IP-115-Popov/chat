@@ -22,6 +22,7 @@ import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.remote.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.local.CheckFileExistsUseCase
 import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
@@ -146,6 +147,15 @@ class DomainModule {
         fileLocalRepository: FileLocalRepository,
     ): LoadFromCacheFileUseCase {
         return LoadFromCacheFileUseCase(
+            fileLocalRepository = fileLocalRepository,
+        )
+    }
+
+    @Provides
+    fun provideCheckFileExistsUseCase(
+        fileLocalRepository: FileLocalRepository,
+    ): CheckFileExistsUseCase {
+        return CheckFileExistsUseCase(
             fileLocalRepository = fileLocalRepository,
         )
     }

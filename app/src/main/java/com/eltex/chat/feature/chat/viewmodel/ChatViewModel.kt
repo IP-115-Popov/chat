@@ -11,12 +11,15 @@ import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.local.CheckFileExistsUseCase
 import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +35,7 @@ class ChatViewModel @Inject constructor(
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
     private val getImageUseCase: GetImageUseCase,
     private val loadDocumentUseCase: LoadDocumentUseCase,
+    private val checkFileExistsUseCase: CheckFileExistsUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -125,12 +129,8 @@ class ChatViewModel @Inject constructor(
                                 }
                             }
 
-                            is FileModel.Document -> {
-                                kotlin.runCatching {
-                                    loadDocumentUseCase.execute(file.uri)
-                                }
-                                null
-                            } is FileModel.Video, null -> null
+                            is FileModel.Document,
+                            is FileModel.Video, null -> null
                         }
                         MessageToMessageUiModelMapper.map(it).copy(bitmap = bitmap)
                     }
@@ -164,6 +164,31 @@ class ChatViewModel @Inject constructor(
                 setStatus(ChatStatus.Error)
             }
         }
+    }
+
+    suspend fun loadDocument(file: FileModel.Document): Boolean {
+        val res: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
+            return@async try {
+                if (loadDocumentUseCase.execute(file.uri) != null)
+                     true
+                else
+                     false
+            } catch (e: Exception) {
+                 false
+            }
+        }
+        return res.await()
+    }
+
+    suspend fun checkFileExists(uri: String): Boolean {
+       val res = viewModelScope.async(Dispatchers.IO) {
+           if (checkFileExistsUseCase.execute(uri)) {
+                return@async true
+            } else {
+                 return@async false
+            }
+       }
+        return res.await()
     }
 
     private fun setStatus(status: ChatStatus) {
