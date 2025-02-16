@@ -3,6 +3,7 @@ package com.eltex.data.di
 import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.api.ChatCreationApi
 import com.eltex.data.api.HistoryChatApi
+import com.eltex.data.api.ImageApi
 import com.eltex.data.api.OkHttpClientFactory
 import com.eltex.data.api.ProfileInfoApi
 import com.eltex.data.api.RetrofitFactory
@@ -45,4 +46,8 @@ class ApiModule {
     @Provides
     fun provideHistoryChatApi(retrofit: Retrofit): HistoryChatApi =
         retrofit.create<HistoryChatApi>()
+
+    @Provides
+    fun provideImageApi(retrofit: Retrofit): ImageApi =
+        retrofit.create<ImageApi>()
 }

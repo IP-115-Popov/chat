@@ -4,6 +4,7 @@ import android.util.Log
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import com.eltex.data.api.ImageApi
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.ImageRemoteRepository
 import okhttp3.OkHttpClient
@@ -11,21 +12,18 @@ import okhttp3.Request
 import javax.inject.Inject
 
 class ImageRemoteRepositoryImpl @Inject constructor(
-    private val okHttpClient: OkHttpClient
+    private val okHttpClient: OkHttpClient,
+    private val imageApi: ImageApi,
 ) : ImageRemoteRepository {
     override suspend fun getImageByteArray(url: String): Either<DataError, ByteArray> {
-        try {
-            val request = Request.Builder().url(url).build()
-            val response = okHttpClient.newCall(request).execute()
+        return try {
+            val responseBody = imageApi.getImage(url)
+            val byteArray = responseBody.bytes()
+            byteArray.right()
 
-            if (response.isSuccessful) {
-                return response.body?.bytes()?.right() ?: DataError.IncorrectData.left()
-            } else {
-                return DataError.IncorrectData.left()
-            }
         } catch (e: Exception) {
-            Log.e("NetworkDataSource", "Error downloading image: ${e.message}", e)
-            return DataError.ConnectionMissing.left()
+            Log.e("NetworkDataSource", "Ошибка загрузки изображения: ${e.message}", e)
+            DataError.ConnectionMissing.left() // Failure: Connection issue or other error
         }
     }
 }

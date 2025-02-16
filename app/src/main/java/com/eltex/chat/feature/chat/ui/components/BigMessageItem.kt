@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.chat.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,12 +23,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.ui.theme.CustomTheme
+import com.eltex.domain.models.FileModel
 
 @Composable
 fun BigMessageItem(
     title: String,
     text: String,
     time: String,
+    bitmap: Bitmap?,
+    fileModel: FileModel?,
 ) {
     Column(
         modifier = Modifier
@@ -52,6 +56,7 @@ fun BigMessageItem(
                 maxLines = 1
             )
         }
+        AttachmentItem(fileModel, bitmap)
         Text(
             text = text,
             textAlign = TextAlign.Start,
@@ -75,48 +80,48 @@ fun BigMessageItem(
     }
 }
 
-@Preview
-@Composable
-fun MessageItemPreview() {
-    CustomTheme {
-        Column(Modifier.verticalScroll(rememberScrollState(0))) {
-            BigMessageItem(
-                title = "Константин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин Константинопольский",
-                time = "15:50",
-                text = "Привет! Это пример сообщения, которое может быть длинным и переноситься на несколько строк."
-            )
-            Spacer(Modifier.size(4.dp))
-            BigMessageItem(
-                title = "Константин Константинопольский",
-                time = "15:50",
-                text = "прив",
-            )
-            Spacer(Modifier.size(4.dp))
-            BigMessageItem(
-                title = "Константин Константинопольский",
-                time = "15:50",
-                text = "Короткое сообщение."
-            )
-            Spacer(Modifier.size(4.dp))
-            BigMessageItem(
-                title = "Константин Константинопольский",
-                time = "15:50",
-                text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!",
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun MessageItemPreview2() {
-    CustomTheme {
-        BigMessageItem(
-            title = "Константин Константинопольский",
-            time = "15:50",
-            text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!".repeat(
-                10
-            ) + "1",
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MessageItemPreview() {
+//    CustomTheme {
+//        Column(Modifier.verticalScroll(rememberScrollState(0))) {
+//            BigMessageItem(
+//                title = "Константин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин Константинопольский",
+//                time = "15:50",
+//                text = "Привет! Это пример сообщения, которое может быть длинным и переноситься на несколько строк."
+//            )
+//            Spacer(Modifier.size(4.dp))
+//            BigMessageItem(
+//                title = "Константин Константинопольский",
+//                time = "15:50",
+//                text = "прив",
+//            )
+//            Spacer(Modifier.size(4.dp))
+//            BigMessageItem(
+//                title = "Константин Константинопольский",
+//                time = "15:50",
+//                text = "Короткое сообщение."
+//            )
+//            Spacer(Modifier.size(4.dp))
+//            BigMessageItem(
+//                title = "Константин Константинопольский",
+//                time = "15:50",
+//                text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!",
+//            )
+//        }
+//    }
+//}
+//
+//@Preview
+//@Composable
+//fun MessageItemPreview2() {
+//    CustomTheme {
+//        BigMessageItem(
+//            title = "Константин Константинопольский",
+//            time = "15:50",
+//            text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!".repeat(
+//                10
+//            ) + "1",
+//        )
+//    }
+//}

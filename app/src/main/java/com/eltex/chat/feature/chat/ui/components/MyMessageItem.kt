@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,12 +19,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -42,78 +38,13 @@ fun MyMessageItem(
 ) {
     Column(
         modifier = Modifier
-            .widthIn(max = 321.dp)
-            .wrapContentWidth()
             .background(
                 color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
             )
             .padding(8.dp), horizontalAlignment = Alignment.Start
 
     ) {
-        when (fileModel) {
-            is FileModel.Document -> {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .background(
-                                color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_file),
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = CustomTheme.basicPalette.white
-                        )
-                    }
-                    Spacer(Modifier.size(4.dp))
-                    Text(
-                        text = fileModel.title ?: "Null",
-                        style = CustomTheme.typographySfPro.bodyMedium,
-                        color = CustomTheme.basicPalette.black
-                    )
-                }
-            }
-
-            is FileModel.Img -> {
-                val bitmapPainter = remember(bitmap) {
-                    bitmap?.asImageBitmap()?.let { BitmapPainter(it) }
-                }
-                bitmapPainter?.let {
-                    Image(
-                        painter = bitmapPainter,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(118.dp)
-                            .clip(CircleShape),
-                    )
-                }
-            }
-
-            is FileModel.Video -> {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(color = CustomTheme.basicPalette.blue, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_file),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = CustomTheme.basicPalette.white
-                    )
-                }
-            }
-
-            null -> {
-
-            }
-        }
+        AttachmentItem(fileModel, bitmap)
 
         Text(
             text = text,
@@ -126,10 +57,12 @@ fun MyMessageItem(
         )
 
         Row(
-            modifier = Modifier.height(14.dp).align(Alignment.End),
+            modifier = Modifier
+                .height(14.dp)
+                .align(Alignment.End),
             verticalAlignment = Alignment.CenterVertically,
 
-        ) {
+            ) {
             Text(
                 text = time,
                 style = CustomTheme.typographySfPro.caption3Regular,

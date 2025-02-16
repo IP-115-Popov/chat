@@ -85,6 +85,7 @@ fun ChatScreen(
                             time = InstantFormatter.formatInstantToRelativeString(message.date),
                             read = true,
                             fileModel = message.fileModel,
+                            bitmap = message.bitmap
                         )
                     }
                 } else {

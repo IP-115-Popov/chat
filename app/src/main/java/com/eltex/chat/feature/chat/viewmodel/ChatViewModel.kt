@@ -23,6 +23,7 @@ class ChatViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
     private val syncAuthDataUseCase: SyncAuthDataUseCase,
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
+    private val messageToMessageUiModelMapper: MessageToMessageUiModelMapper,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -69,7 +70,7 @@ class ChatViewModel @Inject constructor(
                             _state.update { state ->
                                 state.copy(
                                     messages = listOf(
-                                        MessageToMessageUiModelMapper.map(
+                                        messageToMessageUiModelMapper.map(
                                             messsage
                                         )
                                     ) + state.messages
@@ -95,7 +96,7 @@ class ChatViewModel @Inject constructor(
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
                     ).map {
-                        MessageToMessageUiModelMapper.map(it)
+                        messageToMessageUiModelMapper.map(it)
                     }
 
                     withContext(Dispatchers.IO) {
