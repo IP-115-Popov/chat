@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.createchat.model.UserUiModel
-import com.eltex.domain.usecase.CreateChatUseCase
-import com.eltex.domain.usecase.GetUsersListUseCase
+import com.eltex.domain.usecase.remote.CreateChatUseCase
+import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -12,7 +12,6 @@ import okhttp3.Request
 import javax.inject.Inject
 
 class ImageRemoteRepositoryImpl @Inject constructor(
-    private val okHttpClient: OkHttpClient,
     private val imageApi: ImageApi,
 ) : ImageRemoteRepository {
     override suspend fun getImageByteArray(url: String): Either<DataError, ByteArray> {

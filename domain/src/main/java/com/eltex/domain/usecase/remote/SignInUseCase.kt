@@ -1,4 +1,4 @@
-package com.eltex.domain.usecase
+package com.eltex.domain.usecase.remote
 
 import arrow.core.Either
 import arrow.core.left

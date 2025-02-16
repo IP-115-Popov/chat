@@ -3,6 +3,7 @@ package com.eltex.chat.feature.chat.ui.components
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
@@ -26,9 +28,9 @@ import com.eltex.domain.models.FileModel
 
 @Composable
 fun AttachmentItem(
-    fileModel: FileModel?,
-    bitmap: Bitmap?
+    fileModel: FileModel?, bitmap: Bitmap?
 ) {
+    val context = LocalContext.current
     when (fileModel) {
         is FileModel.Document -> {
             Row(
@@ -39,7 +41,13 @@ fun AttachmentItem(
                         .size(24.dp)
                         .background(
                             color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
-                        ),
+                        )
+                        .clickable {
+//                            val success = context.openFile(fileModel.uri, fileModel.type)
+//                            if (!success) {
+//                                println("No app found to open this file type")
+//                            }
+                        },
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
@@ -59,7 +67,6 @@ fun AttachmentItem(
         }
 
         is FileModel.Img -> {
-
             bitmap?.let {
                 Image(
                     modifier = Modifier
@@ -96,8 +103,6 @@ fun AttachmentItem(
             )
         }
 
-        null -> {
-
-        }
+        null -> {}
     }
 }

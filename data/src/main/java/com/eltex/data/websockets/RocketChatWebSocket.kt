@@ -1,6 +1,7 @@
 package com.eltex.data.websockets
 
 import android.util.Log
+import com.eltex.domain.Сonstants
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -24,7 +25,7 @@ class RocketChatWebSocket(
             .build()
 
         request = Request.Builder()
-            .url("wss://eltex2025.rocket.chat/websocket")
+            .url(Сonstants.BASE_WSS)
             .build()
 
         try {

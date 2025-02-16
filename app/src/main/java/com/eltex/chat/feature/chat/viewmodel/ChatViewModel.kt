@@ -1,13 +1,21 @@
 package com.eltex.chat.feature.chat.viewmodel
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
+import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
-import com.eltex.domain.usecase.GetHistoryChatUseCase
-import com.eltex.domain.usecase.GetMessageFromChatUseCase
+import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
+import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
+import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.remote.GetImageUseCase
+import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +31,7 @@ class ChatViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
     private val syncAuthDataUseCase: SyncAuthDataUseCase,
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
-    private val messageToMessageUiModelMapper: MessageToMessageUiModelMapper,
+    private val getImageUseCase: GetImageUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -64,20 +72,19 @@ class ChatViewModel @Inject constructor(
     fun listenChat() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.roomId?.let { roomId ->
-                getMessageFromChatUseCase.execute(roomId = roomId)
-                    .collect { messsage: Message ->
-                        withContext(Dispatchers.IO) {
-                            _state.update { state ->
-                                state.copy(
-                                    messages = listOf(
-                                        messageToMessageUiModelMapper.map(
-                                            messsage
-                                        )
-                                    ) + state.messages
-                                )
-                            }
+                getMessageFromChatUseCase.execute(roomId = roomId).collect { messsage: Message ->
+                    withContext(Dispatchers.IO) {
+                        _state.update { state ->
+                            state.copy(
+                                messages = listOf(
+                                    MessageToMessageUiModelMapper.map(
+                                        messsage
+                                    )
+                                ) + state.messages
+                            )
                         }
                     }
+                }
             }
         }
     }
@@ -96,7 +103,31 @@ class ChatViewModel @Inject constructor(
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
                     ).map {
-                        messageToMessageUiModelMapper.map(it)
+                        val bitmap = when (val file = it.fileModel) {
+                            is FileModel.Img -> {
+                                try {
+                                    val byteArray =
+                                        getImageUseCase.execute(Сonstants.BASE_URL + file.uri)
+                                    when (byteArray) {
+                                        is Either.Left -> null
+                                        is Either.Right -> {
+                                            byteArray.value.byteArrayToBitmap()
+                                        }
+
+                                        else -> null
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e(
+                                        "MessageToMessageUiModelMapper",
+                                        "FileModel.Img ${e.message}"
+                                    )
+                                    null
+                                }
+                            }
+
+                            is FileModel.Document, is FileModel.Video, null -> null
+                        }
+                        MessageToMessageUiModelMapper.map(it).copy(bitmap = bitmap)
                     }
 
                     withContext(Dispatchers.IO) {
@@ -108,7 +139,10 @@ class ChatViewModel @Inject constructor(
                             }
                         } else {
                             _state.update { state ->
-                                Log.i("ChatViewModel", message.map { it.fileModel ?: "null" }.joinToString() )
+                                Log.i(
+                                    "ChatViewModel",
+                                    message.map { it.fileModel ?: "null" }.joinToString()
+                                )
                                 state.copy(
                                     offset = state.offset + message.size,
                                     messages = state.messages + message
@@ -121,6 +155,7 @@ class ChatViewModel @Inject constructor(
                     setStatus(ChatStatus.Error)
                 }
             } catch (e: Exception) {
+                Log.e("ChatViewModel", "loadHistoryChat ${e.message}")
                 setStatus(ChatStatus.Error)
             }
         }

@@ -5,22 +5,25 @@ import com.eltex.domain.repository.ChatCreationRemoteRepository
 import com.eltex.domain.repository.ChatMessageRemoteRepository
 import com.eltex.domain.repository.ChatRemoteRepository
 import com.eltex.domain.repository.HeaderLocalRepository
-import com.eltex.domain.repository.ImageLocalRepository
+import com.eltex.domain.repository.FileLocalRepository
 import com.eltex.domain.repository.ImageRemoteRepository
 import com.eltex.domain.repository.MessageHistoryRemoteRepository
 import com.eltex.domain.repository.ProfileInfoRemoteRepository
 import com.eltex.domain.repository.SignInRemoteRepository
 import com.eltex.domain.repository.UsersRemoteRepository
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
-import com.eltex.domain.usecase.CreateChatUseCase
-import com.eltex.domain.usecase.GetChatListUseCase
-import com.eltex.domain.usecase.GetHistoryChatUseCase
-import com.eltex.domain.usecase.GetImageUseCase
-import com.eltex.domain.usecase.GetMessageFromChatUseCase
-import com.eltex.domain.usecase.GetProfileInfoUseCase
-import com.eltex.domain.usecase.GetUsersListUseCase
-import com.eltex.domain.usecase.SignInUseCase
+import com.eltex.domain.usecase.remote.CreateChatUseCase
+import com.eltex.domain.usecase.remote.GetChatListUseCase
+import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
+import com.eltex.domain.usecase.remote.GetImageUseCase
+import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
+import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
+import com.eltex.domain.usecase.remote.GetUsersListUseCase
+import com.eltex.domain.usecase.remote.LoadDocumentUseCase
+import com.eltex.domain.usecase.remote.SignInUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
+import com.eltex.domain.usecase.local.SaveFileUseCase
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.Module
 import dagger.Provides
@@ -65,12 +68,12 @@ class DomainModule {
 
     @Provides
     fun provideGetImageUseCase(
-        imageLocalRepository: ImageLocalRepository,
+        fileLocalRepository: FileLocalRepository,
         imageRemoteRepository: ImageRemoteRepository,
     ): GetImageUseCase {
         return GetImageUseCase(
             imageRemoteRepository = imageRemoteRepository,
-            imageLocalRepository = imageLocalRepository,
+            fileLocalRepository = fileLocalRepository,
         )
     }
 
@@ -127,6 +130,33 @@ class DomainModule {
     ): GetHistoryChatUseCase {
         return GetHistoryChatUseCase(
             messageHistoryRemoteRepository = messageHistoryRemoteRepository,
+        )
+    }
+
+    @Provides
+    fun provideLoadDocumentUseCase(
+        imageRemoteRepository: ImageRemoteRepository,
+    ): LoadDocumentUseCase {
+        return LoadDocumentUseCase(
+            imageRemoteRepository = imageRemoteRepository,
+        )
+    }
+
+    @Provides
+    fun provideSaveFileUseCase(
+        fileLocalRepository: FileLocalRepository,
+    ): SaveFileUseCase {
+        return SaveFileUseCase(
+            fileLocalRepository = fileLocalRepository,
+        )
+    }
+
+    @Provides
+    fun provideLoadFromCacheFileUseCase(
+        fileLocalRepository: FileLocalRepository,
+    ): LoadFromCacheFileUseCase {
+        return LoadFromCacheFileUseCase(
+            fileLocalRepository = fileLocalRepository,
         )
     }
 }
