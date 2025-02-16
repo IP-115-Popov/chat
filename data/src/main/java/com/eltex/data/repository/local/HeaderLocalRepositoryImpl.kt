@@ -1,7 +1,7 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.local
 
 import com.eltex.data.api.OkHttpClientFactory
-import com.eltex.domain.repository.HeaderLocalRepository
+import com.eltex.domain.repository.local.HeaderLocalRepository
 import javax.inject.Inject
 
 class HeaderLocalRepositoryImpl @Inject constructor() : HeaderLocalRepository {

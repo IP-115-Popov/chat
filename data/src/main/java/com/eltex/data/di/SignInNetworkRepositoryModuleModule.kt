@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.SignInRemoteRepositoryImpl
-import com.eltex.domain.repository.SignInRemoteRepository
+import com.eltex.data.repository.remote.SignInRemoteRepositoryImpl
+import com.eltex.domain.repository.remote.SignInRemoteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

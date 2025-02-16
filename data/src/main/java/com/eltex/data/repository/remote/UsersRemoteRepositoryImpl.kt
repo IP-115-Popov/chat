@@ -1,4 +1,4 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import arrow.core.Either
@@ -9,7 +9,7 @@ import com.eltex.data.mappers.UserDTOToUserModelMapper
 import com.eltex.data.models.users.UsersResponse
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.UserModel
-import com.eltex.domain.repository.UsersRemoteRepository
+import com.eltex.domain.repository.remote.UsersRemoteRepository
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject

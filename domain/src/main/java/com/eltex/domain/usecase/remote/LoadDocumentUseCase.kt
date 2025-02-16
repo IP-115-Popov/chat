@@ -1,6 +1,6 @@
 package com.eltex.domain.usecase.remote
 
-import com.eltex.domain.repository.ImageRemoteRepository
+import com.eltex.domain.repository.remote.ImageRemoteRepository
 
 class LoadDocumentUseCase(
     private val imageRemoteRepository: ImageRemoteRepository,

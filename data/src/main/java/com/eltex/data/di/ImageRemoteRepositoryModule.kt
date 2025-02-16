@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.ImageRemoteRepositoryImpl
-import com.eltex.domain.repository.ImageRemoteRepository
+import com.eltex.data.repository.remote.ImageRemoteRepositoryImpl
+import com.eltex.domain.repository.remote.ImageRemoteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.eltex.domain.repository
+package com.eltex.domain.repository.remote
 
 import com.eltex.domain.models.Message
 import kotlinx.coroutines.flow.Flow

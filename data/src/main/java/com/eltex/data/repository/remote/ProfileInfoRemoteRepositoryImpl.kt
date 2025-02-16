@@ -1,4 +1,4 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import arrow.core.Either
 import arrow.core.left
@@ -8,7 +8,7 @@ import com.eltex.data.mappers.ProfileInfoRequestToProfileModelMapper
 import com.eltex.data.models.profileinfo.ProfileInfoRequest
 import com.eltex.domain.models.DataError
 import com.eltex.domain.models.ProfileModel
-import com.eltex.domain.repository.ProfileInfoRemoteRepository
+import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 

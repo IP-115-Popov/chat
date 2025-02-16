@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.ChatCreationRemoteRepositoryImpl
-import com.eltex.domain.repository.ChatCreationRemoteRepository
+import com.eltex.data.repository.remote.ChatCreationRemoteRepositoryImpl
+import com.eltex.domain.repository.remote.ChatCreationRemoteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

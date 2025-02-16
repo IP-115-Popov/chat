@@ -1,10 +1,10 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
-import com.eltex.domain.repository.ChatRemoteRepository
+import com.eltex.domain.repository.remote.ChatRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose

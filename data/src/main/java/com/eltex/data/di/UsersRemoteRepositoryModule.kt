@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.UsersRemoteRepositoryImpl
-import com.eltex.domain.repository.UsersRemoteRepository
+import com.eltex.data.repository.remote.UsersRemoteRepositoryImpl
+import com.eltex.domain.repository.remote.UsersRemoteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

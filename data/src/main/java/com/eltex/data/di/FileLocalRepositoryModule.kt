@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.FileLocalRepositoryImpl
-import com.eltex.domain.repository.FileLocalRepository
+import com.eltex.data.repository.local.FileLocalRepositoryImpl
+import com.eltex.domain.repository.local.FileLocalRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

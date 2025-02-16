@@ -1,4 +1,4 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import arrow.core.Either
@@ -9,7 +9,7 @@ import com.eltex.data.mappers.LoginModelToLoginRequestMapper
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
-import com.eltex.domain.repository.SignInRemoteRepository
+import com.eltex.domain.repository.remote.SignInRemoteRepository
 import javax.inject.Inject
 
 class SignInRemoteRepositoryImpl @Inject constructor(

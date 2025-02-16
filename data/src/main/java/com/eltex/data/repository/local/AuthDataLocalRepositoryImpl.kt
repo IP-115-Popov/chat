@@ -1,9 +1,9 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.local
 
 import com.eltex.data.models.AuthDataEntity
 import com.eltex.data.storage.SharedPreferencesAuthDataStorage
 import com.eltex.domain.models.AuthData
-import com.eltex.domain.repository.AuthDataLocalRepository
+import com.eltex.domain.repository.local.AuthDataLocalRepository
 import javax.inject.Inject
 
 

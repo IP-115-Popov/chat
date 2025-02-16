@@ -1,7 +1,7 @@
 package com.eltex.data.di
 
-import com.eltex.data.repository.ProfileInfoRemoteRepositoryImpl
-import com.eltex.domain.repository.ProfileInfoRemoteRepository
+import com.eltex.data.repository.remote.ProfileInfoRemoteRepositoryImpl
+import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

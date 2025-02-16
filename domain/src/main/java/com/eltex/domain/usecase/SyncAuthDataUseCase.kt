@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.domain.models.AuthData
-import com.eltex.domain.repository.AuthDataLocalRepository
-import com.eltex.domain.repository.HeaderLocalRepository
+import com.eltex.domain.repository.local.AuthDataLocalRepository
+import com.eltex.domain.repository.local.HeaderLocalRepository
 
 class SyncAuthDataUseCase(
     private val authDataLocalRepository: AuthDataLocalRepository,

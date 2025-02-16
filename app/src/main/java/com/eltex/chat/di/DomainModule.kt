@@ -1,16 +1,16 @@
 package com.eltex.chat.di
 
-import com.eltex.domain.repository.AuthDataLocalRepository
-import com.eltex.domain.repository.ChatCreationRemoteRepository
-import com.eltex.domain.repository.ChatMessageRemoteRepository
-import com.eltex.domain.repository.ChatRemoteRepository
-import com.eltex.domain.repository.HeaderLocalRepository
-import com.eltex.domain.repository.FileLocalRepository
-import com.eltex.domain.repository.ImageRemoteRepository
-import com.eltex.domain.repository.MessageHistoryRemoteRepository
-import com.eltex.domain.repository.ProfileInfoRemoteRepository
-import com.eltex.domain.repository.SignInRemoteRepository
-import com.eltex.domain.repository.UsersRemoteRepository
+import com.eltex.domain.repository.local.AuthDataLocalRepository
+import com.eltex.domain.repository.remote.ChatCreationRemoteRepository
+import com.eltex.domain.repository.remote.ChatMessageRemoteRepository
+import com.eltex.domain.repository.remote.ChatRemoteRepository
+import com.eltex.domain.repository.local.HeaderLocalRepository
+import com.eltex.domain.repository.local.FileLocalRepository
+import com.eltex.domain.repository.remote.ImageRemoteRepository
+import com.eltex.domain.repository.remote.MessageHistoryRemoteRepository
+import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
+import com.eltex.domain.repository.remote.SignInRemoteRepository
+import com.eltex.domain.repository.remote.UsersRemoteRepository
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.CreateChatUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase

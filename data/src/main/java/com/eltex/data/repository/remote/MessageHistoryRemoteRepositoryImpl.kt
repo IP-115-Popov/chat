@@ -1,11 +1,11 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import com.eltex.data.api.HistoryChatApi
 import com.eltex.data.mappers.MessageDTOToMessageMapper
 import com.eltex.data.models.hitorymessge.HistoryMsgResponse
 import com.eltex.domain.models.Message
-import com.eltex.domain.repository.MessageHistoryRemoteRepository
+import com.eltex.domain.repository.remote.MessageHistoryRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 

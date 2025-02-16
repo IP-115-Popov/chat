@@ -1,4 +1,4 @@
-package com.eltex.domain.repository
+package com.eltex.domain.repository.local
 
 interface HeaderLocalRepository {
     suspend fun setToken(authToken: String)

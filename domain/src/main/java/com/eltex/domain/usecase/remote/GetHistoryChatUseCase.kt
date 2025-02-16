@@ -1,7 +1,7 @@
 package com.eltex.domain.usecase.remote
 
 import com.eltex.domain.models.Message
-import com.eltex.domain.repository.MessageHistoryRemoteRepository
+import com.eltex.domain.repository.remote.MessageHistoryRemoteRepository
 
 class GetHistoryChatUseCase(
     private val messageHistoryRemoteRepository: MessageHistoryRemoteRepository

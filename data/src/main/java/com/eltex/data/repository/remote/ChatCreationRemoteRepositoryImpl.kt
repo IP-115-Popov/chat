@@ -1,10 +1,10 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import com.eltex.data.api.ChatCreationApi
 import com.eltex.data.models.createchat.CreateChatRequest
 import com.eltex.data.models.createchat.CreatedChatResponse
-import com.eltex.domain.repository.ChatCreationRemoteRepository
+import com.eltex.domain.repository.remote.ChatCreationRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 

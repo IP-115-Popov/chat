@@ -1,4 +1,4 @@
-package com.eltex.data.repository
+package com.eltex.data.repository.remote
 
 import android.util.Log
 import arrow.core.Either
@@ -6,9 +6,7 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.ImageApi
 import com.eltex.domain.models.DataError
-import com.eltex.domain.repository.ImageRemoteRepository
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import com.eltex.domain.repository.remote.ImageRemoteRepository
 import javax.inject.Inject
 
 class ImageRemoteRepositoryImpl @Inject constructor(
