@@ -44,10 +44,7 @@ fun AttachmentItem(
                             color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
                         )
                         .clickable {
-                            val success = context.openFile(fileModel.uri, fileModel.type)
-                            if (!success) {
-                                println("No app found to open this file type")
-                            }
+                            context.openFile(fileModel)
                         },
                     contentAlignment = Alignment.Center,
                 ) {
