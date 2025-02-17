@@ -77,6 +77,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.androidsvg)
 
-    implementation("androidx.compose.material:material:1.5.4")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.constraintlayout.compose)
 }
