@@ -8,6 +8,8 @@ import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
+import com.eltex.domain.models.MessagePayload
+import com.eltex.domain.repository.remote.SendMessageUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
@@ -36,6 +38,7 @@ class ChatViewModel @Inject constructor(
     private val getImageUseCase: GetImageUseCase,
     private val loadDocumentUseCase: LoadDocumentUseCase,
     private val checkFileExistsUseCase: CheckFileExistsUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -90,6 +93,20 @@ class ChatViewModel @Inject constructor(
                     }
                 }
             }
+
+        }
+    }
+
+    fun sendMessage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            sendMessageUseCase(
+                MessagePayload(
+                    id = "fgfpkFDHGDH",
+                    roomId = state.value.roomId ?: "67b164ebcc5c71ade77b82cc",
+                    msg = "hello",
+                    token = "a8G7X5sFhDKWL8XlweMOfHq5NWY2igJklc-KaPFxSJQ"
+                )
+            )
         }
     }
 
@@ -107,8 +124,7 @@ class ChatViewModel @Inject constructor(
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
                     ).map {
-                        //val bitmap =  loadImg(fileModel = it.fileModel)
-                        MessageToMessageUiModelMapper.map(it)//.copy(bitmap = bitmap)
+                        MessageToMessageUiModelMapper.map(it)
                     }
 
                     withContext(Dispatchers.IO) {

@@ -1,8 +1,8 @@
-package com.eltex.data.models.message
+package com.eltex.data.models.lifemessage
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UpdatedAt(
+data class Ts(
     val `$date`: Long
 )

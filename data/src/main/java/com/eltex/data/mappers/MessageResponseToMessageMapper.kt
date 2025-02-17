@@ -1,7 +1,6 @@
 package com.eltex.data.mappers
 
-import com.eltex.data.models.message.MessageResponse
-import com.eltex.data.util.parseDateStringToLong
+import com.eltex.data.models.lifemessage.MessageResponse
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 

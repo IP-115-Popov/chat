@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.chat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,7 +65,12 @@ fun ChatScreen(
             title = "roomId",
             onMoreClick = {},
         )
-    }) { innerPadding ->
+    },
+        bottomBar = {
+            Box(Modifier.fillMaxWidth().height(50.dp).background(CustomTheme.basicPalette.blue).clickable {
+                chatViewModel.sendMessage()
+            })
+        }) { innerPadding ->
         LazyColumn(
             state = listState,
             modifier = Modifier
