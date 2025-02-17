@@ -7,7 +7,7 @@ import com.eltex.domain.repository.local.AuthDataLocalRepository
 import javax.inject.Inject
 
 
-class AuthDataLocalRepositoryImpl @Inject constructor(
+class AuthDataSharedPrefRepositoryImpl @Inject constructor(
     private val sharedPreferencesAuthDataStorage: SharedPreferencesAuthDataStorage
 ) : AuthDataLocalRepository {
 

@@ -1,5 +1,6 @@
 package com.eltex.data.repository.remote
 
+import android.util.Log
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -12,7 +13,7 @@ import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class ProfileInfoRemoteRepositoryImpl @Inject constructor(
+class ProfileInfoNetworkRepositoryImpl @Inject constructor(
     private val profileInfoApi: ProfileInfoApi
 ) : ProfileInfoRemoteRepository {
     override suspend fun getProfileInfo(): Either<DataError, ProfileModel> {
@@ -20,6 +21,8 @@ class ProfileInfoRemoteRepositoryImpl @Inject constructor(
         try {
             response = profileInfoApi.getProfileInfo()
         } catch (e: Exception) {
+            Log.e("ProfileInfoNetworkRepositoryImpl", "getProfileInfo ${e.message}")
+            e.printStackTrace()
             return DataError.ConnectionMissing.left()
         }
 

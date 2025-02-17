@@ -1,6 +1,6 @@
 package com.eltex.data.di.repository
 
-import com.eltex.data.repository.remote.ProfileInfoRemoteRepositoryImpl
+import com.eltex.data.repository.remote.ProfileInfoNetworkRepositoryImpl
 import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
 import dagger.Binds
 import dagger.Module
@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface ProfileInfoRemoteRepositoryModule {
     @Binds
-    fun bindProfileInfoRemoteRepository(impl: ProfileInfoRemoteRepositoryImpl): ProfileInfoRemoteRepository
+    fun bindProfileInfoRemoteRepository(impl: ProfileInfoNetworkRepositoryImpl): ProfileInfoRemoteRepository
 }

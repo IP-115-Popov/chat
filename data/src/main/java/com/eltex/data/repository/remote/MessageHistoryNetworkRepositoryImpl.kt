@@ -9,7 +9,7 @@ import com.eltex.domain.repository.remote.MessageHistoryRemoteRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class MessageHistoryRemoteRepositoryImpl @Inject constructor(
+class MessageHistoryNetworkRepositoryImpl @Inject constructor(
     private val historyChatApi: HistoryChatApi
 ) : MessageHistoryRemoteRepository {
     override suspend fun getMessageHistory(
@@ -27,7 +27,6 @@ class MessageHistoryRemoteRepositoryImpl @Inject constructor(
                 )
 
                 else -> {
-                    Log.e("Network", "raw channel format")
                     null
                 }
             }

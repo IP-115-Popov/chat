@@ -1,6 +1,6 @@
 package com.eltex.data.di.repository
 
-import com.eltex.data.repository.remote.SignInRemoteRepositoryImpl
+import com.eltex.data.repository.remote.SignInNetworkRepositoryImpl
 import com.eltex.domain.repository.remote.SignInRemoteRepository
 import dagger.Binds
 import dagger.Module
@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface SignInNetworkRepositoryModuleModule {
     @Binds
-    fun bindsSignInRemoteRepository(impl: SignInRemoteRepositoryImpl): SignInRemoteRepository
+    fun bindsSignInRemoteRepository(impl: SignInNetworkRepositoryImpl): SignInRemoteRepository
 }

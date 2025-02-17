@@ -16,7 +16,7 @@ import org.json.JSONObject
 import java.util.UUID
 import javax.inject.Inject
 
-class ChatMessageRemoteRepositoryImpl @Inject constructor(
+class ChatMessageWebSocketRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatMessageRemoteRepository {
 
@@ -24,10 +24,8 @@ class ChatMessageRemoteRepositoryImpl @Inject constructor(
         ignoreUnknownKeys = true
     }
 
-    // Сохраняем id подписки, чтобы можно было отписаться.
     private var subscriptionId: String? = null
 
-    // Функция для подписки на поток сообщений комнаты
     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.d("RoomMessages", "Raw JSON: $json")
@@ -52,7 +50,7 @@ class ChatMessageRemoteRepositoryImpl @Inject constructor(
 
         webSocketManager.addListener(listener)
 
-        val id = generateSubscriptionId() // Генерация уникального id для подписки
+        val id = generateSubscriptionId()
 
         // Отправляем запрос на подписку
         withContext(Dispatchers.IO) {
@@ -74,14 +72,12 @@ class ChatMessageRemoteRepositoryImpl @Inject constructor(
 
 
         awaitClose {
-            // Отписываемся при закрытии flow
             unsubscribeFromRoomMessages(roomId)
             webSocketManager.removeListener(listener)
             Log.d("RoomMessages", "Flow closed, listener removed")
         }
     }
 
-    // Функция для отписки от потока сообщений комнаты
     private fun unsubscribeFromRoomMessages(roomId: String) {
         val id = subscriptionId ?: return
 

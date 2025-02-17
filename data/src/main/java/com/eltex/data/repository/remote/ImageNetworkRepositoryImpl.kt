@@ -9,7 +9,7 @@ import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.remote.ImageRemoteRepository
 import javax.inject.Inject
 
-class ImageRemoteRepositoryImpl @Inject constructor(
+class ImageNetworkRepositoryImpl @Inject constructor(
     private val imageApi: ImageApi,
 ) : ImageRemoteRepository {
     override suspend fun getImageByteArray(url: String): Either<DataError, ByteArray> {
@@ -17,10 +17,9 @@ class ImageRemoteRepositoryImpl @Inject constructor(
             val responseBody = imageApi.getImage(url)
             val byteArray = responseBody.bytes()
             byteArray.right()
-
         } catch (e: Exception) {
             Log.e("NetworkDataSource", "Ошибка загрузки изображения: ${e.message}", e)
-            DataError.ConnectionMissing.left() // Failure: Connection issue or other error
+            DataError.ConnectionMissing.left()
         }
     }
 }

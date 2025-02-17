@@ -18,10 +18,10 @@ class RocketChatWebSocket(
 
     fun connect() {
         client = OkHttpClient.Builder()
-            .readTimeout(4, TimeUnit.SECONDS) // Adjust as needed
+            .readTimeout(4, TimeUnit.SECONDS)
             .writeTimeout(4, TimeUnit.SECONDS)
             .connectTimeout(4, TimeUnit.SECONDS)
-            .pingInterval(10, TimeUnit.SECONDS) // Send pings
+            .pingInterval(10, TimeUnit.SECONDS)
             .build()
 
         request = Request.Builder()

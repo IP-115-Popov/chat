@@ -1,6 +1,6 @@
 package com.eltex.data.di.repository
 
-import com.eltex.data.repository.remote.ChatRemoteRepositoryImpl
+import com.eltex.data.repository.remote.ChatWebSocketRepositoryImpl
 import com.eltex.domain.repository.remote.ChatRemoteRepository
 import dagger.Binds
 import dagger.Module
@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface ChatRemoteRepositoryModule {
     @Binds
-    fun bindChatRemoteRepository(impl: ChatRemoteRepositoryImpl): ChatRemoteRepository
+    fun bindChatRemoteRepository(impl: ChatWebSocketRepositoryImpl): ChatRemoteRepository
 }

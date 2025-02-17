@@ -45,7 +45,6 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
 
                     "added" -> {
                         if (json.has("collection") && json.getString("collection") == "users") {
-                            //isConnected = true
                             _connectionState.update {
                                 Log.i("WebSocketManagerImpl", "connected")
                                 WebSocketConnectionState.Connected
@@ -61,7 +60,6 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
             listeners.forEach { it(json) }
         }
         webSocketManager = RocketChatWebSocket(listener)
-        //webSocketManager?.connect()
     }
 
     override fun addListener(listener: (JSONObject) -> Unit) {

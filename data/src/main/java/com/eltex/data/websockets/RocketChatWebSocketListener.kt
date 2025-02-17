@@ -10,7 +10,7 @@ import org.json.JSONObject
 class RocketChatWebSocketListener(val messageListener: (JSONObject) -> Unit) : WebSocketListener() {
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.i("WebSocket", "WebSocket connected  ${response.message}")
-        // Отправляем сообщение connect
+        //connect
         webSocket.send("""{"msg": "connect", "version": "1", "support": ["1"]}""")
     }
 

@@ -14,7 +14,7 @@ import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
-class UsersRemoteRepositoryImpl @Inject constructor(
+class UsersNetworkRepositoryImpl @Inject constructor(
     private val usersApi: UsersApi
 ) : UsersRemoteRepository {
     override suspend fun getUsersList(
@@ -25,8 +25,6 @@ class UsersRemoteRepositoryImpl @Inject constructor(
 
         val jsonQuery = JSONObject()
             .put("name", JSONObject().put("\$regex", query))
-
-        Log.i("UsersNetworkRepositoryImpl", jsonQuery.toString())
 
         val response: Response<UsersResponse>
 

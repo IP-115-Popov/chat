@@ -12,7 +12,7 @@ import com.eltex.domain.models.SignInError
 import com.eltex.domain.repository.remote.SignInRemoteRepository
 import javax.inject.Inject
 
-class SignInRemoteRepositoryImpl @Inject constructor(
+class SignInNetworkRepositoryImpl @Inject constructor(
     private val authorizationApi: AuthorizationApi
 ) : SignInRemoteRepository {
     override suspend fun signIn(loginModel: LoginModel): Either<SignInError, AuthData> {

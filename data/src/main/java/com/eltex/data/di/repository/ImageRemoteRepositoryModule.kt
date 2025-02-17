@@ -1,6 +1,6 @@
 package com.eltex.data.di.repository
 
-import com.eltex.data.repository.remote.ImageRemoteRepositoryImpl
+import com.eltex.data.repository.remote.ImageNetworkRepositoryImpl
 import com.eltex.domain.repository.remote.ImageRemoteRepository
 import dagger.Binds
 import dagger.Module
@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface ImageRemoteRepositoryModule {
     @Binds
-    fun bindImageRemoteRepository(impl: ImageRemoteRepositoryImpl): ImageRemoteRepository
+    fun bindImageRemoteRepository(impl: ImageNetworkRepositoryImpl): ImageRemoteRepository
 }

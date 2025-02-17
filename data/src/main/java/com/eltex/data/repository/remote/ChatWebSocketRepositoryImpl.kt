@@ -16,51 +16,12 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import javax.inject.Inject
 
-class ChatRemoteRepositoryImpl @Inject constructor(
+class ChatWebSocketRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager
 ) : ChatRemoteRepository {
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true
-    }
-
-    override suspend fun createChat(
-        chatName: String,
-        userNameList: List<String>
-    ): Flow<List<ChatModel>> = callbackFlow {
-        Log.i("gson", "createChat Flow")
-        val listener: (JSONObject) -> Unit = { json ->
-            if (json.has("result")) {
-                Log.i("gson", json.toString())
-            }
-        }
-        val userNameListJson = Json.encodeToString(userNameList)
-        webSocketManager.addListener(listener)
-
-        Log.i("createPrivateGroup", "createPrivateGroup")
-        // Отправляем запрос на получение чата
-        withContext(Dispatchers.IO) {
-            webSocketManager.sendMessage(
-                """
-                {
-                    "msg": "method",
-                    "method": "createPrivateGroup",
-                    "id": "43",
-                    "params": [
-                        "$chatName"
-                        $userNameListJson
-                    ]
-                }
-            """.trimIndent()
-            )
-        }
-
-
-
-        awaitClose {
-            webSocketManager.removeListener(listener)
-            Log.d("ChatRepository", "Flow closed, listener removed")
-        }
     }
 
     override suspend fun getChat(): Flow<List<ChatModel>> = callbackFlow {
@@ -94,7 +55,6 @@ class ChatRemoteRepositoryImpl @Inject constructor(
 
         webSocketManager.addListener(listener)
 
-        // Отправляем запрос на получение чата
         withContext(Dispatchers.IO) {
             webSocketManager.sendMessage(
                 """
@@ -107,24 +67,6 @@ class ChatRemoteRepositoryImpl @Inject constructor(
             """.trimIndent()
             )
         }
-
-//        withContext(Dispatchers.IO) {
-//            webSocketManager.sendMessage(
-//                """
-//                {
-//                     "msg": "method",
-//                      "id": "2",
-//                      "name": "users.list",
-//                      "params": [
-//                            {
-//                              "count": 20,
-//                              "offset": 0
-//                            }
-//                      ]
-//                }
-//            """.trimIndent()
-//            )
-//        }
 
         awaitClose {
             webSocketManager.removeListener(listener)
