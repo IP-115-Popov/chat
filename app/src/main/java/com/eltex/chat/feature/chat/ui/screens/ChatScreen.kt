@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
+import com.eltex.chat.feature.chat.ui.components.MessageInput
 import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.ui.components.MyMessageItem
 import com.eltex.chat.feature.chat.viewmodel.ChatStatus
@@ -53,24 +54,28 @@ fun ChatScreen(
     }
 
     Scaffold(topBar = {
-        ChatScreenTopBar(
-            onBackClick = {
-                navController.navigate(NavRoutes.Main.route) {
-                    popUpTo(NavRoutes.Main.route) {
-                        inclusive = true
+            ChatScreenTopBar(
+                onBackClick = {
+                    navController.navigate(NavRoutes.Main.route) {
+                        popUpTo(NavRoutes.Main.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
-                    launchSingleTop = true
-                }
-            },
-            title = "roomId",
-            onMoreClick = {},
-        )
-    },
+                },
+                title = "roomId",
+                onMoreClick = {},
+            )
+        },
         bottomBar = {
-            Box(Modifier.fillMaxWidth().height(50.dp).background(CustomTheme.basicPalette.blue).clickable {
-                chatViewModel.sendMessage()
-            })
-        }) { innerPadding ->
+            MessageInput(
+                value = state.value.searchText,
+                onValueChange = {chatViewModel.setSearchText(it)},
+                onAttachClick = {},
+                onSendClick = {chatViewModel.sendMessage()},
+            )
+        }
+    ) { innerPadding ->
         LazyColumn(
             state = listState,
             modifier = Modifier

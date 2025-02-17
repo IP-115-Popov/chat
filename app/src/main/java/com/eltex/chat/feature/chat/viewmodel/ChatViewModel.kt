@@ -97,16 +97,25 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun setSearchText(value: String) {
+        _state.update {
+            it.copy(
+                searchText = value
+            )
+        }
+    }
+
     fun sendMessage() {
         viewModelScope.launch(Dispatchers.IO) {
             sendMessageUseCase(
                 MessagePayload(
                     id = "fgfpkFDHGDH",
                     roomId = state.value.roomId ?: "67b164ebcc5c71ade77b82cc",
-                    msg = "hello",
+                    msg = state.value.searchText,
                     token = "a8G7X5sFhDKWL8XlweMOfHq5NWY2igJklc-KaPFxSJQ"
                 )
             )
+            setSearchText("")
         }
     }
 

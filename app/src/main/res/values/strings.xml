@@ -16,4 +16,5 @@
     <string name="data_error">Ошибка хранения данных</string>
     <string name="cancel">Отменить</string>
     <string name="new_chat">Новый чат</string>
+    <string name="message_input_placeholder">Текст сообщения</string>
 </resources>

@@ -1,27 +1,22 @@
 package com.eltex.chat.feature.chat.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +36,9 @@ fun MessageInput(
     var showAttachmentButtons by remember { mutableStateOf(true) }
     val scrollState = rememberScrollState()
 
-    Box(modifier = Modifier.fillMaxWidth().padding(start = 16.dp)) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp)) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (textField, buttons) = createRefs()
 
@@ -71,7 +68,6 @@ fun MessageInput(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(
                         onSend = {
-                            println("Сообщение отправлено: $value")
                             onSendClick()
                             onValueChange("")
                         }
@@ -80,7 +76,7 @@ fun MessageInput(
 
                 if (value.isEmpty()) {
                     Text(
-                        text = "Текст сообщения",
+                        text = stringResource(R.string.message_input_placeholder),
                         style = CustomTheme.typographyRoboto.bodyMedium,
                         modifier = Modifier
                             .padding(vertical = 15.dp)
@@ -103,16 +99,18 @@ fun MessageInput(
                 if (showAttachmentButtons) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_attach_file),
-                        contentDescription = "Прикрепить файл",
+                        contentDescription = null,
                         tint = CustomTheme.basicPalette.lightBlue,
-                        modifier = Modifier.size(24.dp).clickable {
-                            onAttachClick()
-                        }
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                onAttachClick()
+                            }
                     )
                     Spacer(Modifier.size(12.dp))
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_voice),
-                        contentDescription = "Голосовое сообщение",
+                        contentDescription = null,
                         tint = CustomTheme.basicPalette.lightBlue,
                         modifier = Modifier.size(24.dp)
                     )
@@ -120,17 +118,19 @@ fun MessageInput(
                 }
                 Box(modifier = Modifier
                     .size(32.dp)
-                    .background(color =CustomTheme.basicPalette.lightBlue, shape = CircleShape)
+                    .background(color = CustomTheme.basicPalette.lightBlue, shape = CircleShape)
                     .padding(start = 8.dp, end = 5.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_send),
-                        contentDescription = "Отправить",
+                        contentDescription = null,
                         tint = CustomTheme.basicPalette.white,
-                        modifier = Modifier.size(height = 16.dp, width = 19.dp).clickable {
-                            onSendClick()
-                        }
+                        modifier = Modifier
+                            .size(height = 16.dp, width = 19.dp)
+                            .clickable {
+                                onSendClick()
+                            }
                     )
                 }
             }

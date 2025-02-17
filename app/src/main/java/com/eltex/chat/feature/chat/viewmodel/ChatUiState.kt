@@ -10,5 +10,6 @@ data class ChatUiState(
     val roomType: String? = null,
     val roomId: String? = null,
     val offset: Int = 0,
-    val isAtEnd: Boolean = false
+    val isAtEnd: Boolean = false,
+    val searchText: String = "",
 )
