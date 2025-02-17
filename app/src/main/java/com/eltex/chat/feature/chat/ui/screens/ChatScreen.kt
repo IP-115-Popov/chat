@@ -53,25 +53,25 @@ fun ChatScreen(
     }
 
     Scaffold(topBar = {
-            ChatScreenTopBar(
-                onBackClick = {
-                    navController.navigate(NavRoutes.Main.route) {
-                        popUpTo(NavRoutes.Main.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
+        ChatScreenTopBar(
+            onBackClick = {
+                navController.navigate(NavRoutes.Main.route) {
+                    popUpTo(NavRoutes.Main.route) {
+                        inclusive = true
                     }
-                },
-                title = "roomId",
-                onMoreClick = {},
-            )
-        },
+                    launchSingleTop = true
+                }
+            },
+            title = "roomId",
+            onMoreClick = {},
+        )
+    },
         bottomBar = {
             MessageInput(
                 value = state.value.searchText,
-                onValueChange = {chatViewModel.setSearchText(it)},
+                onValueChange = { chatViewModel.setSearchText(it) },
                 onAttachClick = {},
-                onSendClick = {chatViewModel.sendMessage()},
+                onSendClick = { chatViewModel.sendMessage() },
             )
         }
     ) { innerPadding ->
@@ -115,7 +115,9 @@ fun ChatScreen(
             if (state.value.status is ChatStatus.NextPageLoading) {
                 item {
                     Box(
-                        modifier = Modifier.height(118.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .height(118.dp)
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.CenterEnd
                     ) {
 

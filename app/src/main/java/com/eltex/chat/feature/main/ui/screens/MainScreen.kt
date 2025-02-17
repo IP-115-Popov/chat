@@ -70,7 +70,10 @@ fun MainScreen(navController: NavHostController) {
         BottomCreatedChatScreen(
             modalBottomSheetState = modalBottomSheetState,
         ) {
-            Column(modifier = Modifier.fillMaxSize().padding(innerPadding),) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+            ) {
                 Box(
                     Modifier
                         .height(48.dp)

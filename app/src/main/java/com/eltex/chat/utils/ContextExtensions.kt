@@ -12,7 +12,7 @@ import com.eltex.domain.Сonstants
 import java.io.File
 
 fun Context.openFile(fileModel: FileModel) {
-    when(val file = fileModel){
+    when (val file = fileModel) {
         is FileModel.Document -> {
             val originalFile = File(this.filesDir, getFileName(file.uri))
 
@@ -28,7 +28,7 @@ fun Context.openFile(fileModel: FileModel) {
                         "${this.packageName}.provider",
                         cacheFile
                     )
-                    val type: String? = when(file.format){
+                    val type: String? = when (file.format) {
                         "PDF" -> "application/pdf"
                         "TXT" -> "text/plain"
                         "DOC" -> "application/msword"
@@ -60,13 +60,18 @@ fun Context.openFile(fileModel: FileModel) {
                     }
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         setDataAndType(fileUri, type)
-                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+                        flags =
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
                     }
 
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
-                        Log.e("OpenFileError", "No Activity found to handle file, attempting to move to Downloads", e)
+                        Log.e(
+                            "OpenFileError",
+                            "No Activity found to handle file, attempting to move to Downloads",
+                            e
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e("OpenFileError", "Error opening file: ${e.message}", e)
@@ -78,8 +83,9 @@ fun Context.openFile(fileModel: FileModel) {
                 Toast.makeText(this, "Файл не найден", Toast.LENGTH_SHORT).show()
             }
         }
+
         is FileModel.Video -> {
-          val uri = Сonstants.BASE_URL + file.uri
+            val uri = Сonstants.BASE_URL + file.uri
             val videoUri = Uri.parse(uri)
             val browserIntent = Intent(Intent.ACTION_VIEW, videoUri)
 
@@ -87,7 +93,8 @@ fun Context.openFile(fileModel: FileModel) {
                 startActivity(browserIntent)
             } catch (e: ActivityNotFoundException) {
                 Log.e("OpenFileError", "No browser found to open video link", e)
-                Toast.makeText(this, "Не найден браузер для открытия ссылки", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Не найден браузер для открытия ссылки", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 

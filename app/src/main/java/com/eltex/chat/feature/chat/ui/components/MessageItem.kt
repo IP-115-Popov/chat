@@ -17,8 +17,7 @@ fun MessageItem(
             time = time,
             messageUiModel = messageUiModel,
         )
-    }
-    else {
+    } else {
         LittleMessageItem(
             title = title,
             text = text,

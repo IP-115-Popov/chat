@@ -41,18 +41,19 @@ import com.eltex.chat.ui.theme.CustomTheme
 @Composable
 fun MessageInput(
     value: String,
-    onValueChange: (String)->Unit,
-    onAttachClick: ()->Unit,
-    onSendClick: ()->Unit,
+    onValueChange: (String) -> Unit,
+    onAttachClick: () -> Unit,
+    onSendClick: () -> Unit,
 ) {
     var showAttachmentButtons by remember { mutableStateOf(true) }
     val scrollState = rememberScrollState()
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp)
-        .navigationBarsPadding()
-        .imePadding()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp)
+            .navigationBarsPadding()
+            .imePadding()
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (textField, buttons) = createRefs()
@@ -130,10 +131,11 @@ fun MessageInput(
                     )
                     Spacer(Modifier.size(12.dp))
                 }
-                Box(modifier = Modifier
-                    .size(32.dp)
-                    .background(color = CustomTheme.basicPalette.lightBlue, shape = CircleShape)
-                    .padding(start = 8.dp, end = 5.dp),
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(color = CustomTheme.basicPalette.lightBlue, shape = CircleShape)
+                        .padding(start = 8.dp, end = 5.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -153,16 +155,16 @@ fun MessageInput(
 }
 
 
-@Preview( showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun MessageInputPreview() {
     var text by remember { mutableStateOf("") }
     CustomTheme {
         MessageInput(
             value = text,
-            onValueChange = {text = it},
-            onAttachClick = {text = "attach"},
-            onSendClick = {text = "send"},
+            onValueChange = { text = it },
+            onAttachClick = { text = "attach" },
+            onSendClick = { text = "send" },
         )
     }
 }

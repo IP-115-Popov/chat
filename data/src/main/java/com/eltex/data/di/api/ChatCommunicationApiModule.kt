@@ -1,6 +1,5 @@
 package com.eltex.data.di.api
 
-import com.eltex.data.api.AuthorizationApi
 import com.eltex.data.api.ChatCommunicationApi
 import dagger.Module
 import dagger.Provides

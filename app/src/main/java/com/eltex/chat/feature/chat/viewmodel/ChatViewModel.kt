@@ -9,13 +9,13 @@ import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
-import com.eltex.domain.usecase.remote.SendMessageUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
+import com.eltex.domain.usecase.remote.SendMessageUseCase
 import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
@@ -173,8 +173,8 @@ class ChatViewModel @Inject constructor(
                 state.copy(
                     messages = state.messages.map { message ->
                         //если это незагруженное изображение
-                        if (message.fileModel is FileModel.Img && message.bitmap == null){
-                            val bitmap =  loadImg(fileModel = message.fileModel)
+                        if (message.fileModel is FileModel.Img && message.bitmap == null) {
+                            val bitmap = loadImg(fileModel = message.fileModel)
                             message.copy(bitmap = bitmap)
                         } else {
                             message
@@ -215,24 +215,24 @@ class ChatViewModel @Inject constructor(
         val res: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
             return@async try {
                 if (loadDocumentUseCase(file.uri) != null)
-                     true
+                    true
                 else
-                     false
+                    false
             } catch (e: Exception) {
-                 false
+                false
             }
         }
         return res.await()
     }
 
     suspend fun checkFileExists(uri: String): Boolean {
-       val res = viewModelScope.async(Dispatchers.IO) {
-           if (checkFileExistsUseCase(uri)) {
+        val res = viewModelScope.async(Dispatchers.IO) {
+            if (checkFileExistsUseCase(uri)) {
                 return@async true
             } else {
-                 return@async false
+                return@async false
             }
-       }
+        }
         return res.await()
     }
 
