@@ -7,7 +7,7 @@ class LoadDocumentUseCase(
     private val imageRemoteRepository: ImageRemoteRepository,
     private val fileLocalRepository: FileLocalRepository,
 ) {
-    suspend fun execute(uri: String) {
+    suspend operator fun invoke(uri: String) {
         imageRemoteRepository.getImageByteArray(uri).onRight { document ->
             try {
                 fileLocalRepository.saveFileData(uri = uri, data = document)

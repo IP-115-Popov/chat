@@ -8,6 +8,6 @@ import com.eltex.domain.repository.remote.ImageRemoteRepository
 class GetImageUseCase(
     private val imageRemoteRepository: ImageRemoteRepository,
 ) {
-    suspend fun execute(imageUrl: String): Either<DataError, ByteArray> =
+    suspend operator fun invoke(imageUrl: String): Either<DataError, ByteArray> =
         imageRemoteRepository.getImageByteArray(imageUrl)
 }

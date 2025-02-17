@@ -1,7 +1,7 @@
 package com.eltex.chat.di.domain
 
 import com.eltex.domain.repository.remote.ChatMessageRemoteRepository
-import com.eltex.domain.repository.remote.SendMessageUseCase
+import com.eltex.domain.usecase.remote.SendMessageUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

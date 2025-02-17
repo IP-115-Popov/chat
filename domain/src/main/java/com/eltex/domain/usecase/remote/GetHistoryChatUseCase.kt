@@ -6,7 +6,7 @@ import com.eltex.domain.repository.remote.MessageHistoryRemoteRepository
 class GetHistoryChatUseCase(
     private val messageHistoryRemoteRepository: MessageHistoryRemoteRepository
 ) {
-    suspend fun execute(
+    suspend operator fun invoke(
         roomId: String, roomType: String, offset: Int, count: Int
     ): List<Message> = messageHistoryRemoteRepository.getMessageHistory(
         roomId = roomId, roomType = roomType, offset = offset, count = count

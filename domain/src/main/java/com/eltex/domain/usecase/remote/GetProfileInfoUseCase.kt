@@ -8,6 +8,6 @@ import com.eltex.domain.repository.remote.ProfileInfoRemoteRepository
 class GetProfileInfoUseCase(
     private val profileInfoRemoteRepository: ProfileInfoRemoteRepository,
 ) {
-    suspend fun execute(): Either<DataError, ProfileModel> =
+    suspend operator fun invoke(): Either<DataError, ProfileModel> =
         profileInfoRemoteRepository.getProfileInfo()
 }

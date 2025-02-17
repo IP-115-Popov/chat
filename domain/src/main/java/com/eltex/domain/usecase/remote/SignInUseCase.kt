@@ -15,7 +15,7 @@ class SignInUseCase(
     private val headerLocalRepository: HeaderLocalRepository,
     private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
-    suspend fun execute(loginModel: LoginModel): Either<SignInError, AuthData> {
+    suspend operator fun invoke(loginModel: LoginModel): Either<SignInError, AuthData> {
         val result = signInRemoteRepository.signIn(loginModel)
         return when (result) {
             is Either.Left -> {

@@ -40,7 +40,7 @@ class MainViewModel @Inject constructor(
 
     private fun loadProfileInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-            val profileModel = getProfileInfoUseCase.execute()
+            val profileModel = getProfileInfoUseCase()
             profileModel.onRight { getProfileInfoResult ->
                 _state.update {
                     it.copy(
@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
 
     private fun connectToWebSocket() {
         viewModelScope.launch(Dispatchers.IO) {
-            connectWebSocketUseCase.execute().collect { state ->
+            connectWebSocketUseCase().collect { state ->
                 _connectionState.value = state
                 when (state) {
                     is WebSocketConnectionState.Connected -> {
@@ -109,7 +109,7 @@ class MainViewModel @Inject constructor(
     private fun get() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val res = getChatListUseCase.execute()
+                val res = getChatListUseCase()
                 withContext(Dispatchers.Main) {
                     _state.update {
                         val resfirst = res.first().map {

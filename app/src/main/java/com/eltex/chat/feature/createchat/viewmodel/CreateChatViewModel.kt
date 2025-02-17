@@ -48,7 +48,7 @@ class CreateChatViewModel @Inject constructor(
 
     fun onContactSelected(userUiModel: UserUiModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            createChatUseCase.execute(
+            createChatUseCase(
                 username = userUiModel.username
             )
         }
@@ -58,7 +58,7 @@ class CreateChatViewModel @Inject constructor(
     private fun searchUser() {
         viewModelScope.launch(Dispatchers.IO) {
             val userlist =
-                getUsersListUseCase.execute(state.value.searchValue, count = 20, offset = 0)
+                getUsersListUseCase(state.value.searchValue, count = 20, offset = 0)
             when (userlist) {
                 is Either.Left -> {
                     Log.i("CreateChatViewModel", "getUsersListUseCase left")

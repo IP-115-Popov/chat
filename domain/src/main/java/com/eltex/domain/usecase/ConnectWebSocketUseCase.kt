@@ -9,7 +9,7 @@ class ConnectWebSocketUseCase(
     private val webSocketManager: WebSocketManager,
     private val authDataLocalRepository: AuthDataLocalRepository,
 ) {
-    suspend fun execute(): Flow<WebSocketConnectionState> {
+    suspend operator fun invoke(): Flow<WebSocketConnectionState> {
         val authData = authDataLocalRepository.getAuthData()
         authData?.let {
             webSocketManager.connect(authData.authToken)

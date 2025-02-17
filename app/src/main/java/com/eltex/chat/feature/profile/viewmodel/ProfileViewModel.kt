@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
         setStatus(ProfileStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                when (val getImageResult = getImageUseCase.execute(imageUrl)) {
+                when (val getImageResult = getImageUseCase(imageUrl)) {
                     is Either.Left -> {
                         withContext(Dispatchers.Main) {
                             setStatus(ProfileStatus.Error("Error loading Avatar"))
@@ -112,7 +112,7 @@ class ProfileViewModel @Inject constructor(
         setStatus(ProfileStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                when (val getProfileResult = getProfileInfoUseCase.execute()) {
+                when (val getProfileResult = getProfileInfoUseCase()) {
                     is Either.Left -> {
                         withContext(Dispatchers.Main) {
                             setStatus(ProfileStatus.Error(context.getString(R.string.data_error)))

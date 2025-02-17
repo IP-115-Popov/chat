@@ -5,6 +5,6 @@ import com.eltex.domain.repository.remote.ChatMessageRemoteRepository
 class GetMessageFromChatUseCase(
     private val chatMessageRemoteRepository: ChatMessageRemoteRepository
 ) {
-    suspend fun execute(roomId: String) =
+    suspend operator fun invoke(roomId: String) =
         chatMessageRemoteRepository.subscribeToRoomMessages(roomId = roomId)
 }

@@ -39,7 +39,7 @@ class SignInViewModel @Inject constructor(
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    val authData = syncAuthDataUseCase.execute()
+                    val authData = syncAuthDataUseCase()
                     when (authData) {
                         is Either.Right -> {
                             connectWebSocket()
@@ -54,7 +54,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private suspend fun connectWebSocket() {
-        connectWebSocketUseCase.execute()
+        connectWebSocketUseCase()
     }
 
     fun signIn() {
@@ -62,7 +62,7 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val loginModel = LoginUiToLoginModelMapper.map(state.value.user)
-                val authData = signInUseCase.execute(loginModel)
+                val authData = signInUseCase(loginModel)
 
                 when (authData) {
                     is Either.Left -> {

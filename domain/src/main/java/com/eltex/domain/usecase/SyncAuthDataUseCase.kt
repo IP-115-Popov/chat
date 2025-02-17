@@ -11,7 +11,7 @@ class SyncAuthDataUseCase(
     private val authDataLocalRepository: AuthDataLocalRepository,
     private val headerLocalRepository: HeaderLocalRepository,
 ) {
-    suspend fun execute(): Either<String, AuthData> {
+    suspend operator fun invoke(): Either<String, AuthData> {
         val authData = authDataLocalRepository.getAuthData()
         return if (authData != null) {
             headerLocalRepository.setToken(authData.authToken)

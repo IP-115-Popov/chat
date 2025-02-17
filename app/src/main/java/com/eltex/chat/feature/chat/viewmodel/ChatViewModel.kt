@@ -9,7 +9,7 @@ import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
-import com.eltex.domain.repository.remote.SendMessageUseCase
+import com.eltex.domain.usecase.remote.SendMessageUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
@@ -54,7 +54,7 @@ class ChatViewModel @Inject constructor(
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    syncAuthDataUseCase.execute().onRight { authData ->
+                    syncAuthDataUseCase().onRight { authData ->
                         _state.update {
                             it.copy(
                                 authData = authData
@@ -78,7 +78,7 @@ class ChatViewModel @Inject constructor(
     fun listenChat() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.roomId?.let { roomId ->
-                getMessageFromChatUseCase.execute(roomId = roomId).collect { messsage: Message ->
+                getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
                     withContext(Dispatchers.IO) {
                         _state.update { state ->
                             state.copy(
@@ -126,7 +126,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (state.value.roomId != null && state.value.roomType != null) {
-                    val message = getHistoryChatUseCase.execute(
+                    val message = getHistoryChatUseCase(
                         count = PAGE_SIZE,
                         offset = state.value.offset,
                         roomId = state.value.roomId!!,
@@ -189,7 +189,7 @@ class ChatViewModel @Inject constructor(
         is FileModel.Img -> {
             try {
                 val byteArray =
-                    getImageUseCase.execute(Сonstants.BASE_URL + file.uri)
+                    getImageUseCase(Сonstants.BASE_URL + file.uri)
                 when (byteArray) {
                     is Either.Left -> null
                     is Either.Right -> {
@@ -214,7 +214,7 @@ class ChatViewModel @Inject constructor(
     suspend fun loadDocument(file: FileModel.Document): Boolean {
         val res: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
             return@async try {
-                if (loadDocumentUseCase.execute(file.uri) != null)
+                if (loadDocumentUseCase(file.uri) != null)
                      true
                 else
                      false
@@ -227,7 +227,7 @@ class ChatViewModel @Inject constructor(
 
     suspend fun checkFileExists(uri: String): Boolean {
        val res = viewModelScope.async(Dispatchers.IO) {
-           if (checkFileExistsUseCase.execute(uri)) {
+           if (checkFileExistsUseCase(uri)) {
                 return@async true
             } else {
                  return@async false

@@ -8,7 +8,7 @@ import com.eltex.domain.repository.remote.UsersRemoteRepository
 class GetUsersListUseCase(
     private val usersRemoteRepository: UsersRemoteRepository,
 ) {
-    suspend fun execute(
+    suspend operator fun invoke(
         query: String, count: Int, offset: Int
     ): Either<DataError, List<UserModel>> = usersRemoteRepository.getUsersList(
         query = query,
