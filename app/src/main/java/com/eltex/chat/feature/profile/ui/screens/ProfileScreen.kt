@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -36,7 +37,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
@@ -45,7 +49,7 @@ import com.eltex.chat.utils.getInitials
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavHostController) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     val state = profileViewModel.state.collectAsState()
     val showExitAlertDialog = remember { mutableStateOf(false) }
@@ -55,59 +59,66 @@ fun ProfileScreen() {
             onExitRequest = { profileViewModel.exitFromProfile() })
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(CustomTheme.basicPalette.white1)
-    ) {
-        Box(
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController)
+        }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .height(142.dp)
-                .fillMaxWidth()
-                .background(CustomTheme.basicPalette.blue),
-        )
-
-        Box(
-            modifier = Modifier
-                .size(124.dp)
-                .offset(y = -62.dp)
-                .background(color = CustomTheme.basicPalette.white1, shape = CircleShape)
-                .align(Alignment.CenterHorizontally),
-            contentAlignment = Alignment.Center,
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(CustomTheme.basicPalette.white1)
         ) {
-
-            ProfileAvatar(
-                avatarImg = state.value.avatarImg,
-                name = state.value.profileUiModel?.name
-            )
-        }
-        Text(
-            text = state.value.profileUiModel?.name ?: "",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .offset(y = (8 - 59).dp),
-            style = CustomTheme.typographyRoboto.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(190.dp))
-
-        LogoutButton {
-            showExitAlertDialog.value = true
-        }
-    }
-
-    when (state.value.status) {
-        ProfileStatus.Loading -> {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .height(142.dp)
+                    .fillMaxWidth()
+                    .background(CustomTheme.basicPalette.blue),
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(124.dp)
+                    .offset(y = -62.dp)
+                    .background(color = CustomTheme.basicPalette.white1, shape = CircleShape)
+                    .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center,
             ) {
-                CircularProgressIndicator()
+
+                ProfileAvatar(
+                    avatarImg = state.value.avatarImg,
+                    name = state.value.profileUiModel?.name
+                )
+            }
+            Text(
+                text = state.value.profileUiModel?.name ?: "",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (8 - 59).dp),
+                style = CustomTheme.typographyRoboto.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(190.dp))
+
+            LogoutButton {
+                showExitAlertDialog.value = true
             }
         }
 
-        is ProfileStatus.Error -> {}
-        ProfileStatus.Idle -> {}
+        when (state.value.status) {
+            ProfileStatus.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is ProfileStatus.Error -> {}
+            ProfileStatus.Idle -> {}
+        }
     }
 }
 
@@ -193,6 +204,6 @@ fun LogoutButton(onClick: () -> Unit) {
 @Composable
 fun ProfileScreenPreview() {
     CustomTheme {
-        ProfileScreen()
+        ProfileScreen(rememberNavController())
     }
 }

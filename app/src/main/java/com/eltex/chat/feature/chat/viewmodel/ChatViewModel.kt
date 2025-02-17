@@ -10,12 +10,11 @@ import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
 import com.eltex.domain.repository.remote.SendMessageUseCase
-import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
-import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
-import com.eltex.domain.usecase.local.LoadFromCacheFileUseCase
+import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
+import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel

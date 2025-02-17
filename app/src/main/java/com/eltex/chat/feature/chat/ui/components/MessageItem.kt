@@ -1,9 +1,7 @@
 package com.eltex.chat.feature.chat.ui.components
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import com.eltex.chat.feature.chat.model.MessageUiModel
-import com.eltex.domain.models.FileModel
 
 @Composable
 fun MessageItem(

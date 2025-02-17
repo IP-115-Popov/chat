@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.createchat.ui.components.SearchField
@@ -41,6 +43,7 @@ import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus
+import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -50,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(navController: NavHostController) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val state = mainViewModel.state.collectAsState()
 
@@ -59,121 +62,127 @@ fun MainScreen(navController: NavController) {
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = { true })
 
-    BottomCreatedChatScreen(
-        modalBottomSheetState = modalBottomSheetState,
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                Modifier
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .background(CustomTheme.basicPalette.blue)
-            )
-            Box(
-                Modifier
-                    .height(44.dp)
-                    .fillMaxWidth()
-                    .background(CustomTheme.basicPalette.blue)
-            ) {
-                Text(
-                    text = stringResource(R.string.chats),
-                    style = CustomTheme.typographySfPro.titleMedium,
-                    modifier = Modifier.align(Alignment.Center),
-                    color = CustomTheme.basicPalette.white
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController)
+        }
+    ) { innerPadding ->
+        BottomCreatedChatScreen(
+            modalBottomSheetState = modalBottomSheetState,
+        ) {
+            Column(modifier = Modifier.fillMaxSize().padding(innerPadding),) {
+                Box(
+                    Modifier
+                        .height(48.dp)
+                        .fillMaxWidth()
+                        .background(CustomTheme.basicPalette.blue)
                 )
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_add),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 16.dp)
-                        .clickable {
-                            coroutineScope.launch {
-                                if (modalBottomSheetState.isVisible) {
-                                    modalBottomSheetState.hide()
-                                } else {
-                                    modalBottomSheetState.show()
-                                }
-                            }
-                        },
-                    tint = CustomTheme.basicPalette.white
-                )
-
-            }
-            Box(
-                modifier = Modifier
-                    .height(44.dp)
-                    .fillMaxWidth()
-                    .background(CustomTheme.basicPalette.blue)
-                    .padding(horizontal = 16.dp)
-            ) {
-                SearchField(
-                    value = "",
-                    placeholderText = stringResource(R.string.chat_search_placeholder),
-                    onValueChange = {},
-                    onClearClick = {},
-                )
-            }
-
-            val isRefreshing by remember { derivedStateOf { (state.value.status is MainUiStatus.IsRefreshing) } }
-            val swipeRefreshState =
-                rememberSwipeRefreshState(isRefreshing = isRefreshing)
-
-            SwipeRefresh(state = swipeRefreshState,
-                onRefresh = { mainViewModel.refreshChat() },
-                indicator = { state, refrashTrigger ->
-                    SwipeRefreshIndicator(
-                        state = state,
-                        refreshTriggerDistance = refrashTrigger,
-                        contentColor = CustomTheme.basicPalette.blue
+                Box(
+                    Modifier
+                        .height(44.dp)
+                        .fillMaxWidth()
+                        .background(CustomTheme.basicPalette.blue)
+                ) {
+                    Text(
+                        text = stringResource(R.string.chats),
+                        style = CustomTheme.typographySfPro.titleMedium,
+                        modifier = Modifier.align(Alignment.Center),
+                        color = CustomTheme.basicPalette.white
                     )
-                }) {
-                Column {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        itemsIndexed(state.value.chatList) { index, chat ->
-                            if (index == state.value.chatList.size - 1) {
-
-                            }
-                            when (index) {
-                                0 -> {
-                                    ChatItem(
-                                        imageText = chat.name,
-                                        title = chat.name,
-                                        message = chat.lastMessage,
-                                        time = chat.lm,
-                                        messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = false,
-                                        onClick = {
-                                            navToChat(navController, chat)
-                                        }
-                                    )
-                                    HorizontalDivider()
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_add),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 16.dp)
+                            .clickable {
+                                coroutineScope.launch {
+                                    if (modalBottomSheetState.isVisible) {
+                                        modalBottomSheetState.hide()
+                                    } else {
+                                        modalBottomSheetState.show()
+                                    }
                                 }
+                            },
+                        tint = CustomTheme.basicPalette.white
+                    )
 
-                                state.value.chatList.size - 1 -> {
-                                    ChatItem(
-                                        imageText = chat.name,
-                                        title = chat.name,
-                                        message = chat.lastMessage,
-                                        time = chat.lm,
-                                        messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = false,
-                                        onClick = { navToChat(navController, chat) }
-                                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(44.dp)
+                        .fillMaxWidth()
+                        .background(CustomTheme.basicPalette.blue)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    SearchField(
+                        value = "",
+                        placeholderText = stringResource(R.string.chat_search_placeholder),
+                        onValueChange = {},
+                        onClearClick = {},
+                    )
+                }
+
+                val isRefreshing by remember { derivedStateOf { (state.value.status is MainUiStatus.IsRefreshing) } }
+                val swipeRefreshState =
+                    rememberSwipeRefreshState(isRefreshing = isRefreshing)
+
+                SwipeRefresh(state = swipeRefreshState,
+                    onRefresh = { mainViewModel.refreshChat() },
+                    indicator = { state, refrashTrigger ->
+                        SwipeRefreshIndicator(
+                            state = state,
+                            refreshTriggerDistance = refrashTrigger,
+                            contentColor = CustomTheme.basicPalette.blue
+                        )
+                    }) {
+                    Column {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            itemsIndexed(state.value.chatList) { index, chat ->
+                                if (index == state.value.chatList.size - 1) {
+
                                 }
+                                when (index) {
+                                    0 -> {
+                                        ChatItem(
+                                            imageText = chat.name,
+                                            title = chat.name,
+                                            message = chat.lastMessage,
+                                            time = chat.lm,
+                                            messageStatus = MessageStatus.missedMessages(0),
+                                            bottomLine = false,
+                                            onClick = {
+                                                navToChat(navController, chat)
+                                            }
+                                        )
+                                        HorizontalDivider()
+                                    }
 
-                                else -> {
-                                    ChatItem(
-                                        imageText = chat.name,
-                                        title = chat.name,
-                                        message = chat.lastMessage,
-                                        time = chat.lm,
-                                        messageStatus = MessageStatus.missedMessages(0),
-                                        bottomLine = true,
-                                        onClick = { navToChat(navController, chat) }
-                                    )
+                                    state.value.chatList.size - 1 -> {
+                                        ChatItem(
+                                            imageText = chat.name,
+                                            title = chat.name,
+                                            message = chat.lastMessage,
+                                            time = chat.lm,
+                                            messageStatus = MessageStatus.missedMessages(0),
+                                            bottomLine = false,
+                                            onClick = { navToChat(navController, chat) }
+                                        )
+                                    }
+
+                                    else -> {
+                                        ChatItem(
+                                            imageText = chat.name,
+                                            title = chat.name,
+                                            message = chat.lastMessage,
+                                            time = chat.lm,
+                                            messageStatus = MessageStatus.missedMessages(0),
+                                            bottomLine = true,
+                                            onClick = { navToChat(navController, chat) }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -181,18 +190,18 @@ fun MainScreen(navController: NavController) {
                 }
             }
         }
-    }
-    when (state.value.status) {
-        MainUiStatus.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(
-                    color = CustomTheme.basicPalette.blue
-                )
+        when (state.value.status) {
+            MainUiStatus.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        color = CustomTheme.basicPalette.blue
+                    )
+                }
+
             }
 
-        }
-
-        is MainUiStatus.Error, MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
+            is MainUiStatus.Error, MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
     ) {
         composable(NavRoutes.Authorization.route) { SignInScreen(navController) }
         composable(NavRoutes.Main.route) { MainScreen(navController) }
-        composable(NavRoutes.Profile.route) { ProfileScreen() }
+        composable(NavRoutes.Profile.route) { ProfileScreen(navController) }
         composable(NavRoutes.Chat.route + "/{roomId}" + "/{roomType}") { stackEntry ->
             val roomId = stackEntry.arguments?.getString("roomId")
             val roomType = stackEntry.arguments?.getString("roomType")
