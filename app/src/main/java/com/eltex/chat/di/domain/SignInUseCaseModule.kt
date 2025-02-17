@@ -1,7 +1,7 @@
 package com.eltex.chat.di.domain
 
 import com.eltex.domain.repository.local.AuthDataLocalRepository
-import com.eltex.domain.repository.local.HeaderLocalRepository
+import com.eltex.domain.HeaderManager
 import com.eltex.domain.repository.remote.SignInRemoteRepository
 import com.eltex.domain.usecase.remote.SignInUseCase
 import dagger.Module
@@ -15,12 +15,12 @@ class SignInUseCaseModule {
     @Provides
     fun provideSignInUseCase(
         signInRemoteRepository: SignInRemoteRepository,
-        headerLocalRepository: HeaderLocalRepository,
+        headerManager: HeaderManager,
         authDataLocalRepository: AuthDataLocalRepository,
     ): SignInUseCase {
         return SignInUseCase(
             signInRemoteRepository = signInRemoteRepository,
-            headerLocalRepository = headerLocalRepository,
+            headerManager = headerManager,
             authDataLocalRepository = authDataLocalRepository
         )
     }

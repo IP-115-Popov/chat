@@ -1,10 +1,9 @@
-package com.eltex.data.repository.local
+package com.eltex.data.api
 
-import com.eltex.data.api.OkHttpClientFactory
-import com.eltex.domain.repository.local.HeaderLocalRepository
+import com.eltex.domain.HeaderManager
 import javax.inject.Inject
 
-class HeaderLocalRepositoryImpl @Inject constructor() : HeaderLocalRepository {
+class HeaderManagerImpl @Inject constructor() : HeaderManager {
     override suspend fun setToken(authToken: String) {
         OkHttpClientFactory.setApiToken(authToken)
     }

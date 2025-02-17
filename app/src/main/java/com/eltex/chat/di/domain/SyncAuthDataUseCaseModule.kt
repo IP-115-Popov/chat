@@ -1,7 +1,7 @@
 package com.eltex.chat.di.domain
 
 import com.eltex.domain.repository.local.AuthDataLocalRepository
-import com.eltex.domain.repository.local.HeaderLocalRepository
+import com.eltex.domain.HeaderManager
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,11 +14,11 @@ class SyncAuthDataUseCaseModule {
     @Provides
     fun provideSyncAuthDataUseCase(
         authDataLocalRepository: AuthDataLocalRepository,
-        headerLocalRepository: HeaderLocalRepository,
+        headerManager: HeaderManager,
     ): SyncAuthDataUseCase {
         return SyncAuthDataUseCase(
             authDataLocalRepository = authDataLocalRepository,
-            headerLocalRepository = headerLocalRepository,
+            headerManager = headerManager,
         )
     }
 }
