@@ -26,6 +26,7 @@ okhttpBom = "4.12.0"
 retrofit = "2.9.0"
 kotlinxSerializationJson = "1.7.3"
 converterKotlinxSerialization = "2.11.0"
+constraintlayout = "2.2.0"
 
 [libraries]
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
@@ -66,6 +67,7 @@ retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", ve
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
