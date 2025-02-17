@@ -1,4 +1,4 @@
-package com.eltex.data.di
+package com.eltex.data.di.repository
 
 import com.eltex.data.repository.local.AuthDataLocalRepositoryImpl
 import com.eltex.domain.repository.local.AuthDataLocalRepository

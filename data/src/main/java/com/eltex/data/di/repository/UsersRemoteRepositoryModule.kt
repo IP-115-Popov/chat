@@ -1,4 +1,4 @@
-package com.eltex.data.di
+package com.eltex.data.di.repository
 
 import com.eltex.data.repository.remote.UsersRemoteRepositoryImpl
 import com.eltex.domain.repository.remote.UsersRemoteRepository

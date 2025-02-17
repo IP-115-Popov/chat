@@ -1,4 +1,4 @@
-package com.eltex.data.di
+package com.eltex.data.di.repository
 
 import com.eltex.data.repository.remote.ChatRemoteRepositoryImpl
 import com.eltex.domain.repository.remote.ChatRemoteRepository
