@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.chat.ui.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.ui.theme.CustomTheme
-import com.eltex.domain.models.FileModel
 
 
 @Composable

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.eltex.domain.models.FileModel
 
 data class MessageUiModel(
+    val id: String,
     val msg: String,
     val date: Long,
     val userId: String,

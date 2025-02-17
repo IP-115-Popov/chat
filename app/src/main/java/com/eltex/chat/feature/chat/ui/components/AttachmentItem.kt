@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
+import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.chat.viewmodel.LoadFileStatus
 import com.eltex.chat.ui.theme.CustomTheme
@@ -41,13 +43,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AttachmentItem(
-    fileModel: FileModel?, bitmap: Bitmap?
+    messageUiModel: MessageUiModel,
 ) {
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
-    when (val file = fileModel) {
+    when (val file = messageUiModel.fileModel) {
         is FileModel.Document -> {
             val loadStatus = remember { mutableStateOf<LoadFileStatus>(LoadFileStatus.IsNotLoaded) }
 
@@ -79,7 +81,7 @@ fun AttachmentItem(
                                 },
                             contentAlignment = Alignment.Center,
                         ) {
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(trackColor = CustomTheme.basicPalette.blue)
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.ic_cancel),
                                 contentDescription = null,
@@ -127,7 +129,7 @@ fun AttachmentItem(
                                     color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
                                 )
                                 .clickable {
-                                    context.openFile(fileModel)
+                                    context.openFile(messageUiModel.fileModel)
                                 },
                             contentAlignment = Alignment.Center,
                         ) {
@@ -150,15 +152,26 @@ fun AttachmentItem(
         }
 
         is FileModel.Img -> {
-            bitmap?.let {
+            if (messageUiModel.bitmap != null) {
                 Image(
                     modifier = Modifier
                         .widthIn(max = 239.dp)
                         .heightIn(max = 231.dp),
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = messageUiModel.bitmap.asImageBitmap(),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(200.dp)
+                        .background(CustomTheme.basicPalette.black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        trackColor = CustomTheme.basicPalette.blue
+                    )
+                }
             }
         }
 
@@ -170,7 +183,7 @@ fun AttachmentItem(
                         color = CustomTheme.basicPalette.black, shape = CircleShape
                     )
                     .clickable {
-                        context.openFile(fileModel)
+                        context.openFile(messageUiModel.fileModel)
                     },
                 contentAlignment = Alignment.Center,
             ) {

@@ -6,6 +6,7 @@ import com.eltex.domain.models.Message
 object MessageToMessageUiModelMapper {
     fun map(message: Message): MessageUiModel = with(message) {
         MessageUiModel(
+            id = id,
             msg = msg,
             date = date,
             userId = userId,

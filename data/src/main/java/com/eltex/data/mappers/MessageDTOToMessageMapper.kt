@@ -17,6 +17,7 @@ object MessageDTOToMessageMapper {
         }?.firstOrNull()
 
         return Message(
+            id = messageDTO._id,
             userId = messageDTO.u._id,
             msg = messageDTO.msg,
             date = parseDateStringToLong(messageDTO.ts) ?: 0L,

@@ -45,7 +45,7 @@ fun ChatScreen(
         chatViewModel.loadHistoryChat()
     }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = roomId, key2 = roomType) {
         chatViewModel.sync(roomId = roomId, roomType = roomType)
         chatViewModel.loadHistoryChat()
         chatViewModel.listenChat()
@@ -84,8 +84,7 @@ fun ChatScreen(
                             text = message.msg,
                             time = InstantFormatter.formatInstantToRelativeString(message.date),
                             read = true,
-                            fileModel = message.fileModel,
-                            bitmap = message.bitmap
+                            messageUiModel = message,
                         )
                     }
                 } else {
@@ -96,9 +95,9 @@ fun ChatScreen(
                         MessageItem(
                             text = message.msg,
                             title = message.username,
-                            time = InstantFormatter.formatInstantToRelativeString(message.date)
+                            time = InstantFormatter.formatInstantToRelativeString(message.date),
+                            messageUiModel = message,
                         )
-
                     }
                 }
                 Spacer(Modifier.padding(11.dp))

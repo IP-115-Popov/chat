@@ -107,32 +107,8 @@ class ChatViewModel @Inject constructor(
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
                     ).map {
-                        val bitmap = when (val file = it.fileModel) {
-                            is FileModel.Img -> {
-                                try {
-                                    val byteArray =
-                                        getImageUseCase.execute(Сonstants.BASE_URL + file.uri)
-                                    when (byteArray) {
-                                        is Either.Left -> null
-                                        is Either.Right -> {
-                                            byteArray.value.byteArrayToBitmap()
-                                        }
-
-                                        else -> null
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e(
-                                        "MessageToMessageUiModelMapper",
-                                        "FileModel.Img ${e.message}"
-                                    )
-                                    null
-                                }
-                            }
-
-                            is FileModel.Document,
-                            is FileModel.Video, null -> null
-                        }
-                        MessageToMessageUiModelMapper.map(it).copy(bitmap = bitmap)
+                        //val bitmap =  loadImg(fileModel = it.fileModel)
+                        MessageToMessageUiModelMapper.map(it)//.copy(bitmap = bitmap)
                     }
 
                     withContext(Dispatchers.IO) {
@@ -153,6 +129,7 @@ class ChatViewModel @Inject constructor(
                                     messages = state.messages + message
                                 )
                             }
+                            updateImg()
                         }
                         setStatus(ChatStatus.Idle)
                     }
@@ -164,6 +141,50 @@ class ChatViewModel @Inject constructor(
                 setStatus(ChatStatus.Error)
             }
         }
+    }
+
+    private suspend fun updateImg() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { state ->
+                state.copy(
+                    messages = state.messages.map { message ->
+                        //если это незагруженное изображение
+                        if (message.fileModel is FileModel.Img && message.bitmap == null){
+                            val bitmap =  loadImg(fileModel = message.fileModel)
+                            message.copy(bitmap = bitmap)
+                        } else {
+                            message
+                        }
+                    },
+                )
+            }
+        }
+    }
+
+    suspend fun loadImg(fileModel: FileModel?) = when (val file = fileModel) {
+        is FileModel.Img -> {
+            try {
+                val byteArray =
+                    getImageUseCase.execute(Сonstants.BASE_URL + file.uri)
+                when (byteArray) {
+                    is Either.Left -> null
+                    is Either.Right -> {
+                        byteArray.value.byteArrayToBitmap()
+                    }
+
+                    else -> null
+                }
+            } catch (e: Exception) {
+                Log.e(
+                    "MessageToMessageUiModelMapper",
+                    "FileModel.Img ${e.message}"
+                )
+                null
+            }
+        }
+
+        is FileModel.Document,
+        is FileModel.Video, null -> null
     }
 
     suspend fun loadDocument(file: FileModel.Document): Boolean {

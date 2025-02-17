@@ -17,6 +17,7 @@ object MessageResponseToMessageMapper {
         }?.firstOrNull()
 
         Message(
+            id = _id,
             userId = u._id,
             name = u.name,
             date = _updatedAt.`$date`,
