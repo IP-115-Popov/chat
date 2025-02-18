@@ -62,7 +62,9 @@ fun ChatScreen(
         chatViewModel.loadHistoryChat()
         chatViewModel.listenChat()
     }
-
+    MediaPickerBottomSheet(
+        modalBottomSheetState = modalBottomSheetState,
+    ) {
     Scaffold(topBar = {
         ChatScreenTopBar(
             onBackClick = {
@@ -93,9 +95,6 @@ fun ChatScreen(
             },
         )
     }) { innerPadding ->
-        MediaPickerBottomSheet(
-            modalBottomSheetState = modalBottomSheetState,
-        ) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
