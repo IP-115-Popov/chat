@@ -32,7 +32,6 @@ import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.ui.components.MyMessageItem
 import com.eltex.chat.feature.chat.viewmodel.ChatStatus
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
-import com.eltex.chat.feature.createchat.ui.screens.BottomCreatedChatScreen
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.ui.components.rememberLazyListStatePaginated
@@ -62,9 +61,7 @@ fun ChatScreen(
         chatViewModel.loadHistoryChat()
         chatViewModel.listenChat()
     }
-    MediaPickerBottomSheet(
-        modalBottomSheetState = modalBottomSheetState,
-    ) {
+
     Scaffold(topBar = {
         ChatScreenTopBar(
             onBackClick = {
@@ -80,8 +77,8 @@ fun ChatScreen(
         )
     }, bottomBar = {
         MessageInput(
-            value = state.value.searchText,
-            onValueChange = { chatViewModel.setSearchText(it) },
+            value = state.value.msgText,
+            onValueChange = { chatViewModel.setMsgText(it) },
             onAttachClick = {
                 coroutineScope.launch {
                     modalBottomSheetState.show()
@@ -95,6 +92,10 @@ fun ChatScreen(
             },
         )
     }) { innerPadding ->
+        MediaPickerBottomSheet(
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+            modalBottomSheetState = modalBottomSheetState,
+        ) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier

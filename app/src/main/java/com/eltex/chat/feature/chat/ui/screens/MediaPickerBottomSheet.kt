@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -36,6 +37,7 @@ import com.eltex.chat.ui.theme.CustomTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MediaPickerBottomSheet(
+    modifier: Modifier = Modifier,
     modalBottomSheetState: ModalBottomSheetState, content: @Composable () -> Unit
 ) {
     val createChatViewModel = hiltViewModel<CreateChatViewModel>()
@@ -45,12 +47,16 @@ fun MediaPickerBottomSheet(
     val media = listOf(Media.Image, Media.Video, Media.Document)
     val selectedOption = remember { mutableStateOf(media[0]) }
 
-    ModalBottomSheetLayout(sheetState = modalBottomSheetState,
+    ModalBottomSheetLayout(
+        modifier = modifier,
+        sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
 
         sheetContent = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Box(
                     Modifier
@@ -75,7 +81,7 @@ fun MediaPickerBottomSheet(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    media.forEach{ mediaItem ->
+                    media.forEach { mediaItem ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -83,11 +89,11 @@ fun MediaPickerBottomSheet(
                                 modifier = Modifier
                                     .size(44.dp)
                                     .background(
-                                        color = if (selectedOption.value == mediaItem)
-                                            CustomTheme.basicPalette.lightBlue
+                                        color = if (selectedOption.value == mediaItem) CustomTheme.basicPalette.lightBlue
                                         else CustomTheme.basicPalette.lightGrayBlue,
                                         shape = CircleShape
-                                    ).clickable {
+                                    )
+                                    .clickable {
                                         selectedOption.value = mediaItem
                                     }, contentAlignment = Alignment.Center
                             ) {
@@ -100,7 +106,7 @@ fun MediaPickerBottomSheet(
                             }
                             Spacer(Modifier.size(4.dp))
                             Text(
-                                text =  mediaItem.title,
+                                text = mediaItem.title,
                                 maxLines = 1,
                                 color = CustomTheme.basicPalette.darkGray,
                                 style = CustomTheme.typographySfPro.caption1Regular,
@@ -109,21 +115,28 @@ fun MediaPickerBottomSheet(
                     }
                 }
             }
-            when(selectedOption.value) {
-                Media.Image -> {
+            Box(
+                Modifier
+                    .heightIn(min = 300.dp)
+                    .fillMaxWidth()
+            ) {
+                when (selectedOption.value) {
+                    Media.Image -> {
+                        MediaGrid()
+                    }
 
-                    MediaGrid()
+                    Media.Document, Media.Video -> {
+                    }
                 }
-                Media.Document,
-                Media.Video -> {}
             }
 
         }) {
         content()
     }
 }
+
 sealed class Media(val title: String, val vectorId: Int) {
-    object Image: Media(title = "Изображение", vectorId = R.drawable.ic_photo)
-    object Video: Media(title = "Видео", vectorId = R.drawable.ic_videocam)
-    object Document: Media(title = "Документ", vectorId = R.drawable.ic_draft)
+    object Image : Media(title = "Изображение", vectorId = R.drawable.ic_photo)
+    object Video : Media(title = "Видео", vectorId = R.drawable.ic_videocam)
+    object Document : Media(title = "Документ", vectorId = R.drawable.ic_draft)
 }

@@ -51,6 +51,7 @@ fun MessageInput(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(CustomTheme.basicPalette.white)
             .padding(start = 16.dp)
             .navigationBarsPadding()
             .imePadding()

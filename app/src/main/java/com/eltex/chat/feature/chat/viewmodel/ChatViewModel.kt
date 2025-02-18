@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.chat.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -96,12 +97,29 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun setSearchText(value: String) {
+    fun setMsgText(value: String) {
         _state.update {
             it.copy(
-                searchText = value
+                msgText = value
             )
         }
+    }
+
+    fun addAttachmentUri(uri: Uri) {
+        _state.update {
+            it.copy(
+                attachmentUriList = it.attachmentUriList + uri
+            )
+        }
+        Log.i("chat vm", state.value.attachmentUriList.toString())
+    }
+    fun removeAttachmentUri(uri: Uri) {
+        _state.update {
+            it.copy(
+                attachmentUriList = it.attachmentUriList - uri
+            )
+        }
+        Log.i("chat vm", state.value.attachmentUriList.toString())
     }
 
     fun sendMessage() {
@@ -110,11 +128,11 @@ class ChatViewModel @Inject constructor(
                 MessagePayload(
                     id = "fgfpkFDHGDH",
                     roomId = state.value.roomId ?: "67b164ebcc5c71ade77b82cc",
-                    msg = state.value.searchText,
+                    msg = state.value.msgText,
                     token = "a8G7X5sFhDKWL8XlweMOfHq5NWY2igJklc-KaPFxSJQ"
                 )
             )
-            setSearchText("")
+            setMsgText("")
         }
     }
 

@@ -35,9 +35,28 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
+import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
 fun MediaGrid() {
+    val chatViewModel = hiltViewModel<ChatViewModel>()
+    val state = chatViewModel.state.collectAsState()
+
     val context = LocalContext.current
     var imageUris by remember { mutableStateOf(listOf<Uri>()) }
     var permissionGranted by remember { mutableStateOf(false) }
@@ -95,7 +114,12 @@ fun MediaGrid() {
                 ) {
                     items(imageUris.size) { index ->
                         val uri = imageUris[index]
-                        ImageItem(uri = uri)
+                        ImageItem(
+                            uri = uri,
+                            selectable = state.value.attachmentUriList?.contains(uri) ?: false,
+                            onSelected = { chatViewModel.addAttachmentUri(uri)},
+                            onRemove = {chatViewModel.removeAttachmentUri(uri)}
+                        )
                     }
                 }
             }
@@ -104,21 +128,38 @@ fun MediaGrid() {
 }
 
 @Composable
-fun ImageItem(uri: Uri) {
-    Image(
-        painter = rememberImagePainter(
-            data = uri,
-            builder = {
-                crossfade(true) // Для плавного появления
-                // Дополнительные настройки Coil
-            }
-        ),
-        contentDescription = "Image",
-        modifier = Modifier
-            .padding(4.dp)
-            .aspectRatio(1f), // Квадратные изображения
-        contentScale = ContentScale.Crop
-    )
+fun ImageItem(
+    selectable: Boolean,
+    uri: Uri,
+    onSelected: ()->Unit,
+    onRemove: ()->Unit
+) {
+    Box(modifier = Modifier.padding(2.dp)) {
+        Image(
+            painter = rememberImagePainter(
+                data = uri,
+                builder = {
+                    crossfade(true)
+                }
+            ),
+            contentDescription = "Image",
+            modifier = Modifier
+                .aspectRatio(1f),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)
+        ) {
+            CheckableCircle(
+                isChecked = selectable,
+                onCheckedChange = {
+                    if (selectable) onRemove()
+                    else onSelected()
+                },
+            )
+        }
+    }
 }
 
 fun getAllImages(context: Context): List<Uri> {
@@ -161,6 +202,46 @@ fun getAllImages(context: Context): List<Uri> {
     }
 
     return imageUris
+}
+
+@Composable
+fun CheckableCircle(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true,
+) {
+    val borderColor = CustomTheme.basicPalette.white // Цвет границы всегда белый
+    val backgroundColor = if (isChecked) CustomTheme.basicPalette.lightBlue else Color.Transparent // Прозрачный фон если не выбран
+    val iconColor = CustomTheme.basicPalette.white
+
+    val border: Modifier = Modifier.border(
+        width = 1.dp,
+        color = borderColor,
+        shape = CircleShape
+    )
+
+    Box(
+        modifier = Modifier
+            .size(16.dp)
+            .then(if (!isChecked) border else Modifier)
+            .background(
+                color = backgroundColor,
+                shape = CircleShape
+            )
+            .clickable(enabled = enabled) {
+                onCheckedChange(!isChecked)
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        if (isChecked) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = "Checked",
+                tint = iconColor,
+                modifier = Modifier.size(12.dp)
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
