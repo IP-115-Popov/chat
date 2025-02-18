@@ -106,13 +106,15 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
             val roomId = messagePayload.roomId
             val descriptionBody =
                 messagePayload.msg.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val uri = Uri.parse(messagePayload.uri)
+            val mimeType = context.contentResolver.getType(uri)
 
             val filePart = MultipartBody.Part.createFormData(
                 name = "file",
                 filename = "file",
-                requireNotNull(context.contentResolver.openInputStream(Uri.parse(messagePayload.uri))).use {
+                requireNotNull(context.contentResolver.openInputStream(uri)).use {
                     it.readBytes()
-                }.toRequestBody()
+                }.toRequestBody(mimeType?.toMediaTypeOrNull()),
             )
 
             return chatCommunicationApi.uploadFile(roomId, filePart, descriptionBody)

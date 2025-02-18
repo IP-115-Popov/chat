@@ -18,6 +18,6 @@ interface ChatCommunicationApi {
     suspend fun uploadFile(
         @Path("roomId") roomId: String,
         @Part file: MultipartBody.Part,
-        @Part("description") description: RequestBody
+        @Part("msg") description: RequestBody
     )
 }
