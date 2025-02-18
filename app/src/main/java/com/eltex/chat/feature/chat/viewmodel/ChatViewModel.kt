@@ -122,7 +122,19 @@ class ChatViewModel @Inject constructor(
         }
         Log.i("chat vm", state.value.attachmentUriList.toString())
     }
-
+    fun sendDocument() {
+        viewModelScope.launch(Dispatchers.IO) {
+            state.value.roomId?.let { roomId ->
+                sendMessageUseCase(
+                    MessagePayload(
+                        roomId = roomId,
+                        msg = "",
+                        uri = state.value.attachmentUriList.first().toString()
+                    )
+                )
+            }
+        }
+    }
     fun sendMessage() {
         viewModelScope.launch(Dispatchers.IO) {
             when(state.value.attachmentUriList.size) {

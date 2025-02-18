@@ -1,7 +1,9 @@
 package com.eltex.data.repository.remote
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import com.eltex.data.api.ChatCommunicationApi
@@ -108,10 +110,11 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
                 messagePayload.msg.toRequestBody("multipart/form-data".toMediaTypeOrNull())
             val uri = Uri.parse(messagePayload.uri)
             val mimeType = context.contentResolver.getType(uri)
+            val fileName = getFileName(context,uri) ?: "file"
 
             val filePart = MultipartBody.Part.createFormData(
                 name = "file",
-                filename = "file",
+                filename = fileName,
                 requireNotNull(context.contentResolver.openInputStream(uri)).use {
                     it.readBytes()
                 }.toRequestBody(mimeType?.toMediaTypeOrNull()),
@@ -120,7 +123,19 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
             return chatCommunicationApi.uploadFile(roomId, filePart, descriptionBody)
         }
     }
-
+    private fun getFileName(context: Context, uri: Uri): String? {
+        var fileName: String? = null
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (displayNameIndex >= 0) {
+                    fileName = it.getString(displayNameIndex)
+                }
+            }
+        }
+        return fileName
+    }
     private fun unsubscribeFromRoomMessages(roomId: String) {
         val id = subscriptionId ?: return
 
