@@ -17,6 +17,7 @@ data class BasicPalette(
     val lightGreen: Color,
     val blue: Color,
     val lightBlue: Color,
+    val lightGrayBlue: Color,
 )
 
 data class CustomRobotoTypography(
