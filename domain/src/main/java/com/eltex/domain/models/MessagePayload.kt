@@ -1,9 +1,9 @@
 package com.eltex.domain.models
 
+import java.net.URI
+
 data class MessagePayload(
-    val id: String,
     val roomId: String,
     val msg: String,
-    val token: String,
-    val fileModel: FileModel? = null,
+    val uri: String? = null,
 )

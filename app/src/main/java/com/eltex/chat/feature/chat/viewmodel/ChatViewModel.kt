@@ -124,14 +124,43 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage() {
         viewModelScope.launch(Dispatchers.IO) {
-            sendMessageUseCase(
-                MessagePayload(
-                    id = "fgfpkFDHGDH",
-                    roomId = state.value.roomId ?: "67b164ebcc5c71ade77b82cc",
-                    msg = state.value.msgText,
-                    token = "a8G7X5sFhDKWL8XlweMOfHq5NWY2igJklc-KaPFxSJQ"
-                )
-            )
+            when(state.value.attachmentUriList.size) {
+                0 -> {
+                    state.value.roomId?.let { roomId ->
+                        sendMessageUseCase(
+                            MessagePayload(
+                                roomId = roomId,
+                                msg = state.value.msgText,
+                            )
+                        )
+                    }
+                }
+                else -> {
+                    state.value.attachmentUriList.forEachIndexed {index, attachment ->
+                        if (index == state.value.attachmentUriList.size-1) {
+                            state.value.roomId?.let { roomId ->
+                                sendMessageUseCase(
+                                    MessagePayload(
+                                        roomId = roomId,
+                                        msg = state.value.msgText,
+                                        uri = state.value.attachmentUriList.first().toString()
+                                    )
+                                )
+                            }
+                        } else {
+                            state.value.roomId?.let { roomId ->
+                                sendMessageUseCase(
+                                    MessagePayload(
+                                        roomId = roomId,
+                                        msg = "",
+                                        uri = state.value.attachmentUriList.first().toString()
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
             setMsgText("")
         }
     }
