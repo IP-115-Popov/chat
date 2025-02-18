@@ -111,7 +111,8 @@ fun MediaPickerBottomSheet(
             }
             when(selectedOption.value) {
                 Media.Image -> {
-                    GalleryGrid()
+
+                    MediaGrid()
                 }
                 Media.Document,
                 Media.Video -> {}

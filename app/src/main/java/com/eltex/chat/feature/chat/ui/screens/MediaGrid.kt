@@ -37,7 +37,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 
 @Composable
-fun GalleryGrid() {
+fun MediaGrid() {
     val context = LocalContext.current
     var imageUris by remember { mutableStateOf(listOf<Uri>()) }
     var permissionGranted by remember { mutableStateOf(false) }
@@ -90,7 +90,8 @@ fun GalleryGrid() {
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(8.dp)
+                    contentPadding = PaddingValues(8.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(imageUris.size) { index ->
                         val uri = imageUris[index]
@@ -166,6 +167,6 @@ fun getAllImages(context: Context): List<Uri> {
 @Composable
 fun DefaultPreviewGalleryGrid() {
     MaterialTheme {
-        GalleryGrid()
+        MediaGrid()
     }
 }
