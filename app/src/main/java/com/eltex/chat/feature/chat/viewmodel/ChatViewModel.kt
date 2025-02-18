@@ -90,6 +90,7 @@ class ChatViewModel @Inject constructor(
                                 ) + state.messages
                             )
                         }
+                        updateImg()
                     }
                 }
             }
