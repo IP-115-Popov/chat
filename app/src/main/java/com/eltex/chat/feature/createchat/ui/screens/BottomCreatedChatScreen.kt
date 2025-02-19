@@ -35,10 +35,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.createchat.ui.components.ContactItem
+import com.eltex.chat.feature.createchat.ui.components.ErrorCreateChatAlertDialog
 import com.eltex.chat.feature.createchat.ui.components.SearchField
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatStatus
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
+import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
+import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch
 
@@ -149,7 +152,11 @@ fun BottomCreatedChatScreen(
                         launchSingleTop = true
                     }
                 }
-                is CreateChatStatus.Error,
+                is CreateChatStatus.Error -> {
+                    ErrorCreateChatAlertDialog(
+                        onDismissRequest = { createChatViewModel.setStatusIdle() }
+                    )
+                }
                 CreateChatStatus.Idle,
                 CreateChatStatus.Loading -> {}
             }

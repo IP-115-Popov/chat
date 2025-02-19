@@ -53,12 +53,13 @@ class CreateChatViewModel @Inject constructor(
     }
 
     suspend fun onContactSelected(userUiModel: UserUiModel) {
+        setStatus(status = CreateChatStatus.Loading)
         val chatModel = createChatUseCase(
             username = userUiModel.username
         )
         when (chatModel) {
             is Either.Left -> {
-
+                setStatus(status = CreateChatStatus.Error(""))
             }
 
             is Either.Right -> {
@@ -70,7 +71,7 @@ class CreateChatViewModel @Inject constructor(
                         )
                     )
                 }
-                Log.i("CreateChatViewModel","create room" + chatModel.value.id + "  " + chatModel.value.t)
+                setStatus(status = CreateChatStatus.Idle)
             }
 
             else -> {}
@@ -98,6 +99,18 @@ class CreateChatViewModel @Inject constructor(
 
                 else -> {}
             }
+        }
+    }
+
+    fun setStatusIdle() {
+        setStatus(status = CreateChatStatus.Idle)
+    }
+
+    private fun setStatus(status: CreateChatStatus) {
+        _state.update {
+            it.copy(
+                status = status
+            )
         }
     }
 }
