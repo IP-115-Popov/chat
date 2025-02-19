@@ -18,11 +18,12 @@ object MessageResponseToMessageMapper {
 
         Message(
             id = _id,
+            rid = rid,
             userId = u._id,
             name = u.name,
             date = _updatedAt.`$date`,
             msg = msg,
-            fileModel = fileModel
+            fileModel = fileModel,
         )
     }
 }

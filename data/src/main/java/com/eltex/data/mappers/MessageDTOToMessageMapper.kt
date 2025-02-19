@@ -18,6 +18,7 @@ object MessageDTOToMessageMapper {
 
         return Message(
             id = messageDTO._id,
+            rid = messageDTO.rid,
             userId = messageDTO.u._id,
             msg = messageDTO.msg,
             date = parseDateStringToLong(messageDTO.ts) ?: 0L,

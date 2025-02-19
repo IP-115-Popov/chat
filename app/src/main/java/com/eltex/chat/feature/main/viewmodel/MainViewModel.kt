@@ -2,11 +2,15 @@ package com.eltex.chat.feature.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.formatters.InstantFormatter
+import com.eltex.domain.models.FileModel
+import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
+import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +29,7 @@ class MainViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
+    private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -116,10 +121,16 @@ class MainViewModel @Inject constructor(
                             val name = it.name
                                 ?: it.usernames?.first { it != state.value.profileUiModel?.name }
                                 ?: ""
+                            val lastMessage = it.message?.let { message ->
+                                getLastMessage(
+                                    messsage = message, chatType = it.t
+                                )
+                            } ?: "Сообщений нет"
+
                             ChatUIModel(
                                 id = it.id,
                                 name = name,
-                                lastMessage = it.lastMessage ?: "",
+                                lastMessage = lastMessage,
                                 lm = it.lm?.let { instant ->
                                     InstantFormatter.formatInstantToRelativeString(
                                         instant
@@ -131,6 +142,8 @@ class MainViewModel @Inject constructor(
                                 usernames = it.usernames,
                                 t = it.t,
                             )
+                        }.onEach { chat ->
+                            listenChat(roomId = chat.id)
                         }
                         it.copy(chatList = resfirst)
                     }
@@ -139,6 +152,47 @@ class MainViewModel @Inject constructor(
             } catch (e: Exception) {
                 setStatus(status = MainUiStatus.Error("GetChat Error"))
                 e.printStackTrace()
+            }
+        }
+    }
+
+    private fun getLastMessage(messsage: Message, chatType: String): String {
+        var lastMessage = when (messsage.fileModel) {
+            is FileModel.Document -> "Документ"
+            is FileModel.Img -> "Изображение"
+            is FileModel.Video -> "Видео"
+            null -> if (messsage.msg.length > 0) messsage.msg else return "Сообщений нет"
+        }
+
+        if (chatType != "p") {
+            val fio = when (messsage.userId) {
+                state.value.profileUiModel?.id -> "Вы"
+                else -> messsage.name
+            }
+            lastMessage = fio + ":  " + lastMessage
+        }
+        return lastMessage
+    }
+
+    fun listenChat(roomId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
+                withContext(Dispatchers.IO) {
+                    _state.update { state ->
+                        state.copy(chatList = state.chatList.map { chat ->
+                            if (chat.id == messsage.rid) {
+                                val lastMessage =
+                                    getLastMessage(messsage = messsage, chatType = chat.t)
+
+                                chat.copy(
+                                    lastMessage = lastMessage
+                                )
+                            } else {
+                                chat
+                            }
+                        })
+                    }
+                }
             }
         }
     }

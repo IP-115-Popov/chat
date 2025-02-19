@@ -16,10 +16,13 @@ import com.eltex.domain.models.MessagePayload
 import com.eltex.domain.repository.remote.ChatMessageRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -43,7 +46,6 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
 
     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
-            Log.d("RoomMessages", "Raw JSON: $json")
 
             try {
                 if (json.getString("msg") == "changed" && json.getString("collection") == "stream-room-messages") {
@@ -91,7 +93,11 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
             webSocketManager.removeListener(listener)
             Log.d("RoomMessages", "Flow closed, listener removed")
         }
-    }
+    }.shareIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.WhileSubscribed(5000),
+        replay = 1
+    )
 
     override suspend fun sendMessages(messagePayload: MessagePayload) {
         if (messagePayload.uri == null) {
@@ -148,11 +154,6 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
             """.trimIndent()
         )
         subscriptionId = null
-        Log.d("RoomMessages", "Unsubscribed from room: $roomId")
-    }
-
-    private fun generateMethodId(): String {
-        return "method-" + UUID.randomUUID().toString()
     }
 
     private fun generateSubscriptionId(): String {
