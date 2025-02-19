@@ -12,19 +12,20 @@ import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Thread.sleep
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateChatViewModel @Inject constructor(
     private val getUsersListUseCase: GetUsersListUseCase,
     private val createChatUseCase: CreateChatUseCase,
-    private val syncAuthDataUseCase: SyncAuthDataUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
@@ -43,7 +44,12 @@ class CreateChatViewModel @Inject constructor(
                 searchValue = value
             )
         }
-        searchUser()
+        if (value.length >= 2 || value.length == 0) {
+            viewModelScope.launch {
+                delay(300L)
+                searchUser()
+            }
+        }
     }
 
     fun onContactSelected(userUiModel: UserUiModel) {
@@ -57,8 +63,7 @@ class CreateChatViewModel @Inject constructor(
 
     private fun searchUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userlist =
-                getUsersListUseCase(state.value.searchValue, count = 20, offset = 0)
+            val userlist = getUsersListUseCase(state.value.searchValue)
             when (userlist) {
                 is Either.Left -> {
                     Log.i("CreateChatViewModel", "getUsersListUseCase left")
