@@ -68,6 +68,7 @@ fun MainScreen(navController: NavHostController) {
         }
     ) { innerPadding ->
         BottomCreatedChatScreen(
+            navController = navController,
             modalBottomSheetState = modalBottomSheetState,
         ) {
             Column(modifier = Modifier

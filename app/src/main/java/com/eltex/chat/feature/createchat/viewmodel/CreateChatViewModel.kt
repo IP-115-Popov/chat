@@ -52,13 +52,29 @@ class CreateChatViewModel @Inject constructor(
         }
     }
 
-    fun onContactSelected(userUiModel: UserUiModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            createChatUseCase(
-                username = userUiModel.username
-            )
+    suspend fun onContactSelected(userUiModel: UserUiModel) {
+        val chatModel = createChatUseCase(
+            username = userUiModel.username
+        )
+        when (chatModel) {
+            is Either.Left -> {
+
+            }
+
+            is Either.Right -> {
+                _state.update {
+                    it.copy(
+                        status = CreateChatStatus.roomCreated(
+                            roomId = chatModel.value.id,
+                            roomType = chatModel.value.t,
+                        )
+                    )
+                }
+                Log.i("CreateChatViewModel","create room" + chatModel.value.id + "  " + chatModel.value.t)
+            }
+
+            else -> {}
         }
-        Log.i("CreateChatViewModel", "create chat")
     }
 
     private fun searchUser() {

@@ -119,14 +119,14 @@ class MainViewModel @Inject constructor(
                             ChatUIModel(
                                 id = it.id,
                                 name = name,
-                                lastMessage = it.lastMessage,
+                                lastMessage = it.lastMessage ?: "",
                                 lm = it.lm?.let { instant ->
                                     InstantFormatter.formatInstantToRelativeString(
                                         instant
                                     )
                                 } ?: "",
-                                unread = it.unread, //Количество непрочитанных сообщений в комнате.
-                                otrAck = "", //Статус подтверждения получения неофициального сообщения.
+                                unread = it.unread ?: 0,
+                                otrAck = "",
                                 avatarUrl = "",
                                 usernames = it.usernames,
                                 t = it.t,

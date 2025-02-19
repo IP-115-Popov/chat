@@ -31,16 +31,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.createchat.ui.components.ContactItem
 import com.eltex.chat.feature.createchat.ui.components.SearchField
+import com.eltex.chat.feature.createchat.viewmodel.CreateChatStatus
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatViewModel
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomCreatedChatScreen(
+    navController: NavHostController,
     modalBottomSheetState: ModalBottomSheetState,
     content: @Composable () -> Unit
 ) {
@@ -126,11 +131,27 @@ fun BottomCreatedChatScreen(
                 ) {
                     items(state.value.userList) { contact ->
                         ContactItem(contact = contact, onSelect = { it ->
-                            createChatViewModel.onContactSelected(it)
-                            coroutineScope.launch { modalBottomSheetState.hide() }
+                            coroutineScope.launch {
+                                modalBottomSheetState.hide()
+                                createChatViewModel.onContactSelected(it)
+                            }
                         })
                     }
                 }
+            }
+            when(val status = state.value.status){
+                is CreateChatStatus.roomCreated -> {
+                    navController.navigate(NavRoutes.Chat.route + "/${status.roomId}" + "/${status.roomType}") {
+                        popUpTo(NavRoutes.Chat.route) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+                is CreateChatStatus.Error,
+                CreateChatStatus.Idle,
+                CreateChatStatus.Loading -> {}
             }
         }) {
         content()
@@ -147,6 +168,7 @@ fun BottomSheetScreenPreview() {
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
                 confirmStateChange = { true })
         BottomCreatedChatScreen(
+            navController = rememberNavController(),
             modalBottomSheetState = modalBottomSheetState,
             content = {
                 Box(modifier = Modifier.fillMaxSize()) {
