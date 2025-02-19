@@ -1,5 +1,6 @@
 package com.eltex.data.mappers
 
+import android.util.Log
 import com.eltex.data.models.chat.Result
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
@@ -7,15 +8,19 @@ import com.eltex.domain.models.Message
 
 object ChatResultToChatModelMapper {
     fun map(result: Result): ChatModel {
-        val fileModel: FileModel? = result.lastMessage?.attachments?.mapNotNull { jsonElement ->
-            try {
-                return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
-            } catch (e: Exception) {
-                println("Error parsing attachment: ${e.message}")
-                return@mapNotNull null
-            }
-        }?.firstOrNull()
-
+        val fileModel: FileModel? = try {
+            result.lastMessage?.attachments?.mapNotNull { jsonElement ->
+                try {
+                    return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
+                } catch (e: Exception) {
+                    println("Error parsing attachment: ${e.message}")
+                    return@mapNotNull null
+                }
+            }?.firstOrNull()
+        } catch (e: Exception) {
+            Log.e("ChatResultToChatModelMapper", "get attachments error ${e.message}")
+            null
+        }
         return ChatModel(
             id = result._id,
             name = result.name,
