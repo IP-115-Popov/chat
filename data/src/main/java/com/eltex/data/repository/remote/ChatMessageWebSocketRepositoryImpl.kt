@@ -30,8 +30,11 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ChatMessageWebSocketRepositoryImpl @Inject constructor(
     private val webSocketManager: WebSocketManager,
     private val chatCommunicationApi: ChatCommunicationApi,
@@ -43,6 +46,8 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
     }
 
     private var subscriptionId: String? = null
+
+    private val subscribers: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
@@ -69,10 +74,13 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
 
         val id = generateSubscriptionId()
 
-        // Отправляем запрос на подписку
-        withContext(Dispatchers.IO) {
-            webSocketManager.sendMessage(
-                """
+        //защита от многократной подписки на 1 событие
+        if (roomId !in subscribers) {
+            subscribers.add(roomId)
+            // Отправляем запрос на подписку
+            withContext(Dispatchers.IO) {
+                webSocketManager.sendMessage(
+                    """
                 {
                     "msg": "sub",
                     "id": "$id",
@@ -83,8 +91,9 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
                     ]
                 }
                 """.trimIndent()
-            )
-            subscriptionId = id
+                )
+                subscriptionId = id
+            }
         }
 
 
@@ -143,6 +152,9 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         return fileName
     }
     private fun unsubscribeFromRoomMessages(roomId: String) {
+
+        subscribers.remove(roomId)
+
         val id = subscriptionId ?: return
 
         webSocketManager.sendMessage(
