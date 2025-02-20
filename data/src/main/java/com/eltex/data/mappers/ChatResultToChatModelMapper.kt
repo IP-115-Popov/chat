@@ -29,6 +29,7 @@ object ChatResultToChatModelMapper {
             avatarUrl = result.avatarETag,
             usernames = if (result.t == "d") result.usernames else null,
             t = result.t ?: "",
+            uids = if (result.t == "d") result.uids else null,
             message = Message(
                 id = result.lastMessage?._id ?: "",
                 rid = result._id,

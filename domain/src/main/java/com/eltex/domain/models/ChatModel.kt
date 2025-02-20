@@ -9,6 +9,7 @@ data class ChatModel(
     val unread: Int? = null, //Количество непрочитанных сообщений в комнате.
     val avatarUrl: String? = null,
     val usernames: List<String>? = null,
+    val uids: List<String>? = null,
     val t: String,
     //val fileModel: FileModel? = null,
     val message: Message? =null,

@@ -13,4 +13,5 @@ data class Result(
     val avatarETag: String? = null,
     val name: String? = null,
     val usernames: List<String>? = null,
+    val uids: List<String>? = null,
 )

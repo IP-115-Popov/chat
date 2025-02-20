@@ -56,4 +56,25 @@ class UsersNetworkRepositoryImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun getUser(userId: String): Either<DataError, UserModel> {
+        return try {
+            val userResponse = usersApi.getUser(userId = userId)
+            if (userResponse.isSuccessful) {
+                userResponse.body()?.let { user ->
+                    UserDTOToUserModelMapper.map(user.user).right()
+                } ?: DataError.DefaultError.left()
+
+            } else {
+                when (userResponse.code()) {
+                    in 400 until 500 -> DataError.IncorrectData.left()
+                    else -> DataError.DefaultError.left()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("UsersRemoteRepository", "getUser ${e.message}")
+            DataError.ConnectionMissing.left()
+        }
+
+    }
 }

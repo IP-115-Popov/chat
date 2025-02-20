@@ -2,6 +2,7 @@ package com.eltex.chat.feature.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
@@ -12,6 +13,7 @@ import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
+import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +32,7 @@ class MainViewModel @Inject constructor(
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -117,30 +120,39 @@ class MainViewModel @Inject constructor(
                 val res = getChatListUseCase()
                 withContext(Dispatchers.Main) {
                     _state.update {
-                        val resfirst = res.first().map {
-                            val name = it.name
-                                ?: it.usernames?.first { it != state.value.profileUiModel?.name }
-                                ?: ""
-                            val lastMessage = it.message?.let { message ->
+                        val resfirst = res.first().map { chatModel ->
+                            val name: String = if (chatModel.t == "d") {
+                                chatModel.uids?.firstOrNull {id -> id != state.value.profileUiModel?.id}?.let {userId ->
+                                    when (val user = getUserInfoUseCase.invoke(userId)) {
+                                        is Either.Left -> chatModel.name ?: ""
+                                        is Either.Right -> user.value.name
+                                        else -> ""
+                                    }
+                                } ?: ""
+                            } else {
+                                chatModel.name ?: ""
+                            }
+
+                            val lastMessage = chatModel.message?.let { message ->
                                 getLastMessage(
-                                    messsage = message, chatType = it.t
+                                    messsage = message, chatType = chatModel.t
                                 )
                             } ?: "Сообщений нет"
 
                             ChatUIModel(
-                                id = it.id,
+                                id = chatModel.id,
                                 name = name,
                                 lastMessage = lastMessage,
-                                lm = it.lm?.let { instant ->
+                                lm = chatModel.lm?.let { instant ->
                                     InstantFormatter.formatInstantToRelativeString(
                                         instant
                                     )
                                 } ?: "",
-                                unread = it.unread ?: 0,
+                                unread = chatModel.unread ?: 0,
                                 otrAck = "",
                                 avatarUrl = "",
-                                usernames = it.usernames,
-                                t = it.t,
+                                usernames = chatModel.usernames,
+                                t = chatModel.t,
                             )
                         }.onEach { chat ->
                             listenChat(roomId = chat.id)
@@ -164,7 +176,7 @@ class MainViewModel @Inject constructor(
             null -> if (messsage.msg.length > 0) messsage.msg else return "Сообщений нет"
         }
 
-        if (chatType != "p") {
+        if (chatType != "d") {
             val fio = when (messsage.userId) {
                 state.value.profileUiModel?.id -> "Вы"
                 else -> messsage.name

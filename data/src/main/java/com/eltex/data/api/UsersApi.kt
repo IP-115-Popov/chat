@@ -1,5 +1,6 @@
 package com.eltex.data.api
 
+import com.eltex.data.models.users.UserResponse
 import com.eltex.data.models.users.UsersResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -12,4 +13,9 @@ interface UsersApi {
         @Query("offset") offset: Int,
         @Query("query") query: String,
     ): Response<UsersResponse>
+
+    @GET("/api/v1/users.info")
+    suspend fun getUser(
+        @Query("userId") userId: String
+    ): Response<UserResponse>
 }
