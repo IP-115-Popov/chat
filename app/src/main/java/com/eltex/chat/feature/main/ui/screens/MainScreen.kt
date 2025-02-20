@@ -53,8 +53,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
-    val mainViewModel = hiltViewModel<MainViewModel>()
+fun MainScreen(
+    navController: NavHostController,
+    mainViewModel: MainViewModel,
+) {
     val state = mainViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -220,14 +222,5 @@ private fun navToChat(
             saveState = true
         }
         launchSingleTop = true
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainScreenPreview() {
-    CustomTheme {
-        MainScreen(navController = rememberNavController())
     }
 }
