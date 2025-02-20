@@ -144,6 +144,7 @@ fun BottomCreatedChatScreen(
             }
             when(val status = state.value.status){
                 is CreateChatStatus.roomCreated -> {
+                    createChatViewModel.setStatusIdle()
                     navController.navigate(NavRoutes.Chat.route + "/${status.roomId}" + "/${status.roomType}") {
                         popUpTo(NavRoutes.Chat.route) {
                             inclusive = true

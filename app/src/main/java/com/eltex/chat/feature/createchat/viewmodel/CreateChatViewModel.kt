@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Thread.sleep
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,7 +70,6 @@ class CreateChatViewModel @Inject constructor(
                         )
                     )
                 }
-                setStatus(status = CreateChatStatus.Idle)
             }
 
             else -> {}
