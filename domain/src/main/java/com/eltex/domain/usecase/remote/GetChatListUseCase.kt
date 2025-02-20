@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetChatListUseCase(
     private val chatRemoteRepository: ChatRemoteRepository
 ) {
-    suspend operator fun invoke(): Flow<List<ChatModel>> = chatRemoteRepository.getChat()
+    suspend operator fun invoke(): Flow<List<ChatModel>> = chatRemoteRepository.getChats()
 }

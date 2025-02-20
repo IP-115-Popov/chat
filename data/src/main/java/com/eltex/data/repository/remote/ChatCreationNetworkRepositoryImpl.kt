@@ -4,7 +4,7 @@ import android.util.Log
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.eltex.data.api.ChatCreationApi
+import com.eltex.data.api.ChatApi
 import com.eltex.data.models.createchat.CreateChatRequest
 import com.eltex.data.models.createchat.CreatedChatResponse
 import com.eltex.domain.models.ChatModel
@@ -14,12 +14,12 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class ChatCreationNetworkRepositoryImpl @Inject constructor(
-    private val chatCreationApi: ChatCreationApi
+    private val chatApi: ChatApi
 ) : ChatCreationRemoteRepository {
     override suspend fun createChat(userName: String): Either<DataError, ChatModel> {
         val response: Response<CreatedChatResponse>
         try {
-            response = chatCreationApi.createChat(
+            response = chatApi.createChat(
                 createChatRequest = CreateChatRequest(
                     username = userName
                 ),

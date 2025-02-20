@@ -72,7 +72,7 @@ fun ChatScreen(
                     launchSingleTop = true
                 }
             },
-            title = "roomId",
+            title = state.value.name ?: "",
             onMoreClick = {},
         )
     }, bottomBar = {
@@ -93,7 +93,7 @@ fun ChatScreen(
         )
     }) { innerPadding ->
         MediaPickerBottomSheet(
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+            //modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             modalBottomSheetState = modalBottomSheetState,
         ) {
             LazyColumn(

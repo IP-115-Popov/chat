@@ -7,14 +7,17 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
+import com.eltex.domain.usecase.remote.GetChatInfoUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
+import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.remote.SendMessageUseCase
 import com.eltex.domain.Сonstants
@@ -39,6 +42,8 @@ class ChatViewModel @Inject constructor(
     private val loadDocumentUseCase: LoadDocumentUseCase,
     private val checkFileExistsUseCase: CheckFileExistsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
+    private val getChatInfoUseCase: GetChatInfoUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -68,11 +73,31 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sync(roomId: String, roomType: String) {
-        _state.update {
-            it.copy(
-                roomId = roomId,
-                roomType = roomType,
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            val getChatInfoRes = getChatInfoUseCase(roomId = roomId)
+            var chatName: String = ""
+            getChatInfoRes.onRight { chat ->
+                when(chat.t) {
+                    "d" -> {
+                        chat.uids?.firstOrNull {id -> id != state.value.authData?.userId }?.let {
+                            getUserInfoUseCase(it).onRight { user ->
+                                chatName = user.name
+                            }
+                        }
+                    }
+                    else -> chatName = chat.name ?: ""
+
+                }
+
+            }
+
+            _state.update {
+                it.copy(
+                    roomId = roomId,
+                    roomType = roomType,
+                    name = chatName
+                )
+            }
         }
     }
 

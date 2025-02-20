@@ -6,6 +6,7 @@ import com.eltex.domain.models.AuthData
 
 data class ChatUiState(
     val status: ChatStatus = ChatStatus.Idle,
+    val name: String? = null,
     val messages: List<MessageUiModel> = emptyList(),
     val authData: AuthData? = null,
     val roomType: String? = null,

@@ -1,9 +1,15 @@
 package com.eltex.data.repository.remote
 
 import android.util.Log
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import com.eltex.data.api.ChatApi
 import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
+import com.eltex.domain.models.DataError
+import com.eltex.domain.models.Message
 import com.eltex.domain.repository.remote.ChatRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +22,15 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class ChatWebSocketRepositoryImpl @Inject constructor(
-    private val webSocketManager: WebSocketManager
+    private val webSocketManager: WebSocketManager,
+    private val chatApi: ChatApi,
 ) : ChatRemoteRepository {
 
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true
     }
 
-    override suspend fun getChat(): Flow<List<ChatModel>> = callbackFlow {
+    override suspend fun getChats(): Flow<List<ChatModel>> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
             Log.i("ChatRepositoryImpl", json.toString())
             try {
@@ -70,6 +77,35 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
         awaitClose {
             webSocketManager.removeListener(listener)
             Log.d("ChatRepository", "Flow closed, listener removed")
+        }
+    }
+
+    override suspend fun getChatInfo(roomId: String): Either<DataError, ChatModel>  {
+        return try {
+            val response = chatApi.getChatInfo(roomId = roomId)
+            if (response.isSuccessful) {
+                val room = response.body()?.room
+                if (room != null) {
+                    ChatModel(
+                        id = room._id,
+                        name = room.fname,
+                        usernames = room.usernames,
+                        uids = room.uids,
+                        t = room.t ?: "",
+                    ).right()
+                } else {
+                    DataError.DefaultError.left()
+                }
+            } else {
+                when(response.code()){
+                    in 400 until 500 -> DataError.IncorrectData.left()
+                    else -> DataError.DefaultError.left()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ChatRemoteRepository", "getChat ${e.message}")
+            e.printStackTrace()
+            DataError.ConnectionMissing.left()
         }
     }
 }

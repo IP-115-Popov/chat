@@ -1,6 +1,6 @@
 package com.eltex.data.di.api
 
-import com.eltex.data.api.ChatCreationApi
+import com.eltex.data.api.ChatApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,8 +10,8 @@ import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ChatCreationApiModule {
+class ChatApiModule {
     @Provides
-    fun provideChatCreationApi(retrofit: Retrofit): ChatCreationApi =
-        retrofit.create<ChatCreationApi>()
+    fun provideChatApi(retrofit: Retrofit): ChatApi =
+        retrofit.create<ChatApi>()
 }
