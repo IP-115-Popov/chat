@@ -1,5 +1,6 @@
 package com.eltex.data.models.chatinfo
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,5 +13,6 @@ data class Room(
     val ts: String? = null,
     val uids: List<String>? = null,
     val usernames: List<String>? = null,
-    val fname: String? = null
+    val fname: String? = null,
+    val name: String? = null,
 )

@@ -88,7 +88,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                 if (room != null) {
                     ChatModel(
                         id = room._id,
-                        name = room.fname,
+                        name = room.fname ?: room.name,
                         usernames = room.usernames,
                         uids = room.uids,
                         t = room.t ?: "",

@@ -31,10 +31,6 @@ class SignInViewModel @Inject constructor(
     private val _state = MutableStateFlow(SignInUiState())
     val state: StateFlow<SignInUiState> = _state.asStateFlow()
 
-    init {
-        syncToken()
-    }
-
     private fun syncToken() {
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
@@ -79,6 +75,7 @@ class SignInViewModel @Inject constructor(
 
                     is Either.Right -> {
                         connectWebSocket()
+                        syncToken()
                         setStatus(SignInStatus.SignInSuccessful)
                     }
 

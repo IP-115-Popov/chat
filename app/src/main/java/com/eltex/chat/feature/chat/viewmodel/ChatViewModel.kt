@@ -77,14 +77,15 @@ class ChatViewModel @Inject constructor(
             val getChatInfoRes = getChatInfoUseCase(roomId = roomId)
             var chatName: String = ""
             getChatInfoRes.onRight { chat ->
-                when(chat.t) {
+                when (chat.t) {
                     "d" -> {
-                        chat.uids?.firstOrNull {id -> id != state.value.authData?.userId }?.let {
+                        chat.uids?.firstOrNull { id -> id != state.value.authData?.userId }?.let {
                             getUserInfoUseCase(it).onRight { user ->
                                 chatName = user.name
                             }
                         }
                     }
+
                     else -> chatName = chat.name ?: ""
 
                 }
@@ -98,28 +99,27 @@ class ChatViewModel @Inject constructor(
                     name = chatName
                 )
             }
+            loadHistoryChat()
         }
+        listenChat(roomId = roomId)
     }
 
-    fun listenChat() {
+    private fun listenChat(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            state.value.roomId?.let { roomId ->
-                getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
-                    withContext(Dispatchers.IO) {
-                        _state.update { state ->
-                            state.copy(
-                                messages = listOf(
-                                    MessageToMessageUiModelMapper.map(
-                                        messsage
-                                    )
-                                ) + state.messages
-                            )
-                        }
-                        updateImg()
+            getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
+                withContext(Dispatchers.IO) {
+                    _state.update { state ->
+                        state.copy(
+                            messages = listOf(
+                                MessageToMessageUiModelMapper.map(
+                                    messsage
+                                )
+                            ) + state.messages
+                        )
                     }
+                    updateImg()
                 }
             }
-
         }
     }
 
@@ -139,6 +139,7 @@ class ChatViewModel @Inject constructor(
         }
         Log.i("chat vm", state.value.attachmentUriList.toString())
     }
+
     fun removeAttachmentUri(uri: Uri) {
         _state.update {
             it.copy(
@@ -147,6 +148,7 @@ class ChatViewModel @Inject constructor(
         }
         Log.i("chat vm", state.value.attachmentUriList.toString())
     }
+
     fun sendDocument() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.roomId?.let { roomId ->
@@ -160,9 +162,10 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
     fun sendMessage() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(state.value.attachmentUriList.size) {
+            when (state.value.attachmentUriList.size) {
                 0 -> {
                     state.value.roomId?.let { roomId ->
                         sendMessageUseCase(
@@ -173,9 +176,10 @@ class ChatViewModel @Inject constructor(
                         )
                     }
                 }
+
                 else -> {
-                    state.value.attachmentUriList.forEachIndexed {index, attachment ->
-                        if (index == state.value.attachmentUriList.size-1) {
+                    state.value.attachmentUriList.forEachIndexed { index, attachment ->
+                        if (index == state.value.attachmentUriList.size - 1) {
                             state.value.roomId?.let { roomId ->
                                 sendMessageUseCase(
                                     MessagePayload(
@@ -242,8 +246,6 @@ class ChatViewModel @Inject constructor(
                         }
                         setStatus(ChatStatus.Idle)
                     }
-                } else {
-                    setStatus(ChatStatus.Error)
                 }
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "loadHistoryChat ${e.message}")

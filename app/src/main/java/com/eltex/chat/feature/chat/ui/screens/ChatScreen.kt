@@ -58,8 +58,6 @@ fun ChatScreen(
 
     LaunchedEffect(key1 = roomId, key2 = roomType) {
         chatViewModel.sync(roomId = roomId, roomType = roomType)
-        chatViewModel.loadHistoryChat()
-        chatViewModel.listenChat()
     }
 
     Scaffold(topBar = {

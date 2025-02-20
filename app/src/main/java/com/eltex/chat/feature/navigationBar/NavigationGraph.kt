@@ -12,11 +12,13 @@ import com.eltex.chat.feature.signin.ui.screens.SignInScreen
 import com.eltex.chat.ui.components.SplashScreen
 
 @Composable
-fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+fun NavigationGraph(
+    navController: NavHostController,
+    startDestination: NavRoutes,
+) {
     NavHost(
         navController = navController,
-        startDestination = NavRoutes.Splash.route,
-        modifier = modifier
+        startDestination = startDestination.route,
     ) {
         composable(NavRoutes.Authorization.route) { SignInScreen(navController) }
         composable(NavRoutes.Main.route) { MainScreen(navController) }
@@ -32,12 +34,6 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
                 )
             }
         }
-        composable(NavRoutes.Splash.route) {
-            SplashScreen(
-                navController = navController,
-                nextRoute = NavRoutes.Authorization,
-                displayTimeMillis = 1000L,
-            )
-        }
+        composable(NavRoutes.Splash.route) { SplashScreen() }
     }
 }
