@@ -158,7 +158,9 @@ class MainViewModel @Inject constructor(
                                 t = chatModel.t,
                             )
                         }.onEach { chat ->
-                            listenChat(roomId = chat.id)
+                            if (chat !in state.value.chatList) {
+                                listenChat(roomId = chat.id)
+                            }
                         }
                         it.copy(chatList = resfirst)
                     }
