@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,7 +67,7 @@ fun ChatScreen(
             state.value.msgText.isBlank() && !modalBottomSheetState.isVisible
         }
     }
-
+   val inputEnabled = rememberSaveable { mutableStateOf(true) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -96,6 +97,7 @@ fun ChatScreen(
             value = state.value.msgText,
             showSendButtons = showSendButtons,
             showAttachmentButtons = showAttachmentButtons,
+            enabled = inputEnabled.value,
             onValueChange = { chatViewModel.setMsgText(it) },
             onAttachClick = {
                 coroutineScope.launch {
@@ -111,7 +113,6 @@ fun ChatScreen(
         )
     }) { innerPadding ->
         MediaPickerBottomSheet(
-            //modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             modalBottomSheetState = modalBottomSheetState,
         ) {
             LazyColumn(
@@ -168,6 +169,28 @@ fun ChatScreen(
                         }
                     }
                 }
+            }
+        }
+    }
+
+    when (state.value.status) {
+        ChatStatus.Error,
+        ChatStatus.Loading,
+        ChatStatus.NextPageLoading,
+        ChatStatus.Idle -> {
+            inputEnabled.value = true
+            LaunchedEffect(modalBottomSheetState.currentValue) {
+                if (modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
+                    chatViewModel.clearAttachment()
+                }
+            }
+        }
+        ChatStatus.SendingMessage -> {
+            inputEnabled.value = false
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    color = CustomTheme.basicPalette.blue
+                )
             }
         }
     }

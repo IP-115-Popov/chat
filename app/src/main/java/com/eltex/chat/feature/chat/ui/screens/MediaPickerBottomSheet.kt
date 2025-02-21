@@ -163,11 +163,6 @@ fun MediaPickerBottomSheet(
             }
 
         }) {
-        LaunchedEffect(modalBottomSheetState.currentValue) {
-            if (modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
-                chatViewModel.clearAttachment()
-            }
-        }
         content()
     }
 }

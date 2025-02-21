@@ -123,6 +123,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+
     fun setMsgText(value: String) {
         _state.update {
             it.copy(
@@ -156,6 +157,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sendDocument() {
+        setStatus(ChatStatus.SendingMessage)
         viewModelScope.launch(Dispatchers.IO) {
             state.value.roomId?.let { roomId ->
                 sendMessageUseCase(
@@ -165,13 +167,17 @@ class ChatViewModel @Inject constructor(
                         uri = state.value.attachmentUriList.first().toString()
                     )
                 )
-                clearAttachment()
             }
+            setStatus(ChatStatus.Idle)
+            setMsgText("")
+            clearAttachment()
         }
     }
 
     fun sendMessage() {
         if (state.value.msgText.isBlank() && state.value.attachmentUriList.isEmpty()) return
+        val msgText = state.value.msgText
+        setStatus(ChatStatus.SendingMessage)
         viewModelScope.launch(Dispatchers.IO) {
             when (state.value.attachmentUriList.size) {
                 0 -> {
@@ -179,7 +185,7 @@ class ChatViewModel @Inject constructor(
                         sendMessageUseCase(
                             MessagePayload(
                                 roomId = roomId,
-                                msg = state.value.msgText,
+                                msg = msgText,
                             )
                         )
                     }
@@ -192,8 +198,8 @@ class ChatViewModel @Inject constructor(
                                 sendMessageUseCase(
                                     MessagePayload(
                                         roomId = roomId,
-                                        msg = state.value.msgText,
-                                        uri = state.value.attachmentUriList.first().toString()
+                                        msg = msgText,
+                                        uri = attachment.toString()
                                     )
                                 )
                             }
@@ -203,7 +209,7 @@ class ChatViewModel @Inject constructor(
                                     MessagePayload(
                                         roomId = roomId,
                                         msg = "",
-                                        uri = state.value.attachmentUriList.first().toString()
+                                        uri = attachment.toString()
                                     )
                                 )
                             }
@@ -213,6 +219,7 @@ class ChatViewModel @Inject constructor(
             }
             clearAttachment()
             setMsgText("")
+            setStatus(ChatStatus.Idle)
         }
     }
 

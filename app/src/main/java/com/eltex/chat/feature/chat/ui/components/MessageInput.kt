@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -43,6 +44,7 @@ fun MessageInput(
     value: String,
     showSendButtons: Boolean,
     showAttachmentButtons: Boolean,
+    enabled: Boolean,
     onValueChange: (String) -> Unit,
     onAttachClick: () -> Unit,
     onSendClick: () -> Unit,
@@ -70,11 +72,11 @@ fun MessageInput(
                         bottom.linkTo(parent.bottom)
                         end.linkTo(buttons.start, margin = 4.dp)
                         width = Dimension.fillToConstraints
-                    },
-                contentAlignment = Alignment.CenterStart
+                    }, contentAlignment = Alignment.CenterStart
             ) {
                 BasicTextField(
                     value = value,
+                    enabled = enabled,
                     onValueChange = {
                         onValueChange(it)
                     },
@@ -98,24 +100,26 @@ fun MessageInput(
             }
 
             Row(
-                modifier = Modifier
-                    .constrainAs(buttons) {
-                        end.linkTo(parent.end, margin = 16.dp)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    },
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.constrainAs(buttons) {
+                    end.linkTo(parent.end, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }, verticalAlignment = Alignment.CenterVertically
             ) {
                 if (showAttachmentButtons) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_attach_file),
+                    Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_attach_file),
                         contentDescription = null,
                         tint = CustomTheme.basicPalette.lightBlue,
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable {
-                                onAttachClick()
-                            }
+                            .then(if (enabled) {
+                                Modifier.clickable {
+                                    onAttachClick()
+                                }
+                            } else {
+                                Modifier
+                            })
+
                     )
                     Spacer(Modifier.size(12.dp))
                 }
@@ -124,21 +128,23 @@ fun MessageInput(
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = CustomTheme.basicPalette.lightBlue,
-                                shape = CircleShape
+                                color = CustomTheme.basicPalette.lightBlue, shape = CircleShape
                             )
-                            .padding(start = 8.dp, end = 5.dp),
-                        contentAlignment = Alignment.Center
+                            .padding(start = 8.dp, end = 5.dp), contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_send),
+                        Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_send),
                             contentDescription = null,
                             tint = CustomTheme.basicPalette.white,
                             modifier = Modifier
                                 .size(height = 16.dp, width = 19.dp)
-                                .clickable {
-                                    onSendClick()
-                                }
+                                .then(if (enabled) {
+                                    Modifier.clickable {
+                                        onSendClick()
+                                    }
+                                } else {
+                                    Modifier
+                                })
+
                         )
                     }
                 }
@@ -157,6 +163,7 @@ fun MessageInputPreview() {
             value = text,
             showSendButtons = true,
             showAttachmentButtons = true,
+            enabled = true,
             onValueChange = { text = it },
             onAttachClick = { text = "attach" },
             onSendClick = { text = "send" },
