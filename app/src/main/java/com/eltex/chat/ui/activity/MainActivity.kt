@@ -49,8 +49,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CustomTheme {
                 val routeState = route.collectAsState()
-                val navController = rememberNavController()
                 val initializedViewModelState by initializedViewModel.collectAsState()
+                val navController = rememberNavController()
 
                 if (initializedViewModelState) {
                     NavigationGraph(
