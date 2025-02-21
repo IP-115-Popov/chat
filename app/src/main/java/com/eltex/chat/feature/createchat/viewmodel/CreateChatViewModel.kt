@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.createchat.model.UserUiModel
+import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.remote.CreateChatUseCase
+import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class CreateChatViewModel @Inject constructor(
     private val getUsersListUseCase: GetUsersListUseCase,
     private val createChatUseCase: CreateChatUseCase,
+    private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
@@ -85,7 +88,9 @@ class CreateChatViewModel @Inject constructor(
                 }
 
                 is Either.Right -> {
+
                     val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }
+
                     withContext(Dispatchers.Main) {
                         _state.update {
                             it.copy(
@@ -93,9 +98,32 @@ class CreateChatViewModel @Inject constructor(
                             )
                         }
                     }
+                    loadUsersAvatar()
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun loadUsersAvatar() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val updatedUsers = state.value.userList.map { user ->
+                if (user.avatar == null) {
+                    val avatarRes = getAvatarUseCase(
+                        subject = user.username
+                    )
+                    when (avatarRes) {
+                        is Either.Left -> user
+                        is Either.Right ->  user.copy(avatar = avatarRes.value.byteArrayToBitmap())
+                        else -> user
+                    }
+                } else {
+                    user
+                }
+            }
+            _state.update {
+                it.copy(userList = updatedUsers)
             }
         }
     }

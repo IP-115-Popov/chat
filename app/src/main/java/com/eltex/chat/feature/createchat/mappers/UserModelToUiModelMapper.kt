@@ -11,6 +11,7 @@ object UserModelToUiModelMapper {
             name = name,
             status = status,
             username = username,
+            avatar = null,
         )
     }
 }
