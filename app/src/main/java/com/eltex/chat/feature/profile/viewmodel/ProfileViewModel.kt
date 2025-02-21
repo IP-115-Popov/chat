@@ -34,7 +34,6 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
-    private val syncAuthDataUseCase: SyncAuthDataUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState())
@@ -42,36 +41,18 @@ class ProfileViewModel @Inject constructor(
 
     init {
         getUser()
-
-        viewModelScope.launch {
-            syncAuthDataUseCase().onRight { authData ->
-                _state.update {
-                    it.copy(
-                        token = authData.authToken
-                    )
-                }
-            }
-
-            state.map { it.profileUiModel?.avatarUrl }.distinctUntilChanged().collect { avatarUrl ->
-                if (!avatarUrl.isNullOrEmpty()) {
-                    loadImage(avatarUrl)
-                }
-            }
-        }
     }
 
 
-    private fun loadImage(imageUrl: String) {
+    private fun loadImage() {
         setStatus(ProfileStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val subject = state.value.profileUiModel?.username
-                val rc_uid = state.value.profileUiModel?.id
-                val rc_token = state.value.token
 
                 subject?.let {
                     val avatarRes = getAvatarUseCase(
-                        subject = subject, rc_uid = rc_uid ?: "", rc_token = rc_token ?: ""
+                        subject = subject
                     )
                     when (avatarRes) {
                         is Either.Left -> {}
@@ -117,7 +98,7 @@ class ProfileViewModel @Inject constructor(
                                     )
                                 )
                             }
-                            Log.i("my-log", state.value.profileUiModel.toString())
+                            loadImage()
                             setStatus(ProfileStatus.Idle)
                         }
                     }

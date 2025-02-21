@@ -5,20 +5,30 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.AvatarApi
+import com.eltex.data.api.HeaderManagerImpl
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.remote.AvatarRemoteRepository
 import javax.inject.Inject
 
 class AvatarNetworkRepositoryImpl @Inject constructor(
-    private val avatarApi: AvatarApi
+    private val avatarApi: AvatarApi,
+    private val headerManagerImpl: HeaderManagerImpl,
 ) : AvatarRemoteRepository {
     override suspend fun getAvatar(
-        subject: String, rc_uid: String, rc_token: String
+        subject: String
     ): Either<DataError, ByteArray> {
         return try {
-            val avatarRes = avatarApi.get(subject = subject, rc_uid = rc_uid, rc_token = rc_token)
-            val bytes = avatarRes.bytes()
-            bytes.right()
+            if (headerManagerImpl.id != null && headerManagerImpl.token != null) {
+                val avatarRes = avatarApi.get(
+                    subject = subject,
+                    rc_uid = headerManagerImpl.id!!,
+                    rc_token = headerManagerImpl.token!!
+                )
+                val bytes = avatarRes.bytes()
+                bytes.right()
+            } else {
+                DataError.IncorrectData.left()
+            }
         } catch (e: Exception) {
             Log.e("AvatarRemoteRepository", "getAvatar ${e.message}")
             e.printStackTrace()

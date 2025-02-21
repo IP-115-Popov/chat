@@ -5,6 +5,6 @@ import com.eltex.domain.models.DataError
 
 interface AvatarRemoteRepository {
     suspend fun getAvatar(
-        subject: String, rc_uid: String, rc_token: String
+        subject: String
     ): Either<DataError, ByteArray>
 }
