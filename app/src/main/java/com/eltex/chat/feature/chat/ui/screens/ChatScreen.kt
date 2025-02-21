@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,7 +66,7 @@ fun ChatScreen(
             state.value.msgText.isBlank() && !modalBottomSheetState.isVisible
         }
     }
-   val inputEnabled = rememberSaveable { mutableStateOf(true) }
+   val enabled = rememberSaveable { mutableStateOf(true) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -97,7 +96,7 @@ fun ChatScreen(
             value = state.value.msgText,
             showSendButtons = showSendButtons,
             showAttachmentButtons = showAttachmentButtons,
-            enabled = inputEnabled.value,
+            enabled = enabled.value,
             onValueChange = { chatViewModel.setMsgText(it) },
             onAttachClick = {
                 coroutineScope.launch {
@@ -117,6 +116,7 @@ fun ChatScreen(
         ) {
             LazyColumn(
                 state = listState,
+                userScrollEnabled = enabled.value,
                 modifier = Modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
@@ -124,7 +124,7 @@ fun ChatScreen(
                     .background(color = CustomTheme.basicPalette.white),
                 reverseLayout = true
             ) {
-                items(state.value.messages) { message ->
+                items(items = state.value.messages) { message ->
                     if (state.value.authData?.userId == message.userId) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
@@ -178,7 +178,7 @@ fun ChatScreen(
         ChatStatus.Loading,
         ChatStatus.NextPageLoading,
         ChatStatus.Idle -> {
-            inputEnabled.value = true
+            enabled.value = true
             LaunchedEffect(modalBottomSheetState.currentValue) {
                 if (modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
                     chatViewModel.clearAttachment()
@@ -186,7 +186,7 @@ fun ChatScreen(
             }
         }
         ChatStatus.SendingMessage -> {
-            inputEnabled.value = false
+            enabled.value = false
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     color = CustomTheme.basicPalette.blue
