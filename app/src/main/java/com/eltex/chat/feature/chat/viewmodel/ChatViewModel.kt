@@ -137,7 +137,6 @@ class ChatViewModel @Inject constructor(
                 attachmentUriList = it.attachmentUriList + uri
             )
         }
-        Log.i("chat vm", state.value.attachmentUriList.toString())
     }
 
     fun removeAttachmentUri(uri: Uri) {
@@ -146,7 +145,14 @@ class ChatViewModel @Inject constructor(
                 attachmentUriList = it.attachmentUriList - uri
             )
         }
-        Log.i("chat vm", state.value.attachmentUriList.toString())
+    }
+
+    fun clearAttachment() {
+        _state.update {
+            it.copy(
+                attachmentUriList = emptySet()
+            )
+        }
     }
 
     fun sendDocument() {
@@ -159,6 +165,7 @@ class ChatViewModel @Inject constructor(
                         uri = state.value.attachmentUriList.first().toString()
                     )
                 )
+                clearAttachment()
             }
         }
     }
@@ -203,6 +210,7 @@ class ChatViewModel @Inject constructor(
                     }
                 }
             }
+            clearAttachment()
             setMsgText("")
         }
     }

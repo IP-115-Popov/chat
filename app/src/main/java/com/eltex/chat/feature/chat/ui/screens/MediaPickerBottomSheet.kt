@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,10 +38,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eltex.chat.R
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatViewModel
 import com.eltex.chat.ui.theme.CustomTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -130,16 +133,20 @@ fun MediaPickerBottomSheet(
             ) {
                 when (selectedOption.value) {
                     Media.Image -> {
+                        chatViewModel.clearAttachment()
                         MediaGrid()
                     }
 
                     Media.Document -> {
-
+                        chatViewModel.clearAttachment()
                         val documentPickerLauncher = rememberLauncherForActivityResult(
                             contract = ActivityResultContracts.OpenDocument(),
                             onResult = { uri ->
                                 uri?.let {
                                     chatViewModel.addAttachmentUri(uri)
+                                    coroutineScope.launch {
+                                        modalBottomSheetState.hide()
+                                    }
                                     chatViewModel.sendDocument()
                                 }
                             })
@@ -149,11 +156,18 @@ fun MediaPickerBottomSheet(
                         })
                     }
 
-                    Media.Video -> {}
+                    Media.Video -> {
+                        chatViewModel.clearAttachment()
+                    }
                 }
             }
 
         }) {
+        LaunchedEffect(modalBottomSheetState.currentValue) {
+            if (modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
+                chatViewModel.clearAttachment()
+            }
+        }
         content()
     }
 }

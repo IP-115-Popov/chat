@@ -86,6 +86,7 @@ fun MessageInput(
                     keyboardActions = KeyboardActions(
                         onSend = {
                             onSendClick()
+                            showAttachmentButtons = true
                         }
                     )
                 )
@@ -147,6 +148,7 @@ fun MessageInput(
                             .size(height = 16.dp, width = 19.dp)
                             .clickable {
                                 onSendClick()
+                                showAttachmentButtons = true
                             }
                     )
                 }
