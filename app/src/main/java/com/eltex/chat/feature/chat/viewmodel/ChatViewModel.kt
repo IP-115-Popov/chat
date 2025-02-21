@@ -171,6 +171,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sendMessage() {
+        if (state.value.msgText.isBlank() && state.value.attachmentUriList.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
             when (state.value.attachmentUriList.size) {
                 0 -> {

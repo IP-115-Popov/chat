@@ -41,11 +41,12 @@ import com.eltex.chat.ui.theme.CustomTheme
 @Composable
 fun MessageInput(
     value: String,
+    showSendButtons: Boolean,
+    showAttachmentButtons: Boolean,
     onValueChange: (String) -> Unit,
     onAttachClick: () -> Unit,
     onSendClick: () -> Unit,
 ) {
-    var showAttachmentButtons by remember { mutableStateOf(true) }
     val scrollState = rememberScrollState()
 
     Box(
@@ -76,19 +77,11 @@ fun MessageInput(
                     value = value,
                     onValueChange = {
                         onValueChange(it)
-                        showAttachmentButtons = it.isEmpty()
                     },
                     modifier = Modifier
                         .padding(vertical = 13.dp)
                         .fillMaxWidth(),
                     maxLines = 5,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(
-                        onSend = {
-                            onSendClick()
-                            showAttachmentButtons = true
-                        }
-                    )
                 )
 
                 if (value.isEmpty()) {
@@ -125,32 +118,29 @@ fun MessageInput(
                             }
                     )
                     Spacer(Modifier.size(12.dp))
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_voice),
-                        contentDescription = null,
-                        tint = CustomTheme.basicPalette.lightBlue,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(Modifier.size(12.dp))
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(color = CustomTheme.basicPalette.lightBlue, shape = CircleShape)
-                        .padding(start = 8.dp, end = 5.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_send),
-                        contentDescription = null,
-                        tint = CustomTheme.basicPalette.white,
+                if (showSendButtons) {
+                    Box(
                         modifier = Modifier
-                            .size(height = 16.dp, width = 19.dp)
-                            .clickable {
-                                onSendClick()
-                                showAttachmentButtons = true
-                            }
-                    )
+                            .size(32.dp)
+                            .background(
+                                color = CustomTheme.basicPalette.lightBlue,
+                                shape = CircleShape
+                            )
+                            .padding(start = 8.dp, end = 5.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_send),
+                            contentDescription = null,
+                            tint = CustomTheme.basicPalette.white,
+                            modifier = Modifier
+                                .size(height = 16.dp, width = 19.dp)
+                                .clickable {
+                                    onSendClick()
+                                }
+                        )
+                    }
                 }
             }
         }
@@ -165,6 +155,8 @@ fun MessageInputPreview() {
     CustomTheme {
         MessageInput(
             value = text,
+            showSendButtons = true,
+            showAttachmentButtons = true,
             onValueChange = { text = it },
             onAttachClick = { text = "attach" },
             onSendClick = { text = "send" },

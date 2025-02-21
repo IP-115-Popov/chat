@@ -18,7 +18,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +55,19 @@ fun ChatScreen(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = { true })
+
+    val showSendButtons by remember {
+        derivedStateOf {
+            state.value.msgText.isNotBlank() || state.value.attachmentUriList.isNotEmpty()
+        }
+    }
+    val showAttachmentButtons by remember {
+        derivedStateOf {
+            state.value.msgText.isBlank() && !modalBottomSheetState.isVisible
+        }
+    }
+
+
     val coroutineScope = rememberCoroutineScope()
 
     val listState = rememberLazyListStatePaginated {
@@ -76,6 +94,8 @@ fun ChatScreen(
     }, bottomBar = {
         MessageInput(
             value = state.value.msgText,
+            showSendButtons = showSendButtons,
+            showAttachmentButtons = showAttachmentButtons,
             onValueChange = { chatViewModel.setMsgText(it) },
             onAttachClick = {
                 coroutineScope.launch {
