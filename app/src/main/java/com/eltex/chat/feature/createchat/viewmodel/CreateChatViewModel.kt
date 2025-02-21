@@ -107,6 +107,28 @@ class CreateChatViewModel @Inject constructor(
     }
 
     private fun loadUsersAvatar() {
+        state.value.userList.forEach { user ->
+            if (user.avatar == null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getAvatarUseCase(
+                        subject = user.username
+                    ).onRight { avatarRes ->
+                        val img = avatarRes.byteArrayToBitmap()
+                        img?.let {
+                            _state.update {
+                                it.copy(userList = it.userList.map { u ->
+                                    if (u == user) {
+                                        u.copy(avatar = img)
+                                    } else {
+                                        u
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val updatedUsers = state.value.userList.map { user ->
                 if (user.avatar == null) {
@@ -115,7 +137,7 @@ class CreateChatViewModel @Inject constructor(
                     )
                     when (avatarRes) {
                         is Either.Left -> user
-                        is Either.Right ->  user.copy(avatar = avatarRes.value.byteArrayToBitmap())
+                        is Either.Right -> user.copy(avatar = avatarRes.value.byteArrayToBitmap())
                         else -> user
                     }
                 } else {

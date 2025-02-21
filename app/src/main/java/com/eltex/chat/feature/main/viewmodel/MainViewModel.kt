@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.main.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -182,24 +183,34 @@ class MainViewModel @Inject constructor(
     }
 
     private fun loadAvatars() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val updatedChats = state.value.chatList.map { chat ->
-
-                if (chat.avatar == null) {
+        state.value.chatList.forEach { chat ->
+            if (chat.avatar == null) {
+                viewModelScope.launch(Dispatchers.IO) {
                     val chatModel = ChatUIModelToChatModelMapper.map(chat)
                     getRoomAvatarUseCase(
-                        chat = chatModel, username = state.value.profileUiModel?.username
+                        chat = chatModel,
+                        username = state.value.profileUiModel?.username
                     )?.let { avatar ->
-                        chat.copy(avatar = avatar.byteArrayToBitmap())
-                    } ?: chat
-                } else {
-                    chat
+                        val img = avatar.byteArrayToBitmap()
+                        img?.let {
+                            _state.update {
+                                it.copy(chatList = it.chatList.map { c ->
+                                    if (c == chat) {
+                                        c.copy(avatar = img)
+                                    } else {
+                                        c
+                                    }
+                                })
+                            }
+                        } ?: run {
+                            Log.w("loadAvatars", "Failed to decode avatar for chat ${chat.name}")
+                        }
+
+                    } ?: run {
+                        Log.w("loadAvatars", "Failed to load avatar for chat ${chat.name}")
+                    }
                 }
             }
-            _state.update {
-                it.copy(chatList = updatedChats)
-            }
-
         }
     }
 
