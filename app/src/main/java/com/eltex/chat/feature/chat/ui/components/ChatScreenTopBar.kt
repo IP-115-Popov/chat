@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.chat.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,9 +31,7 @@ import com.eltex.chat.utils.getInitials
 
 @Composable
 fun ChatScreenTopBar(
-    onBackClick: () -> Unit,
-    title: String,
-    onMoreClick: () -> Unit
+    title: String, avatar: ImageBitmap?, onBackClick: () -> Unit, onMoreClick: () -> Unit
 ) {
     Column(Modifier.background(CustomTheme.basicPalette.blue)) {
         Box(
@@ -50,28 +51,36 @@ fun ChatScreenTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f, fill = false)
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
+                Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
                     tint = CustomTheme.basicPalette.white,
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
                             onBackClick()
-                        }
-                )
+                        })
                 Spacer(Modifier.size(8.dp))
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = title.getInitials(),
-                        style = CustomTheme.typographySfPro.titleMedium,
-                        color = CustomTheme.basicPalette.white,
+                if (avatar != null) {
+                    Image(
+                        bitmap = avatar,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(shape = CircleShape),
                     )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = title.getInitials(),
+                            style = CustomTheme.typographySfPro.titleMedium,
+                            color = CustomTheme.basicPalette.white,
+                        )
+                    }
                 }
                 Spacer(Modifier.size(12.dp))
                 Text(
@@ -80,14 +89,12 @@ fun ChatScreenTopBar(
                     maxLines = 1,
                 )
             }
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_more_24),
+            Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_more_24),
                 tint = CustomTheme.basicPalette.white,
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     onMoreClick()
-                }
-            )
+                })
         }
     }
 }
@@ -97,8 +104,9 @@ fun ChatScreenTopBar(
 fun ChatScreenTopBarPreview() {
     CustomTheme {
         ChatScreenTopBar(
-            {},
             title = "Константин Константин",
+            avatar = null,
+            {},
             {},
         )
     }
@@ -109,8 +117,9 @@ fun ChatScreenTopBarPreview() {
 fun ChatScreenTopBarPreview2() {
     CustomTheme {
         ChatScreenTopBar(
-            {},
             title = "КонстантинКонстантинКонстантинКонстантинКонстантинКонстантин",
+            avatar = null,
+            {},
             {},
         )
     }

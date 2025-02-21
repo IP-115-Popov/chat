@@ -2,6 +2,7 @@ package com.eltex.chat.feature.chat.viewmodel
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -17,6 +18,8 @@ import com.eltex.domain.usecase.remote.GetChatInfoUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
+import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
+import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.remote.SendMessageUseCase
@@ -36,14 +39,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
-    private val syncAuthDataUseCase: SyncAuthDataUseCase,
+    //private val syncAuthDataUseCase: SyncAuthDataUseCase,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
     private val getImageUseCase: GetImageUseCase,
     private val loadDocumentUseCase: LoadDocumentUseCase,
     private val checkFileExistsUseCase: CheckFileExistsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getChatInfoUseCase: GetChatInfoUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -60,10 +65,10 @@ class ChatViewModel @Inject constructor(
         runCatching {
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    syncAuthDataUseCase().onRight { authData ->
+                    getProfileInfoUseCase().onRight { profileInfo ->
                         _state.update {
                             it.copy(
-                                authData = authData
+                                profileModel = profileInfo
                             )
                         }
                     }
@@ -79,7 +84,7 @@ class ChatViewModel @Inject constructor(
             getChatInfoRes.onRight { chat ->
                 when (chat.t) {
                     "d" -> {
-                        chat.uids?.firstOrNull { id -> id != state.value.authData?.userId }?.let {
+                        chat.uids?.firstOrNull { id -> id != state.value.profileModel?.id }?.let {
                             getUserInfoUseCase(it).onRight { user ->
                                 chatName = user.name
                             }
@@ -89,7 +94,12 @@ class ChatViewModel @Inject constructor(
                     else -> chatName = chat.name ?: ""
 
                 }
-
+                _state.update {
+                    it.copy(
+                        chatModel = chat
+                    )
+                }
+                loadAvatar()
             }
 
             _state.update {
@@ -284,6 +294,20 @@ class ChatViewModel @Inject constructor(
                         }
                     },
                 )
+            }
+        }
+    }
+
+    private fun loadAvatar() {
+        viewModelScope.launch(Dispatchers.IO) {
+            state.value.chatModel?.let { chat ->
+                getRoomAvatarUseCase(chat = chat, username = state.value.profileModel?.username)?.let { avatar ->
+                    _state.update {
+                        it.copy(
+                            avatar = avatar.byteArrayToBitmap()?.asImageBitmap()
+                        )
+                    }
+                }
             }
         }
     }

@@ -80,6 +80,8 @@ fun ChatScreen(
 
     Scaffold(topBar = {
         ChatScreenTopBar(
+            title = state.value.name ?: "",
+            avatar = state.value.avatar,
             onBackClick = {
                 navController.navigate(NavRoutes.Main.route) {
                     popUpTo(NavRoutes.Main.route) {
@@ -88,7 +90,6 @@ fun ChatScreen(
                     launchSingleTop = true
                 }
             },
-            title = state.value.name ?: "",
             onMoreClick = {},
         )
     }, bottomBar = {
@@ -125,7 +126,7 @@ fun ChatScreen(
                 reverseLayout = true
             ) {
                 items(items = state.value.messages) { message ->
-                    if (state.value.authData?.userId == message.userId) {
+                    if (state.value.profileModel?.id == message.userId) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.CenterEnd
