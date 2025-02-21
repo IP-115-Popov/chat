@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
+import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
@@ -39,7 +41,6 @@ class MainViewModel @Inject constructor(
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val getAvatarUseCase: GetAvatarUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
@@ -185,27 +186,12 @@ class MainViewModel @Inject constructor(
             val updatedChats = state.value.chatList.map { chat ->
 
                 if (chat.avatar == null) {
-                    if (chat.t == "d") {
-                        chat.usernames?.firstOrNull{it != state.value.profileUiModel?.username}?.let { username ->
-                            val avatarRes = getAvatarUseCase(
-                                subject = username
-                            )
-                            when (avatarRes) {
-                                is Either.Left -> chat
-                                is Either.Right -> chat.copy(avatar = avatarRes.value.byteArrayToBitmap())
-                                else -> chat
-                            }
-                        } ?: chat
-                    } else {
-                        val avatarRes = getRoomAvatarUseCase(
-                            roomId = chat.id
-                        )
-                        when (avatarRes) {
-                            is Either.Left -> chat
-                            is Either.Right -> chat.copy(avatar = avatarRes.value.byteArrayToBitmap())
-                            else -> chat
-                        }
-                    }
+                    val chatModel = ChatUIModelToChatModelMapper.map(chat)
+                    getRoomAvatarUseCase(
+                        chat = chatModel, username = state.value.profileUiModel?.username
+                    )?.let { avatar ->
+                        chat.copy(avatar = avatar.byteArrayToBitmap())
+                    } ?: chat
                 } else {
                     chat
                 }
