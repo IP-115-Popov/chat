@@ -16,6 +16,7 @@ import arrow.core.Either
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.navigationBar.NavigationGraph
+import com.eltex.chat.ui.components.SplashScreen
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.domain.usecase.SyncAuthDataUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,12 +58,15 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavRoutes.Main,
                         mainViewModel = mainViewModel,
                     )
-                }
-
-                LaunchedEffect(routeState.value) {
-                    navController.navigate(routeState.value.route) {
-                        popUpTo(NavRoutes.Splash.route) { inclusive = true }
+                    LaunchedEffect(routeState.value) {
+                        if (routeState.value != NavRoutes.Splash) {
+                            navController.navigate(routeState.value.route) {
+                                popUpTo(NavRoutes.Splash.route) { inclusive = true }
+                            }
+                        }
                     }
+                } else {
+                    SplashScreen()
                 }
             }
         }
@@ -70,14 +74,17 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 syncAuthDataUseCase().onRight {
-                    initializedViewModel.value = true;
                     delay(1000L)
                     route.value = NavRoutes.Main
                 }.onLeft {
+                    delay(1000L)
                     route.value = NavRoutes.Authorization
                 }
             } catch (e: Exception) {
+                delay(1000L)
                 route.value = NavRoutes.Authorization
+            } finally {
+                initializedViewModel.value = true;
             }
         }
     }
