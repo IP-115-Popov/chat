@@ -280,7 +280,30 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateImg() {
+    private fun updateImg() {
+        state.value.messages.forEach{ message ->
+            if (message.fileModel is FileModel.Img && message.bitmap == null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    loadImg(fileModel = message.fileModel)?.let { bitmap ->
+                        _state.update {
+                            it.copy(
+                                messages = it.messages.map {
+                                    if (it == message) {
+                                        it.copy(
+                                            bitmap = bitmap
+                                        )
+                                    } else {
+                                        it
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { state ->
                 state.copy(
