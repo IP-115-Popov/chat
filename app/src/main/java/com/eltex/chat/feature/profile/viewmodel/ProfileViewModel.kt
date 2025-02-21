@@ -11,6 +11,9 @@ import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import com.eltex.chat.R
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
+import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.usecase.SyncAuthDataUseCase
+import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +34,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
-    private val getImageUseCase: GetImageUseCase
+    private val syncAuthDataUseCase: SyncAuthDataUseCase,
+    private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
@@ -40,13 +44,19 @@ class ProfileViewModel @Inject constructor(
         getUser()
 
         viewModelScope.launch {
-            state.map { it.profileUiModel?.avatarUrl }
-                .distinctUntilChanged()
-                .collect { avatarUrl ->
-                    if (!avatarUrl.isNullOrEmpty()) {
-                        loadImage(avatarUrl)
-                    }
+            syncAuthDataUseCase().onRight { authData ->
+                _state.update {
+                    it.copy(
+                        token = authData.authToken
+                    )
                 }
+            }
+
+            state.map { it.profileUiModel?.avatarUrl }.distinctUntilChanged().collect { avatarUrl ->
+                if (!avatarUrl.isNullOrEmpty()) {
+                    loadImage(avatarUrl)
+                }
+            }
         }
     }
 
@@ -55,49 +65,28 @@ class ProfileViewModel @Inject constructor(
         setStatus(ProfileStatus.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                when (val getImageResult = getImageUseCase(imageUrl)) {
-                    is Either.Left -> {
-                        withContext(Dispatchers.Main) {
-                            setStatus(ProfileStatus.Error("Error loading Avatar"))
-                        }
-                    }
+                val subject = state.value.profileUiModel?.username
+                val rc_uid = state.value.profileUiModel?.id
+                val rc_token = state.value.token
 
-                    is Either.Right -> {
-                        val imageBytes = getImageResult.value
-                        try {
-                            val svg =
-                                SVG.getFromInputStream(ByteArrayInputStream(imageBytes))//getFromBytes(imageBytes)
-
-                            // Определение размеров. Если размеры не указаны в SVG, используйте значения по умолчанию
-                            val width = (svg.documentWidth?.toInt()
-                                ?: 200) // Значение по умолчанию, если ширина не указана
-                            val height = (svg.documentHeight?.toInt()
-                                ?: 200) // Значение по умолчанию, если высота не указана
-
-                            val newBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
-                            val newCanvas = Canvas(newBitmap)
-                            svg.renderToCanvas(newCanvas)
-
-                            withContext(Dispatchers.Main) {
-                                _state.update {
-                                    it.copy(avatarImg = newBitmap)
-                                }
-                                setStatus(ProfileStatus.Idle)
-                            }
-                        } catch (e: SVGParseException) {
-                            Log.e("ProfileViewModel", "Error parsing SVG", e)
-                            withContext(Dispatchers.Main) {
-                                setStatus(ProfileStatus.Error("Error parsing SVG image"))
-                            }
-                        } catch (e: Exception) {
-                            Log.e("ProfileViewModel", "Error rendering SVG", e)
-                            withContext(Dispatchers.Main) {
-                                setStatus(ProfileStatus.Error("Error rendering SVG image"))
+                subject?.let {
+                    val avatarRes = getAvatarUseCase(
+                        subject = subject, rc_uid = rc_uid ?: "", rc_token = rc_token ?: ""
+                    )
+                    when (avatarRes) {
+                        is Either.Left -> {}
+                        is Either.Right -> {
+                            val avatar = avatarRes.value.byteArrayToBitmap()
+                            _state.update {
+                                it.copy(
+                                    avatarImg = avatar
+                                )
                             }
                         }
+
+                        else -> {}
                     }
 
-                    else -> {}
                 }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error loading Avatar", e)

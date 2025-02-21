@@ -9,6 +9,7 @@ object ProfileInfoRequestToProfileModelMapper {
             id = _id,
             name = name,
             avatarUrl = avatarUrl,
+            username = username,
         )
     }
 }

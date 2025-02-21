@@ -9,7 +9,7 @@ object ProfileModelToProfileUiMapper {
             id = id,
             avatarUrl = avatarUrl,
             name = name,
-            authToken = authToken,
+            username = username
         )
     }
 }
