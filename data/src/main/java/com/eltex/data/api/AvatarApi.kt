@@ -16,4 +16,14 @@ interface AvatarApi {
         @Query("rc_uid") rc_uid: String,
         @Query("rc_token") rc_token: String,
     ): ResponseBody
+
+    @Streaming
+    @GET("/avatar/room/{roomId}")
+    suspend fun getRoomAvatar(
+        @Path("roomId") roomId: String,
+        @Query("format") format: String = "png",
+        @Query("size") size: Int = 200,
+        @Query("rc_uid") rc_uid: String,
+        @Query("rc_token") rc_token: String,
+    ): ResponseBody
 }

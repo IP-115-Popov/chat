@@ -35,4 +35,24 @@ class AvatarNetworkRepositoryImpl @Inject constructor(
             DataError.DefaultError.left()
         }
     }
+
+    override suspend fun getRoomAvatar(roomId: String): Either<DataError, ByteArray> {
+        return try {
+            if (headerManagerImpl.id != null && headerManagerImpl.token != null) {
+                val avatarRes = avatarApi.getRoomAvatar(
+                    roomId = roomId,
+                    rc_uid = headerManagerImpl.id!!,
+                    rc_token = headerManagerImpl.token!!
+                )
+                val bytes = avatarRes.bytes()
+                bytes.right()
+            } else {
+                DataError.IncorrectData.left()
+            }
+        } catch (e: Exception) {
+            Log.e("AvatarRemoteRepository", "getAvatar ${e.message}")
+            e.printStackTrace()
+            DataError.DefaultError.left()
+        }
+    }
 }

@@ -7,12 +7,15 @@ import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.formatters.InstantFormatter
+import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
+import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
+import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.InstallIn
@@ -35,7 +38,9 @@ class MainViewModel @Inject constructor(
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val getAvatarUseCase: GetAvatarUseCase,
+    private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -125,13 +130,14 @@ class MainViewModel @Inject constructor(
                     _state.update {
                         val resfirst = res.first().map { chatModel ->
                             val name: String = if (chatModel.t == "d") {
-                                chatModel.uids?.firstOrNull {id -> id != state.value.profileUiModel?.id}?.let {userId ->
-                                    when (val user = getUserInfoUseCase.invoke(userId)) {
-                                        is Either.Left -> chatModel.name ?: ""
-                                        is Either.Right -> user.value.name
-                                        else -> ""
-                                    }
-                                } ?: ""
+                                chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
+                                    ?.let { userId ->
+                                        when (val user = getUserInfoUseCase.invoke(userId)) {
+                                            is Either.Left -> chatModel.name ?: ""
+                                            is Either.Right -> user.value.name
+                                            else -> ""
+                                        }
+                                    } ?: ""
                             } else {
                                 chatModel.name ?: ""
                             }
@@ -164,12 +170,50 @@ class MainViewModel @Inject constructor(
                         }
                         it.copy(chatList = resfirst)
                     }
+                    loadAvatars()
                     setStatus(status = MainUiStatus.Idle)
                 }
             } catch (e: Exception) {
                 setStatus(status = MainUiStatus.Error("GetChat Error"))
                 e.printStackTrace()
             }
+        }
+    }
+
+    private fun loadAvatars() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val updatedChats = state.value.chatList.map { chat ->
+
+                if (chat.avatar == null) {
+                    if (chat.t == "d") {
+                        chat.usernames?.firstOrNull{it != state.value.profileUiModel?.username}?.let { username ->
+                            val avatarRes = getAvatarUseCase(
+                                subject = username
+                            )
+                            when (avatarRes) {
+                                is Either.Left -> chat
+                                is Either.Right -> chat.copy(avatar = avatarRes.value.byteArrayToBitmap())
+                                else -> chat
+                            }
+                        } ?: chat
+                    } else {
+                        val avatarRes = getRoomAvatarUseCase(
+                            roomId = chat.id
+                        )
+                        when (avatarRes) {
+                            is Either.Left -> chat
+                            is Either.Right -> chat.copy(avatar = avatarRes.value.byteArrayToBitmap())
+                            else -> chat
+                        }
+                    }
+                } else {
+                    chat
+                }
+            }
+            _state.update {
+                it.copy(chatList = updatedChats)
+            }
+
         }
     }
 

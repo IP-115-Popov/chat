@@ -64,18 +64,17 @@ fun MainScreen(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = { true })
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
-    ) { innerPadding ->
+    Scaffold(bottomBar = {
+        BottomNavigationBar(navController)
+    }) { innerPadding ->
         BottomCreatedChatScreen(
             navController = navController,
             modalBottomSheetState = modalBottomSheetState,
         ) {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
                 Box(
                     Modifier
@@ -130,8 +129,7 @@ fun MainScreen(
                 }
 
                 val isRefreshing by remember { derivedStateOf { (state.value.status is MainUiStatus.IsRefreshing) } }
-                val swipeRefreshState =
-                    rememberSwipeRefreshState(isRefreshing = isRefreshing)
+                val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
 
                 SwipeRefresh(state = swipeRefreshState,
                     onRefresh = { mainViewModel.refreshChat() },
@@ -147,47 +145,41 @@ fun MainScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             itemsIndexed(state.value.chatList) { index, chat ->
-                                if (index == state.value.chatList.size - 1) {
-
-                                }
                                 when (index) {
                                     0 -> {
-                                        ChatItem(
-                                            imageText = chat.name,
+                                        ChatItem(imageText = chat.name,
                                             title = chat.name,
+                                            avatar = chat.avatar,
                                             message = chat.lastMessage,
                                             time = chat.lm,
                                             messageStatus = MessageStatus.missedMessages(0),
                                             bottomLine = false,
                                             onClick = {
                                                 navToChat(navController, chat)
-                                            }
-                                        )
+                                            })
                                         HorizontalDivider()
                                     }
 
                                     state.value.chatList.size - 1 -> {
-                                        ChatItem(
-                                            imageText = chat.name,
+                                        ChatItem(imageText = chat.name,
                                             title = chat.name,
+                                            avatar = chat.avatar,
                                             message = chat.lastMessage,
                                             time = chat.lm,
                                             messageStatus = MessageStatus.missedMessages(0),
                                             bottomLine = false,
-                                            onClick = { navToChat(navController, chat) }
-                                        )
+                                            onClick = { navToChat(navController, chat) })
                                     }
 
                                     else -> {
-                                        ChatItem(
-                                            imageText = chat.name,
+                                        ChatItem(imageText = chat.name,
                                             title = chat.name,
+                                            avatar = chat.avatar,
                                             message = chat.lastMessage,
                                             time = chat.lm,
                                             messageStatus = MessageStatus.missedMessages(0),
                                             bottomLine = true,
-                                            onClick = { navToChat(navController, chat) }
-                                        )
+                                            onClick = { navToChat(navController, chat) })
                                     }
                                 }
                             }
@@ -213,8 +205,7 @@ fun MainScreen(
 }
 
 private fun navToChat(
-    navController: NavController,
-    chat: ChatUIModel
+    navController: NavController, chat: ChatUIModel
 ) {
     navController.navigate(NavRoutes.Chat.route + "/${chat.id}" + "/${chat.t}") {
         popUpTo(NavRoutes.Chat.route) {

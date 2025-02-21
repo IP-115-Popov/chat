@@ -7,4 +7,8 @@ interface AvatarRemoteRepository {
     suspend fun getAvatar(
         subject: String
     ): Either<DataError, ByteArray>
+
+    suspend fun getRoomAvatar(
+        roomId: String
+    ): Either<DataError, ByteArray>
 }

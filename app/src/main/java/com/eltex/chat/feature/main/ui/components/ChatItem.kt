@@ -1,5 +1,7 @@
 package com.eltex.chat.feature.main.ui.components
 
+import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +37,7 @@ import com.eltex.chat.utils.getInitials
 fun ChatItem(
     imageText: String,
     title: String,
+    avatar: Bitmap? = null,
     message: String,
     time: String,
     messageStatus: MessageStatus,
@@ -47,18 +52,29 @@ fun ChatItem(
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape)
-                .padding(vertical = 14.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = imageText.getInitials(),
-                style = CustomTheme.typographySfPro.titleMedium,
-                color = CustomTheme.basicPalette.white,
+        if (avatar != null) {
+            Image(
+                bitmap = avatar.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(vertical = 14.dp)
+                    .size(44.dp)
+                    .clip(shape = CircleShape),
             )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .background(CustomTheme.basicPalette.lightBlue, shape = CircleShape)
+                    .padding(vertical = 14.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = imageText.getInitials(),
+                    style = CustomTheme.typographySfPro.titleMedium,
+                    color = CustomTheme.basicPalette.white,
+                )
+            }
         }
         Spacer(Modifier.size(8.dp))
         Column(modifier = Modifier.fillMaxSize()) {
