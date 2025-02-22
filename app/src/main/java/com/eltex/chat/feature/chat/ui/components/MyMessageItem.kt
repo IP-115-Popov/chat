@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,9 +27,11 @@ import com.eltex.chat.ui.theme.CustomTheme
 @Composable
 fun MyMessageItem(
     text: String, time: String, read: Boolean, messageUiModel: MessageUiModel,
+    modifier: Modifier,
 ) {
     Column(
         modifier = Modifier
+            .then(modifier)
             .background(
                 color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
             )

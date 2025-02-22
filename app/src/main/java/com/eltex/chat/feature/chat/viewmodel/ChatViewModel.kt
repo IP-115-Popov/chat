@@ -39,7 +39,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
-    //private val syncAuthDataUseCase: SyncAuthDataUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getHistoryChatUseCase: GetHistoryChatUseCase,
     private val getImageUseCase: GetImageUseCase,

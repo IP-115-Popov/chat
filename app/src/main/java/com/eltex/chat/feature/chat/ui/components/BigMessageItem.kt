@@ -27,10 +27,11 @@ fun BigMessageItem(
     text: String,
     time: String,
     messageUiModel: MessageUiModel,
+    modifier: Modifier,
 ) {
     Column(
         modifier = Modifier
-            .width(321.dp)
+            .then(modifier)
             .height(IntrinsicSize.Max)
             .background(
                 color = CustomTheme.basicPalette.white2,

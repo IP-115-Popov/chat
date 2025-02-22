@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,11 +27,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.eltex.chat.feature.chat.ui.components.CallerMessage
 import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageInput
 import com.eltex.chat.feature.chat.ui.components.MessageItem
@@ -52,9 +55,9 @@ fun ChatScreen(
 ) {
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val state = chatViewModel.state.collectAsState()
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
-            confirmStateChange = { true })
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { true })
 
     val showSendButtons by remember {
         derivedStateOf {
@@ -66,7 +69,7 @@ fun ChatScreen(
             state.value.msgText.isBlank() && !modalBottomSheetState.isVisible
         }
     }
-   val enabled = rememberSaveable { mutableStateOf(true) }
+    val enabled = rememberSaveable { mutableStateOf(true) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -126,29 +129,53 @@ fun ChatScreen(
                 reverseLayout = true
             ) {
                 items(items = state.value.messages) { message ->
-                    if (state.value.profileModel?.id == message.userId) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            MyMessageItem(
-                                text = message.msg,
-                                time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                read = true,
-                                messageUiModel = message,
-                            )
-                        }
-                    } else {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            MessageItem(
-                                text = message.msg,
-                                title = message.username,
-                                time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                messageUiModel = message,
-                            )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        val maxMessageWidth = LocalConfiguration.current.screenWidthDp.dp * 0.6f
+                        if (state.value.roomType == "d") {
+                            if (state.value.profileModel?.id == message.userId) {
+                                MyMessageItem(
+                                    text = message.msg,
+                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
+                                    read = true,
+                                    messageUiModel = message,
+                                    modifier = Modifier
+                                        .widthIn(max = maxMessageWidth)
+                                        .align(Alignment.CenterEnd)
+                                )
+                            } else {
+                                CallerMessage(
+                                    text = message.msg,
+                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
+                                    messageUiModel = message,
+                                    modifier = Modifier
+                                        .widthIn(max = maxMessageWidth)
+                                        .align(Alignment.CenterStart)
+                                )
+                            }
+                        } else {
+                            if (state.value.profileModel?.id == message.userId) {
+                                MyMessageItem(
+                                    text = message.msg,
+                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
+                                    read = true,
+                                    messageUiModel = message,
+                                    modifier = Modifier
+                                        .widthIn(max = maxMessageWidth)
+                                        .align(Alignment.CenterEnd)
+                                )
+                            } else {
+                                MessageItem(
+                                    text = message.msg,
+                                    title = message.username,
+                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
+                                    messageUiModel = message,
+                                    messageModifier = Modifier
+                                        .widthIn(max = maxMessageWidth)
+                                        .align(Alignment.CenterStart)
+                                )
+                            }
                         }
                     }
                     Spacer(Modifier.padding(11.dp))
@@ -175,10 +202,7 @@ fun ChatScreen(
     }
 
     when (state.value.status) {
-        ChatStatus.Error,
-        ChatStatus.Loading,
-        ChatStatus.NextPageLoading,
-        ChatStatus.Idle -> {
+        ChatStatus.Error, ChatStatus.Loading, ChatStatus.NextPageLoading, ChatStatus.Idle -> {
             enabled.value = true
             LaunchedEffect(modalBottomSheetState.currentValue) {
                 if (modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
@@ -186,6 +210,7 @@ fun ChatScreen(
                 }
             }
         }
+
         ChatStatus.SendingMessage -> {
             enabled.value = false
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -26,17 +26,13 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
 fun LittleMessageItemLayout(
-    title: @Composable () -> Unit,
-    text: @Composable () -> Unit,
-    time: @Composable () -> Unit
+    title: @Composable () -> Unit, text: @Composable () -> Unit, time: @Composable () -> Unit
 ) {
-    Layout(
-        content = {
-            title()
-            text()
-            time()
-        }
-    ) { measurables, constraints ->
+    Layout(content = {
+        title()
+        text()
+        time()
+    }) { measurables, constraints ->
         val titleMeasurable = measurables[0]
         val textMeasurable = measurables[1]
         val timeMeasurable = measurables[2]
@@ -68,57 +64,52 @@ fun LittleMessageItem(
     title: String,
     text: String,
     time: String,
+    modifier: Modifier,
 ) {
     Column(
         modifier = Modifier
-            .widthIn(max = 321.dp)
+            .then(modifier)
             .background(
-                color = CustomTheme.basicPalette.white2,
-                shape = RoundedCornerShape(15.dp)
+                color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
             )
             .padding(8.dp)
     ) {
-        LittleMessageItemLayout(
-            title = {
-                Box(
-                    modifier = Modifier.height(20.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        text = title,
-                        style = CustomTheme.typographySfPro.caption1Medium,
-                        color = CustomTheme.basicPalette.lightBlue,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
-            },
-            text = {
+        LittleMessageItemLayout(title = {
+            Box(
+                modifier = Modifier.height(20.dp), contentAlignment = Alignment.CenterStart
+            ) {
                 Text(
-                    text = text,
-                    textAlign = TextAlign.Start,
-                    style = CustomTheme.typographySfPro.bodyMedium,
-                    color = CustomTheme.basicPalette.black,
-                    modifier = Modifier
-                        .height(20.dp)
-                        .widthIn(min = 69.dp)
+                    text = title,
+                    style = CustomTheme.typographySfPro.caption1Medium,
+                    color = CustomTheme.basicPalette.lightBlue,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
-            },
-            time = {
-                Box(
-                    Modifier
-                        .height(20.dp)
-                        .widthIn(min = 33.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Text(
-                        text = time,
-                        style = CustomTheme.typographySfPro.caption3Regular,
-                        color = CustomTheme.basicPalette.grey,
-                    )
-                }
             }
-        )
+        }, text = {
+            Text(
+                text = text,
+                textAlign = TextAlign.Start,
+                style = CustomTheme.typographySfPro.bodyMedium,
+                color = CustomTheme.basicPalette.black,
+                modifier = Modifier
+                    .height(20.dp)
+                    .widthIn(min = 69.dp)
+            )
+        }, time = {
+            Box(
+                Modifier
+                    .height(20.dp)
+                    .widthIn(min = 33.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = time,
+                    style = CustomTheme.typographySfPro.caption3Regular,
+                    color = CustomTheme.basicPalette.grey,
+                )
+            }
+        })
     }
 }
 
@@ -132,12 +123,14 @@ fun LittleMessageItemPreview() {
                 title = "Константин Константинопольский",
                 time = "15:50",
                 text = "прив",
+                modifier = Modifier,
             )
             Spacer(Modifier.size(4.dp))
             LittleMessageItem(
                 title = "Константин Константинопольский",
                 time = "15:50",
-                text = "Короткое0сообщение.КороткоеКоротк"
+                text = "Короткое0сообщение.КороткоеКоротк",
+                modifier = Modifier,
             )
         }
     }
