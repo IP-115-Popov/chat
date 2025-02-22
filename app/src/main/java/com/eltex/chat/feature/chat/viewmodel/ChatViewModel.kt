@@ -8,12 +8,11 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.utils.byteArrayToBitmap
-import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
-import com.eltex.domain.usecase.SyncAuthDataUseCase
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
+import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetChatInfoUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
 import com.eltex.domain.usecase.remote.GetImageUseCase
@@ -48,6 +47,7 @@ class ChatViewModel @Inject constructor(
     private val getChatInfoUseCase: GetChatInfoUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
+    private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -98,19 +98,45 @@ class ChatViewModel @Inject constructor(
                         chatModel = chat
                     )
                 }
-                loadAvatar()
+                loadChatAvatar()
             }
 
             _state.update {
                 it.copy(
-                    roomId = roomId,
-                    roomType = roomType,
-                    name = chatName
+                    roomId = roomId, roomType = roomType, name = chatName
                 )
             }
             loadHistoryChat()
         }
+
         listenChat(roomId = roomId)
+    }
+
+    fun loadUserAvatar(username: String) {
+        if (username !in state.value.usernameToAvatarsMap) {
+            Log.i("loadUserAvatar", "${username}")
+            viewModelScope.launch(Dispatchers.IO) {
+                val userAvatarEither = getAvatarUseCase(subject = username)
+                userAvatarEither.onRight { avatarBytes ->
+                    val img = avatarBytes.byteArrayToBitmap()?.asImageBitmap()
+                    if (img != null) {
+                        _state.update { currentState ->
+                            val updatedMap = (currentState.usernameToAvatarsMap?.toMutableMap()
+                                ?: mutableMapOf()).apply {
+                                this[username] = img
+                            }.toMap()
+
+                            currentState.copy(usernameToAvatarsMap = updatedMap)
+                        }
+                        Log.d("loadUsersAvatar", "Avatar loaded for $username")
+                    } else {
+                        Log.w("loadUsersAvatar", "Failed to decode avatar for $username")
+                    }
+                }.onLeft { error ->
+                    Log.e("loadUsersAvatar", "Error loading avatar for $username: $error")
+                }
+            }
+        }
     }
 
     private fun listenChat(roomId: String) {
@@ -125,6 +151,9 @@ class ChatViewModel @Inject constructor(
                                 )
                             ) + state.messages
                         )
+                    }
+                    messsage.username?.let { username ->
+                        loadUserAvatar(username = username)
                     }
                     updateImg()
                 }
@@ -206,9 +235,7 @@ class ChatViewModel @Inject constructor(
                             state.value.roomId?.let { roomId ->
                                 sendMessageUseCase(
                                     MessagePayload(
-                                        roomId = roomId,
-                                        msg = msgText,
-                                        uri = attachment.toString()
+                                        roomId = roomId, msg = msgText, uri = attachment.toString()
                                     )
                                 )
                             }
@@ -216,9 +243,7 @@ class ChatViewModel @Inject constructor(
                             state.value.roomId?.let { roomId ->
                                 sendMessageUseCase(
                                     MessagePayload(
-                                        roomId = roomId,
-                                        msg = "",
-                                        uri = attachment.toString()
+                                        roomId = roomId, msg = "", uri = attachment.toString()
                                     )
                                 )
                             }
@@ -240,17 +265,23 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (state.value.roomId != null && state.value.roomType != null) {
-                    val message = getHistoryChatUseCase(
+                    val messages = getHistoryChatUseCase(
                         count = PAGE_SIZE,
                         offset = state.value.offset,
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
-                    ).map {
+                    ).onEach{ messsage ->
+                        if (messsage.username != state.value.profileModel?.username) {
+                            messsage.username?.let {
+                                loadUserAvatar(username = it)
+                            }
+                        }
+                    }.map {
                         MessageToMessageUiModelMapper.map(it)
                     }
 
                     withContext(Dispatchers.IO) {
-                        if (message.isEmpty()) {
+                        if (messages.isEmpty()) {
                             _state.update { state ->
                                 state.copy(
                                     isAtEnd = true
@@ -260,11 +291,11 @@ class ChatViewModel @Inject constructor(
                             _state.update { state ->
                                 Log.i(
                                     "ChatViewModel",
-                                    message.map { it.fileModel ?: "null" }.joinToString()
+                                    messages.map { it.fileModel ?: "null" }.joinToString()
                                 )
                                 state.copy(
-                                    offset = state.offset + message.size,
-                                    messages = state.messages + message
+                                    offset = state.offset + messages.size,
+                                    messages = state.messages + messages
                                 )
                             }
                             updateImg()
@@ -280,22 +311,20 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun updateImg() {
-        state.value.messages.forEach{ message ->
+        state.value.messages.forEach { message ->
             if (message.fileModel is FileModel.Img && message.bitmap == null) {
                 viewModelScope.launch(Dispatchers.IO) {
                     loadImg(fileModel = message.fileModel)?.let { bitmap ->
                         _state.update {
-                            it.copy(
-                                messages = it.messages.map {
-                                    if (it == message) {
-                                        it.copy(
-                                            bitmap = bitmap
-                                        )
-                                    } else {
-                                        it
-                                    }
+                            it.copy(messages = it.messages.map {
+                                if (it == message) {
+                                    it.copy(
+                                        bitmap = bitmap
+                                    )
+                                } else {
+                                    it
                                 }
-                            )
+                            })
                         }
                     }
                 }
@@ -320,10 +349,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun loadAvatar() {
+    private fun loadChatAvatar() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.chatModel?.let { chat ->
-                getRoomAvatarUseCase(chat = chat, username = state.value.profileModel?.username)?.let { avatar ->
+                getRoomAvatarUseCase(
+                    chat = chat, username = state.value.profileModel?.username
+                )?.let { avatar ->
                     _state.update {
                         it.copy(
                             avatar = avatar.byteArrayToBitmap()?.asImageBitmap()
@@ -337,8 +368,7 @@ class ChatViewModel @Inject constructor(
     suspend fun loadImg(fileModel: FileModel?) = when (val file = fileModel) {
         is FileModel.Img -> {
             try {
-                val byteArray =
-                    getImageUseCase(Сonstants.BASE_URL + file.uri)
+                val byteArray = getImageUseCase(Сonstants.BASE_URL + file.uri)
                 when (byteArray) {
                     is Either.Left -> null
                     is Either.Right -> {
@@ -349,24 +379,20 @@ class ChatViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(
-                    "MessageToMessageUiModelMapper",
-                    "FileModel.Img ${e.message}"
+                    "MessageToMessageUiModelMapper", "FileModel.Img ${e.message}"
                 )
                 null
             }
         }
 
-        is FileModel.Document,
-        is FileModel.Video, null -> null
+        is FileModel.Document, is FileModel.Video, null -> null
     }
 
     suspend fun loadDocument(file: FileModel.Document): Boolean {
         val res: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
             return@async try {
-                if (loadDocumentUseCase(file.uri) != null)
-                    true
-                else
-                    false
+                if (loadDocumentUseCase(file.uri) != null) true
+                else false
             } catch (e: Exception) {
                 false
             }

@@ -8,7 +8,8 @@ data class MessageUiModel(
     val msg: String,
     val date: Long,
     val userId: String,
-    val username: String,
+    val name: String,
+    val username: String?,
     val fileModel: FileModel? = null,
     val bitmap: Bitmap? = null
 )

@@ -167,8 +167,9 @@ fun ChatScreen(
                                 )
                             } else {
                                 MessageItem(
+                                    avatar = state.value.usernameToAvatarsMap.getOrDefault(key = message.username ,defaultValue = null),
                                     text = message.msg,
-                                    title = message.username,
+                                    title = message.name,
                                     time = InstantFormatter.formatInstantToRelativeString(message.date),
                                     messageUiModel = message,
                                     messageModifier = Modifier

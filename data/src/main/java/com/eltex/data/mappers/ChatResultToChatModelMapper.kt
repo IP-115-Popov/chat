@@ -27,7 +27,7 @@ object ChatResultToChatModelMapper {
             lm = result.lm?.`$date`,
             unread = result.usersCount,
             avatarUrl = result.avatarETag,
-            usernames = if (result.t == "d") result.usernames else null,
+            usernames =  result.usernames,
             t = result.t ?: "",
             uids = if (result.t == "d") result.uids else null,
             message = Message(
@@ -38,6 +38,7 @@ object ChatResultToChatModelMapper {
                 fileModel = fileModel,
                 userId = result.lastMessage?.u?._id ?: "",
                 name = result.lastMessage?.u?.name ?: result.lastMessage?.u?.username ?: "",
+                username = null,
             )
         )
     }

@@ -28,6 +28,7 @@ object MessageResponseToMessageMapper {
             date = _updatedAt.`$date`,
             msg = msg,
             fileModel = fileModel,
+            username = u.username,
         )
     }
 }

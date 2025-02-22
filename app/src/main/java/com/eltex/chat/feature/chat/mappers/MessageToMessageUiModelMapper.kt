@@ -10,8 +10,9 @@ object MessageToMessageUiModelMapper {
             msg = msg,
             date = date,
             userId = userId,
-            username = name,
+            name = name,
             fileModel = fileModel,
+            username = username,
             bitmap = null,
         )
     }

@@ -23,7 +23,8 @@ object MessageDTOToMessageMapper {
             msg = messageDTO.msg,
             date = parseDateStringToLong(messageDTO.ts) ?: 0L,
             name = messageDTO.u.name ?: messageDTO.u.username,
-            fileModel = fileModel
+            fileModel = fileModel,
+            username = messageDTO.u.username
         )
     }
 }
