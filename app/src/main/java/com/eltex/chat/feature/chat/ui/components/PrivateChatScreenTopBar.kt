@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,12 +30,8 @@ import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.getInitials
 
 @Composable
-fun ChatScreenTopBar(
-    title: String,
-    usersCount: Int,
-    avatar: ImageBitmap?,
-    onBackClick: () -> Unit,
-    onMoreClick: () -> Unit
+fun PrivateChatScreenTopBar(
+    title: String, avatar: ImageBitmap?, onBackClick: () -> Unit, onMoreClick: () -> Unit
 ) {
     Column(Modifier.background(CustomTheme.basicPalette.blue)) {
         Box(
@@ -88,22 +83,13 @@ fun ChatScreenTopBar(
                     }
                 }
                 Spacer(Modifier.size(12.dp))
-                Column {
-                    Text(
-                        text = title,
-                        style = CustomTheme.typographySfPro.titleMedium,
-                        color = CustomTheme.basicPalette.white,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
-                    Text(
-                        text = stringResource(R.string.participants) + usersCount.toString(),
-                        style = CustomTheme.typographySfPro.caption2Medium,
-                        color = CustomTheme.basicPalette.white,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
-                }
+                Text(
+                    text = title,
+                    style = CustomTheme.typographySfPro.titleMedium,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    color = CustomTheme.basicPalette.white,
+                )
             }
             Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_more_24),
                 tint = CustomTheme.basicPalette.white,
@@ -117,11 +103,10 @@ fun ChatScreenTopBar(
 
 @Preview
 @Composable
-fun ChatScreenTopBarPreview() {
+fun PrivateChatScreenTopBarPreview() {
     CustomTheme {
-        ChatScreenTopBar(
+        PrivateChatScreenTopBar(
             title = "Константин Константин",
-            usersCount = 3,
             avatar = null,
             {},
             {},
@@ -131,11 +116,10 @@ fun ChatScreenTopBarPreview() {
 
 @Preview
 @Composable
-fun ChatScreenTopBarPreview2() {
+fun PrivateChatScreenTopBarPreview2() {
     CustomTheme {
-        ChatScreenTopBar(
+        PrivateChatScreenTopBar(
             title = "КонстантинКонстантинКонстантинКонстантинКонстантинКонстантин",
-            usersCount = 3,
             avatar = null,
             {},
             {},

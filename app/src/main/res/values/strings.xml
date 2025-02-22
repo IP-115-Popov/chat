@@ -19,4 +19,5 @@
     <string name="message_input_placeholder">Текст сообщения</string>
     <string name="internal_storage">Внутреннее хранилище</string>
     <string name="creating_chat_problem">Проблема при создании чата с указанным пользователем, попробуйте позднее</string>
+    <string name="participants">Участники:</string>
 </resources>

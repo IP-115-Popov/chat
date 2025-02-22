@@ -92,6 +92,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                         usernames = room.usernames,
                         uids = room.uids,
                         t = room.t ?: "",
+                        usersCount = room.usersCount,
                     ).right()
                 } else {
                     DataError.DefaultError.left()

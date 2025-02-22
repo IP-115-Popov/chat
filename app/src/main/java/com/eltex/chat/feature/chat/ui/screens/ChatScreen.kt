@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.ui.components.CallerMessage
 import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
+import com.eltex.chat.feature.chat.ui.components.PrivateChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageInput
 import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.ui.components.MyMessageItem
@@ -50,16 +51,12 @@ import com.eltex.chat.feature.chat.viewmodel.ChatStatus
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.formatters.InstantFormatter
-import com.eltex.chat.ui.components.rememberLazyListStatePaginated
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.Calendar
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChatScreen(
     navController: NavController,
@@ -103,19 +100,37 @@ fun ChatScreen(
     }
 
     Scaffold(topBar = {
-        ChatScreenTopBar(
-            title = state.value.name ?: "",
-            avatar = state.value.avatar,
-            onBackClick = {
-                navController.navigate(NavRoutes.Main.route) {
-                    popUpTo(NavRoutes.Main.route) {
-                        inclusive = true
+        if (state.value.chatModel?.t == "d") {
+            PrivateChatScreenTopBar(
+                title = state.value.name ?: "",
+                avatar = state.value.avatar,
+                onBackClick = {
+                    navController.navigate(NavRoutes.Main.route) {
+                        popUpTo(NavRoutes.Main.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
-                    launchSingleTop = true
-                }
-            },
-            onMoreClick = {},
-        )
+                },
+                onMoreClick = {},
+            )
+        } else {
+            val usersCount = state.value.chatModel?.usersCount ?: 0
+            ChatScreenTopBar(
+                title = state.value.name ?: "",
+                usersCount = usersCount,
+                avatar = state.value.avatar,
+                onBackClick = {
+                    navController.navigate(NavRoutes.Main.route) {
+                        popUpTo(NavRoutes.Main.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onMoreClick = {},
+            )
+        }
     }, bottomBar = {
         MessageInput(
             value = state.value.msgText,

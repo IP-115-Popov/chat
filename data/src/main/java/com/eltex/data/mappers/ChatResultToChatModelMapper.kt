@@ -30,6 +30,7 @@ object ChatResultToChatModelMapper {
             usernames =  result.usernames,
             t = result.t ?: "",
             uids = if (result.t == "d") result.uids else null,
+            usersCount = result.usersCount,
             message = Message(
                 id = result.lastMessage?._id ?: "",
                 rid = result._id,

@@ -15,4 +15,5 @@ data class Room(
     val usernames: List<String>? = null,
     val fname: String? = null,
     val name: String? = null,
+    val usersCount: Int? = null,
 )
