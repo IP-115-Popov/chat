@@ -1,5 +1,6 @@
 package com.eltex.chat.feature.chat.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -28,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +41,7 @@ import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageInput
 import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.ui.components.MyMessageItem
+import com.eltex.chat.feature.chat.ui.formatters.formatDateHeader
 import com.eltex.chat.feature.chat.viewmodel.ChatStatus
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
@@ -45,8 +49,13 @@ import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.ui.components.rememberLazyListStatePaginated
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Calendar
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatScreen(
     navController: NavController,
@@ -55,9 +64,9 @@ fun ChatScreen(
 ) {
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val state = chatViewModel.state.collectAsState()
-    val modalBottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { true })
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = { true })
 
     val showSendButtons by remember {
         derivedStateOf {
@@ -118,6 +127,15 @@ fun ChatScreen(
         MediaPickerBottomSheet(
             modalBottomSheetState = modalBottomSheetState,
         ) {
+            val maxMessageWidth = LocalConfiguration.current.screenWidthDp.dp * 0.6f
+
+            val groupedMessages = state.value.messages.groupBy { message ->
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = message.date
+                calendar.get(Calendar.YEAR).toString() + "-" + calendar.get(Calendar.MONTH).toString() + "-" + calendar.get(Calendar.DAY_OF_MONTH).toString()
+            }
+
+            Text("")
             LazyColumn(
                 state = listState,
                 userScrollEnabled = enabled.value,
@@ -128,58 +146,84 @@ fun ChatScreen(
                     .background(color = CustomTheme.basicPalette.white),
                 reverseLayout = true
             ) {
-                items(items = state.value.messages) { message ->
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        val maxMessageWidth = LocalConfiguration.current.screenWidthDp.dp * 0.6f
-                        if (state.value.roomType == "d") {
-                            if (state.value.profileModel?.id == message.userId) {
-                                MyMessageItem(
-                                    text = message.msg,
-                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                    read = true,
-                                    messageUiModel = message,
-                                    modifier = Modifier
-                                        .widthIn(max = maxMessageWidth)
-                                        .align(Alignment.CenterEnd)
-                                )
+
+                groupedMessages.forEach { (dateString, messagesForDate) ->
+                    items(items = messagesForDate) { message ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            val isMyMessage = state.value.profileModel?.id == message.userId
+                            val alignment =
+                                if (isMyMessage) Alignment.CenterEnd else Alignment.CenterStart
+
+                            if (state.value.roomType == "d") {
+                                if (isMyMessage) {
+                                    MyMessageItem(
+                                        text = message.msg,
+                                        time = InstantFormatter.formatInstantToRelativeString(
+                                            message.date
+                                        ),
+                                        read = true,
+                                        messageUiModel = message,
+                                        modifier = Modifier
+                                            .widthIn(max = maxMessageWidth)
+                                            .align(alignment)
+                                    )
+                                } else {
+                                    CallerMessage(
+                                        text = message.msg,
+                                        time = InstantFormatter.formatInstantToRelativeString(
+                                            message.date
+                                        ),
+                                        messageUiModel = message,
+                                        modifier = Modifier
+                                            .widthIn(max = maxMessageWidth)
+                                            .align(alignment)
+                                    )
+                                }
                             } else {
-                                CallerMessage(
-                                    text = message.msg,
-                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                    messageUiModel = message,
-                                    modifier = Modifier
-                                        .widthIn(max = maxMessageWidth)
-                                        .align(Alignment.CenterStart)
-                                )
-                            }
-                        } else {
-                            if (state.value.profileModel?.id == message.userId) {
-                                MyMessageItem(
-                                    text = message.msg,
-                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                    read = true,
-                                    messageUiModel = message,
-                                    modifier = Modifier
-                                        .widthIn(max = maxMessageWidth)
-                                        .align(Alignment.CenterEnd)
-                                )
-                            } else {
-                                MessageItem(
-                                    avatar = state.value.usernameToAvatarsMap.getOrDefault(key = message.username ,defaultValue = null),
-                                    text = message.msg,
-                                    title = message.name,
-                                    time = InstantFormatter.formatInstantToRelativeString(message.date),
-                                    messageUiModel = message,
-                                    messageModifier = Modifier
-                                        .widthIn(max = maxMessageWidth)
-                                        .align(Alignment.CenterStart)
-                                )
+                                if (isMyMessage) {
+                                    MyMessageItem(
+                                        text = message.msg,
+                                        time = InstantFormatter.formatInstantToRelativeString(
+                                            message.date
+                                        ),
+                                        read = true,
+                                        messageUiModel = message,
+                                        modifier = Modifier
+                                            .widthIn(max = maxMessageWidth)
+                                            .align(alignment)
+                                    )
+                                } else {
+                                    MessageItem(
+                                        avatar = state.value.usernameToAvatarsMap.getOrDefault(
+                                            key = message.username, defaultValue = null
+                                        ),
+                                        text = message.msg,
+                                        title = message.name,
+                                        time = InstantFormatter.formatInstantToRelativeString(
+                                            message.date
+                                        ),
+                                        messageUiModel = message,
+                                        messageModifier = Modifier
+                                            .widthIn(max = maxMessageWidth)
+                                            .align(alignment)
+                                    )
+                                }
                             }
                         }
+                        Spacer(Modifier.padding(11.dp))
                     }
-                    Spacer(Modifier.padding(11.dp))
+                    item {
+                        Text(
+                            text = formatDateHeader(dateString),
+                            style = CustomTheme.typographySfPro.caption1Medium,
+                            color = CustomTheme.basicPalette.grey,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.padding(12.dp))
+                    }
                 }
                 if (state.value.status is ChatStatus.NextPageLoading) {
                     item {
