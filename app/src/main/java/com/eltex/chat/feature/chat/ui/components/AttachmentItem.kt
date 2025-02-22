@@ -194,7 +194,8 @@ fun AttachmentItem(
         is FileModel.Video -> {
             Box(
                 modifier = Modifier
-                    .size(400.dp)
+                    .fillMaxSize(0.5f)
+                    .aspectRatio(1f)
                     .background(
                         color = Color.Black,
                     )
