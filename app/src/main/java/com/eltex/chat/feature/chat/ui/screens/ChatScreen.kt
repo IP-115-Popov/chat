@@ -3,6 +3,7 @@ package com.eltex.chat.feature.chat.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
@@ -82,8 +84,16 @@ fun ChatScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val listState = rememberLazyListStatePaginated {
-        chatViewModel.loadHistoryChat()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        val totalItemsCount = listState.layoutInfo.totalItemsCount
+
+        listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index?.let { lastVisibleIndex ->
+            if (totalItemsCount > 0 && lastVisibleIndex > (totalItemsCount - 2)) {
+                chatViewModel.loadHistoryChat()
+            }
+        }
     }
 
     LaunchedEffect(key1 = roomId, key2 = roomType) {
@@ -138,6 +148,7 @@ fun ChatScreen(
             Text("")
             LazyColumn(
                 state = listState,
+                contentPadding = PaddingValues(top = 16.dp),
                 userScrollEnabled = enabled.value,
                 modifier = Modifier
                     .padding(innerPadding)

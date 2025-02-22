@@ -27,6 +27,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -300,9 +301,9 @@ class ChatViewModel @Inject constructor(
                             }
                             updateImg()
                         }
-                        setStatus(ChatStatus.Idle)
                     }
                 }
+                setStatus(ChatStatus.Idle)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "loadHistoryChat ${e.message}")
                 setStatus(ChatStatus.Error)
