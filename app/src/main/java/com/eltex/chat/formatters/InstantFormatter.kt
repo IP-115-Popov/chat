@@ -11,7 +11,7 @@ object InstantFormatter {
     private val zoneId: ZoneId = ZoneId.systemDefault() // Или ZoneId.of("Europe/Moscow")
     private val locale: Locale = Locale("ru", "RU")
     private val dayOfWeekFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EE", locale)
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", locale)
+    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM", locale)
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", locale)
 
     fun formatInstantToRelativeString(timestamp: Long): String { // Принимаем Long timestamp
