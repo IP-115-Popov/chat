@@ -37,9 +37,8 @@ fun CallerMessage(
             modifier = Modifier
                 .then(modifier)
                 .background(
-                    color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
-                )
-                .clip(shape = RoundedCornerShape(15.dp)),
+                    color = CustomTheme.basicPalette.white2
+                ),
         ) {
             val (attachment, timeRefs) = createRefs()
             Box(modifier = Modifier.constrainAs(attachment) {
@@ -120,7 +119,7 @@ fun CallerMessage(
                         color = CustomTheme.basicPalette.black,
                         modifier = Modifier
                             .widthIn(min = 106.dp)
-                            .heightIn(min = 20.dp)
+                            .padding(end = 8.dp)
                             .constrainAs(texteRefs) {
                                 top.linkTo(attachment.bottom, margin = 8.dp)
                                 bottom.linkTo(timeRefs.top)

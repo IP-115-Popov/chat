@@ -134,7 +134,7 @@ fun MyMessageItem(
                         color = CustomTheme.basicPalette.black,
                         modifier = Modifier
                             .widthIn(min = 106.dp)
-                            .heightIn(min = 20.dp)
+                            .padding(end = 8.dp)
                             .constrainAs(texteRefs) {
                                 top.linkTo(attachment.bottom, margin = 8.dp)
                                 bottom.linkTo(timeRefs.top)

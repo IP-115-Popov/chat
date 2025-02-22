@@ -15,11 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.size.Size
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.ui.theme.CustomTheme
+import com.eltex.domain.models.FileModel
 
 @Composable
 fun BigMessageItem(
@@ -37,11 +40,10 @@ fun BigMessageItem(
                 color = CustomTheme.basicPalette.white2,
                 shape = RoundedCornerShape(15.dp)
             )
-            .padding(8.dp)
-
+            .clip(shape = RoundedCornerShape(15.dp))
     ) {
         Box(
-            modifier = Modifier.height(20.dp),
+            modifier = Modifier.height(20.dp).padding(top = 8.dp, end = 8.dp, start = 8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             Text(
@@ -52,72 +54,14 @@ fun BigMessageItem(
                 maxLines = 1
             )
         }
-        AttachmentItem(messageUiModel)
-        Text(
-            text = text,
-            textAlign = TextAlign.Start,
-            style = CustomTheme.typographySfPro.bodyMedium,
-            color = CustomTheme.basicPalette.black
-        )
-        Spacer(Modifier.size(4.dp))
-        Box(
-            Modifier
-                .height(14.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd
-        ) {
-            Text(
-                text = time,
-                style = CustomTheme.typographySfPro.caption3Regular,
-                color = CustomTheme.basicPalette.grey,
-            )
+
+        if (messageUiModel.fileModel is FileModel.Img) {
+            Spacer(Modifier.size(8.dp))
         }
 
+        CallerMessage(
+            text = text, time = time, messageUiModel = messageUiModel,
+            modifier = Modifier,
+        )
     }
 }
-
-//@Preview
-//@Composable
-//fun MessageItemPreview() {
-//    CustomTheme {
-//        Column(Modifier.verticalScroll(rememberScrollState(0))) {
-//            BigMessageItem(
-//                title = "Константин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин КонстантинопольскийКонстантин Константинопольский",
-//                time = "15:50",
-//                text = "Привет! Это пример сообщения, которое может быть длинным и переноситься на несколько строк."
-//            )
-//            Spacer(Modifier.size(4.dp))
-//            BigMessageItem(
-//                title = "Константин Константинопольский",
-//                time = "15:50",
-//                text = "прив",
-//            )
-//            Spacer(Modifier.size(4.dp))
-//            BigMessageItem(
-//                title = "Константин Константинопольский",
-//                time = "15:50",
-//                text = "Короткое сообщение."
-//            )
-//            Spacer(Modifier.size(4.dp))
-//            BigMessageItem(
-//                title = "Константин Константинопольский",
-//                time = "15:50",
-//                text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!",
-//            )
-//        }
-//    }
-//}
-//
-//@Preview
-//@Composable
-//fun MessageItemPreview2() {
-//    CustomTheme {
-//        BigMessageItem(
-//            title = "Константин Константинопольский",
-//            time = "15:50",
-//            text = "Еще одно очень длинное сообщение, чтобы протестировать перенос слов и максимальную ширину.  Просто очень очень длинное!".repeat(
-//                10
-//            ) + "1",
-//        )
-//    }
-//}
