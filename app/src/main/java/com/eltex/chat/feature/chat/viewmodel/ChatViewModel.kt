@@ -146,11 +146,11 @@ class ChatViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     _state.update { state ->
                         state.copy(
-                            messages = listOf(
+                            messages = (listOf(
                                 MessageToMessageUiModelMapper.map(
                                     messsage
                                 )
-                            ) + state.messages
+                            ) + state.messages).distinct()
                         )
                     }
                     messsage.username?.let { username ->
@@ -296,7 +296,7 @@ class ChatViewModel @Inject constructor(
                                 )
                                 state.copy(
                                     offset = state.offset + messages.size,
-                                    messages = state.messages + messages
+                                    messages = (state.messages + messages).distinct()
                                 )
                             }
                             updateImg()
