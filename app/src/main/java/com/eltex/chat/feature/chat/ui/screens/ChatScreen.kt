@@ -137,9 +137,6 @@ fun ChatScreen(
                 onBackClick = onBackClick,
                 onMoreClick = {
                     navController.navigate(NavRoutes.ChatInfo.route+ "/${roomId}" + "/${roomType}") {
-                        popUpTo(NavRoutes.Main.route) {
-                            inclusive = true
-                        }
                         launchSingleTop = true
                     }
                 },
