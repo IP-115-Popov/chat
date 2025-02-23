@@ -53,7 +53,7 @@ fun MessageItem(
             }
         }
         Spacer(Modifier.size(8.dp))
-        if (text.length > 33 || messageUiModel != null) {
+        if (text.length > 33 || messageUiModel.fileModel != null) {
             BigMessageItem(
                 title = title,
                 text = text,

@@ -7,37 +7,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.eltex.chat.R
 
-val Roboto = FontFamily(Font(R.font.roboto_regular))
-private val robotoTextStyle = TextStyle(fontFamily = Roboto)
-
 val sfProDisplay = FontFamily(Font(R.font.roboto_regular))
 private val sfProDisplayTextStyle = TextStyle(fontFamily = sfProDisplay)
-
-val simpleRobotoTypography = CustomRobotoTypography(
-    titleMedium = robotoTextStyle.copy(
-        fontWeight = FontWeight(600),
-        fontSize = 17.sp,
-        lineHeight = 22.sp,
-    ),
-
-    bodyMedium = robotoTextStyle.copy(
-        fontWeight = FontWeight(400),
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-    ),
-
-    titleLarge = robotoTextStyle.copy(
-        fontWeight = FontWeight(600),
-        fontSize = 32.sp,
-        lineHeight = 60.sp,
-    ),
-)
 
 val simpleSfProDisplayTypography = CustomSfProDisplayTypography(
     titleMedium = sfProDisplayTextStyle.copy(
         fontWeight = FontWeight(600),
         fontSize = 17.sp,
         lineHeight = 22.sp,
+    ),
+    titleLarge = sfProDisplayTextStyle.copy(
+        fontWeight = FontWeight(600),
+        fontSize = 32.sp,
+        lineHeight = 60.sp,
     ),
     textMedium = sfProDisplayTextStyle.copy(
         fontWeight = FontWeight(500),

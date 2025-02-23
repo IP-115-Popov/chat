@@ -62,7 +62,7 @@ fun SearchField(
             BasicTextField(
                 value = value,
                 onValueChange = { onValueChange(it) },
-                textStyle = CustomTheme.typographyRoboto.bodyMedium,
+                textStyle = CustomTheme.typographySfPro.bodyMedium,
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )
@@ -70,7 +70,7 @@ fun SearchField(
             if (value.isEmpty()) {
                 Text(
                     text = placeholderText,
-                    style = CustomTheme.typographyRoboto.bodyMedium,
+                    style = CustomTheme.typographySfPro.bodyMedium,
                     modifier = Modifier.align(Alignment.CenterStart),
                     color = CustomTheme.basicPalette.grey,
                     maxLines = 1,

@@ -89,7 +89,7 @@ fun MessageInput(
                 if (value.isEmpty()) {
                     Text(
                         text = stringResource(R.string.message_input_placeholder),
-                        style = CustomTheme.typographyRoboto.bodyMedium,
+                        style = CustomTheme.typographySfPro.bodyMedium,
                         modifier = Modifier
                             .padding(vertical = 15.dp)
                             .alpha(0.6f)

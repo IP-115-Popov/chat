@@ -71,7 +71,7 @@ fun SignInScreen(
             Text(
                 text = stringResource(R.string.enter_login_password),
                 textAlign = TextAlign.Center,
-                style = CustomTheme.typographyRoboto.titleMedium,
+                style = CustomTheme.typographySfPro.titleMedium,
                 color = CustomTheme.basicPalette.white,
             )
             Spacer(Modifier.size(32.dp))
@@ -104,7 +104,7 @@ fun SignInScreen(
                 onClick = { signInViewModel.signIn() }) {
                 Text(
                     text = stringResource(R.string.enter),
-                    style = CustomTheme.typographyRoboto.bodyMedium,
+                    style = CustomTheme.typographySfPro.bodyMedium,
                     color = CustomTheme.basicPalette.black
                 )
             }

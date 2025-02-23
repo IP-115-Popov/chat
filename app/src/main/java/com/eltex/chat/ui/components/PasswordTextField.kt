@@ -53,13 +53,13 @@ fun PasswordTextField(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = PasswordVisualTransformation(),
-            textStyle = CustomTheme.typographyRoboto.bodyMedium,
+            textStyle = CustomTheme.typographySfPro.bodyMedium,
         )
 
         if (value.isEmpty()) {
             Text(
                 text = placeholder,
-                style = CustomTheme.typographyRoboto.bodyMedium,
+                style = CustomTheme.typographySfPro.bodyMedium,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 12.dp)
                     .alpha(0.6f)

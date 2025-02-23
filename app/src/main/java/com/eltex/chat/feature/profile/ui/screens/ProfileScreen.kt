@@ -96,7 +96,7 @@ fun ProfileScreen(navController: NavHostController) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .offset(y = (8 - 59).dp),
-                style = CustomTheme.typographyRoboto.titleMedium
+                style = CustomTheme.typographySfPro.titleMedium
             )
 
             Spacer(modifier = Modifier.height(190.dp))
@@ -147,7 +147,7 @@ private fun ProfileAvatar(avatarImg: Bitmap?, name: String?) {
         ) {
             Text(
                 text = initials,
-                style = CustomTheme.typographyRoboto.titleLarge,
+                style = CustomTheme.typographySfPro.titleLarge,
                 color = CustomTheme.basicPalette.darkGray,
                 maxLines = 1,
             )
