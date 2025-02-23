@@ -17,16 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
-import com.eltex.chat.feature.createchat.model.UserUiModel
+import com.eltex.chat.feature.infochat.models.MemberUiModel
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.getInitials
 
 @Composable
 fun MemberItem(
-    member: UserUiModel,
-    onSelect: (UserUiModel) -> Unit,
+    member: MemberUiModel,
+    onSelect: (MemberUiModel) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -39,7 +38,7 @@ fun MemberItem(
     ) {
         if (member.avatar != null) {
             Image(
-                bitmap = member.avatar.asImageBitmap(),
+                bitmap = member.avatar,
                 contentDescription = null,
                 modifier = Modifier
                     .size(36.dp)

@@ -6,4 +6,5 @@ sealed class NavRoutes(val route: String) {
     object Profile : NavRoutes("profile")
     object Splash : NavRoutes("splash")
     object Chat : NavRoutes("chat")
+    object ChatInfo : NavRoutes("chatInfo")
 }

@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.eltex.chat.feature.chat.ui.screens.ChatScreen
+import com.eltex.chat.feature.infochat.ui.screens.ChatInfoScreen
 import com.eltex.chat.feature.main.ui.screens.MainScreen
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.profile.ui.screens.ProfileScreen
@@ -41,5 +42,16 @@ fun NavigationGraph(
             }
         }
         composable(NavRoutes.Splash.route) { SplashScreen() }
+        composable(NavRoutes.ChatInfo.route + "/{roomId}" + "/{roomType}") { stackEntry ->
+            val roomId = stackEntry.arguments?.getString("roomId")
+            val roomType = stackEntry.arguments?.getString("roomType")
+            if (roomId != null && roomType != null) {
+                ChatInfoScreen(
+                    navController = navController,
+                    roomId = roomId,
+                    roomType = roomType,
+                )
+            }
+        }
     }
 }

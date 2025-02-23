@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.infochat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +36,17 @@ import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
-fun ChatInfoScreen(navController: NavHostController) {
+fun ChatInfoScreen(
+    navController: NavHostController,
+    roomId: String,
+    roomType: String,
+) {
     val chatInfoVIewModel = hiltViewModel<ChatInfoViewModel>()
     val state = chatInfoVIewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        chatInfoVIewModel.getInfo(roomId = roomId, roomType = roomType)
+    }
 
     Box(
         Modifier
@@ -50,15 +60,16 @@ fun ChatInfoScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .background(CustomTheme.basicPalette.blue),
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
+                Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
                     contentDescription = null,
                     tint = CustomTheme.basicPalette.white,
                     modifier = Modifier
                         .padding(start = 16.dp, bottom = 10.dp)
                         .size(24.dp)
                         .align(Alignment.BottomStart)
-                )
+                        .clickable {
+                            navController.navigateUp()
+                        })
             }
         }
         Box(
@@ -75,17 +86,17 @@ fun ChatInfoScreen(navController: NavHostController) {
                     contentAlignment = Alignment.Center
                 ) {
                     MainAvatar(
-                        avatarImg = null, name = "TEst1"
+                        avatarImg = state.value.avatar, name = state.value.chatModel?.name
                     )
                 }
                 Spacer(Modifier.size(8.dp))
                 Text(
-                    text = "TEst1",
+                    text = state.value.chatModel?.name ?: "",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     style = CustomTheme.typographySfPro.titleMedium
                 )
                 Text(
-                    text = stringResource(R.string.participants),
+                    text = stringResource(R.string.participants) + state.value.membersList.size.toString(),
                     color = CustomTheme.basicPalette.grey,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     style = CustomTheme.typographySfPro.caption1Regular
@@ -98,8 +109,8 @@ fun ChatInfoScreen(navController: NavHostController) {
                 ) {
                     items(state.value.membersList) { member ->
                         MemberItem(member = member, onSelect = {
-                                // TODO: userprofile
-                            })
+                            // TODO: userprofile
+                        })
                     }
                 }
             }
@@ -112,6 +123,8 @@ fun ChatInfoScreen(navController: NavHostController) {
 @Composable
 fun ChatInfoPreview() {
     CustomTheme {
-        ChatInfoScreen(navController = rememberNavController())
+        ChatInfoScreen(
+            navController = rememberNavController(), roomId = "", roomType = "p"
+        )
     }
 }

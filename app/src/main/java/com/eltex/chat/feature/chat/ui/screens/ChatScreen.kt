@@ -64,9 +64,9 @@ fun ChatScreen(
 ) {
     val chatViewModel = hiltViewModel<ChatViewModel>()
     val state = chatViewModel.state.collectAsState()
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
-            confirmStateChange = { true })
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { true })
 
     val showSendButtons by remember {
         derivedStateOf {
@@ -113,18 +113,19 @@ fun ChatScreen(
     }
 
     Scaffold(topBar = {
+        val onBackClick = {
+            navController.navigate(NavRoutes.Main.route) {
+                popUpTo(NavRoutes.Main.route) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }
         if (state.value.chatModel?.t == "d") {
             PrivateChatScreenTopBar(
                 title = state.value.name ?: "",
                 avatar = state.value.avatar,
-                onBackClick = {
-                    navController.navigate(NavRoutes.Main.route) {
-                        popUpTo(NavRoutes.Main.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                },
+                onBackClick = onBackClick,
                 onMoreClick = {},
             )
         } else {
@@ -133,15 +134,15 @@ fun ChatScreen(
                 title = state.value.name ?: "",
                 usersCount = usersCount,
                 avatar = state.value.avatar,
-                onBackClick = {
-                    navController.navigate(NavRoutes.Main.route) {
+                onBackClick = onBackClick,
+                onMoreClick = {
+                    navController.navigate(NavRoutes.ChatInfo.route+ "/${roomId}" + "/${roomType}") {
                         popUpTo(NavRoutes.Main.route) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
-                onMoreClick = {},
             )
         }
     }, bottomBar = {
