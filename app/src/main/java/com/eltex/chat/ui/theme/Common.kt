@@ -13,6 +13,7 @@ data class BasicPalette(
     val grey: Color,
     val grey2: Color,
     val darkGray: Color,
+    val black0: Color,
     val black: Color,
     val lightGreen: Color,
     val blue: Color,

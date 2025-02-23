@@ -20,4 +20,5 @@
     <string name="internal_storage">Внутреннее хранилище</string>
     <string name="creating_chat_problem">Проблема при создании чата с указанным пользователем, попробуйте позднее</string>
     <string name="participants">Участники:</string>
+    <string name="back">Назад</string>
 </resources>
