@@ -27,13 +27,12 @@ class ProfileViewModel @Inject constructor(
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow<ProfileState>(ProfileState())
+    private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
 
     init {
         getUser()
     }
-
 
     private fun loadImage() {
         setStatus(ProfileStatus.Loading)
@@ -42,23 +41,16 @@ class ProfileViewModel @Inject constructor(
                 val subject = state.value.profileUiModel?.username
 
                 subject?.let {
-                    val avatarRes = getAvatarUseCase(
+                    getAvatarUseCase(
                         subject = subject
-                    )
-                    when (avatarRes) {
-                        is Either.Left -> {}
-                        is Either.Right -> {
-                            val avatar = avatarRes.value.byteArrayToBitmap()
-                            _state.update {
-                                it.copy(
-                                    avatarImg = avatar
-                                )
-                            }
+                    ).onRight { avatarRes ->
+                        val avatar = avatarRes.byteArrayToBitmap()
+                        _state.update {
+                            it.copy(
+                                avatarImg = avatar
+                            )
                         }
-
-                        else -> {}
                     }
-
                 }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error loading Avatar", e)

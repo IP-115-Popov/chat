@@ -8,14 +8,14 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object InstantFormatter {
-    private val zoneId: ZoneId = ZoneId.systemDefault() // Или ZoneId.of("Europe/Moscow")
+    private val zoneId: ZoneId = ZoneId.systemDefault()
     private val locale: Locale = Locale("ru", "RU")
     private val dayOfWeekFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EE", locale)
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM", locale)
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", locale)
 
-    fun formatInstantToRelativeString(timestamp: Long): String { // Принимаем Long timestamp
-        val instant = Instant.ofEpochMilli(timestamp) // Преобразуем Long в Instant
+    fun formatInstantToRelativeString(timestamp: Long): String {
+        val instant = Instant.ofEpochMilli(timestamp)
         val zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId)
         val today = LocalDate.now(zoneId)
         val yesterday = today.minusDays(1)
