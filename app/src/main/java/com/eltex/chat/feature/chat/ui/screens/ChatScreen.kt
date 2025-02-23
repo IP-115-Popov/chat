@@ -95,6 +95,20 @@ fun ChatScreen(
         }
     }
 
+    LaunchedEffect(listState.layoutInfo.totalItemsCount) {
+        val totalItemsCount = listState.layoutInfo.totalItemsCount
+
+        listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index?.let { firstVisibleIndex ->
+            if (totalItemsCount > 0 && firstVisibleIndex < 1) {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            }
+        }
+    }
+
+
+
     LaunchedEffect(key1 = roomId, key2 = roomType) {
         chatViewModel.sync(roomId = roomId, roomType = roomType)
     }
