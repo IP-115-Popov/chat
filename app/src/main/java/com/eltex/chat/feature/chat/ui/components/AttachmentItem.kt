@@ -44,6 +44,7 @@ import com.eltex.chat.R
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.chat.viewmodel.LoadFileStatus
+import com.eltex.chat.ui.components.MiddleEllipsisText
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.openFile
 import com.eltex.domain.models.FileModel
@@ -153,12 +154,10 @@ fun AttachmentItem(
                     }
                 }
                 Spacer(Modifier.size(4.dp))
-                Text(
+                MiddleEllipsisText(
                     text = file.title ?: "Null",
                     style = CustomTheme.typographySfPro.bodyMedium,
                     color = CustomTheme.basicPalette.black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
