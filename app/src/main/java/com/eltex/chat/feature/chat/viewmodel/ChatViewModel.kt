@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
@@ -98,7 +99,7 @@ class ChatViewModel @Inject constructor(
                         chatModel = chat
                     )
                 }
-                loadChatAvatar()
+                loadChatAvatar(chat)
             }
 
             _state.update {
@@ -337,17 +338,15 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun loadChatAvatar() {
+    private fun loadChatAvatar(chatModel: ChatModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            state.value.chatModel?.let { chat ->
-                getRoomAvatarUseCase(
-                    chat = chat, username = state.value.profileModel?.username
-                )?.let { avatar ->
-                    _state.update {
-                        it.copy(
-                            avatar = avatar.byteArrayToBitmap()?.asImageBitmap()
-                        )
-                    }
+            getRoomAvatarUseCase(
+                chat = chatModel, username = state.value.profileModel?.username
+            )?.let { avatar ->
+                _state.update {
+                    it.copy(
+                        avatar = avatar.byteArrayToBitmap()?.asImageBitmap()
+                    )
                 }
             }
         }
