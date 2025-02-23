@@ -114,7 +114,6 @@ class ChatViewModel @Inject constructor(
 
     fun loadUserAvatar(username: String) {
         if (username !in state.value.usernameToAvatarsMap) {
-            Log.i("loadUserAvatar", "${username}")
             viewModelScope.launch(Dispatchers.IO) {
                 val userAvatarEither = getAvatarUseCase(subject = username)
                 userAvatarEither.onRight { avatarBytes ->
@@ -128,12 +127,7 @@ class ChatViewModel @Inject constructor(
 
                             currentState.copy(usernameToAvatarsMap = updatedMap)
                         }
-                        Log.d("loadUsersAvatar", "Avatar loaded for $username")
-                    } else {
-                        Log.w("loadUsersAvatar", "Failed to decode avatar for $username")
                     }
-                }.onLeft { error ->
-                    Log.e("loadUsersAvatar", "Error loading avatar for $username: $error")
                 }
             }
         }
@@ -196,16 +190,14 @@ class ChatViewModel @Inject constructor(
 
     fun sendDocument() {
         setStatus(ChatStatus.SendingMessage)
-        viewModelScope.launch(Dispatchers.IO) {
-            state.value.roomId?.let { roomId ->
-                sendMessageUseCase(
-                    MessagePayload(
-                        roomId = roomId,
-                        msg = "",
-                        uri = state.value.attachmentUriList.first().toString()
-                    )
+        state.value.roomId?.let { roomId ->
+            sendMessagePayload(
+                MessagePayload(
+                    roomId = roomId,
+                    msg = "",
+                    uri = state.value.attachmentUriList.first().toString()
                 )
-            }
+            )
             setStatus(ChatStatus.Idle)
             setMsgText("")
             clearAttachment()
@@ -216,37 +208,31 @@ class ChatViewModel @Inject constructor(
         if (state.value.msgText.isBlank() && state.value.attachmentUriList.isEmpty()) return
         val msgText = state.value.msgText
         setStatus(ChatStatus.SendingMessage)
-        viewModelScope.launch(Dispatchers.IO) {
+        state.value.roomId?.let { roomId ->
             when (state.value.attachmentUriList.size) {
                 0 -> {
-                    state.value.roomId?.let { roomId ->
-                        sendMessageUseCase(
-                            MessagePayload(
-                                roomId = roomId,
-                                msg = msgText,
-                            )
+                    sendMessagePayload(
+                        MessagePayload(
+                            roomId = roomId,
+                            msg = msgText,
                         )
-                    }
+                    )
                 }
 
                 else -> {
                     state.value.attachmentUriList.forEachIndexed { index, attachment ->
                         if (index == state.value.attachmentUriList.size - 1) {
-                            state.value.roomId?.let { roomId ->
-                                sendMessageUseCase(
-                                    MessagePayload(
-                                        roomId = roomId, msg = msgText, uri = attachment.toString()
-                                    )
+                            sendMessagePayload(
+                                MessagePayload(
+                                    roomId = roomId, msg = msgText, uri = attachment.toString()
                                 )
-                            }
+                            )
                         } else {
-                            state.value.roomId?.let { roomId ->
-                                sendMessageUseCase(
-                                    MessagePayload(
-                                        roomId = roomId, msg = "", uri = attachment.toString()
-                                    )
+                            sendMessagePayload(
+                                MessagePayload(
+                                    roomId = roomId, msg = "", uri = attachment.toString()
                                 )
-                            }
+                            )
                         }
                     }
                 }
@@ -254,6 +240,12 @@ class ChatViewModel @Inject constructor(
             clearAttachment()
             setMsgText("")
             setStatus(ChatStatus.Idle)
+        }
+    }
+
+    private fun sendMessagePayload(payload: MessagePayload) {
+        viewModelScope.launch(Dispatchers.IO) {
+            sendMessageUseCase(payload)
         }
     }
 
@@ -289,10 +281,6 @@ class ChatViewModel @Inject constructor(
                             }
                         } else {
                             _state.update { state ->
-                                Log.i(
-                                    "ChatViewModel",
-                                    messages.map { it.fileModel ?: "null" }.joinToString()
-                                )
                                 state.copy(
                                     offset = state.offset + messages.size,
                                     messages = (state.messages + messages).distinct()

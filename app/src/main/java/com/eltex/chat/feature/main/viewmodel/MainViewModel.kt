@@ -41,10 +41,6 @@ class MainViewModel @Inject constructor(
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
-    private val _connectionState =
-        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
-    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
-
     init {
         connectToWebSocket()
         loadProfileInfo()
@@ -66,7 +62,6 @@ class MainViewModel @Inject constructor(
     private fun connectToWebSocket() {
         viewModelScope.launch(Dispatchers.IO) {
             connectWebSocketUseCase().collect { state ->
-                _connectionState.value = state
                 when (state) {
                     is WebSocketConnectionState.Connected -> {
                         loadChat()
@@ -196,12 +191,7 @@ class MainViewModel @Inject constructor(
                                     }
                                 })
                             }
-                        } ?: run {
-                            Log.w("loadAvatars", "Failed to decode avatar for chat ${chat.name}")
                         }
-
-                    } ?: run {
-                        Log.w("loadAvatars", "Failed to load avatar for chat ${chat.name}")
                     }
                 }
             }
