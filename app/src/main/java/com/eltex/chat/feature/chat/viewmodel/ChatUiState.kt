@@ -3,7 +3,6 @@ package com.eltex.chat.feature.chat.viewmodel
 import android.net.Uri
 import androidx.compose.ui.graphics.ImageBitmap
 import com.eltex.chat.feature.chat.model.MessageUiModel
-import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.ProfileModel
 

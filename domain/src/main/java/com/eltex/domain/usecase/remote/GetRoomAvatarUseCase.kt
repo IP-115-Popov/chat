@@ -8,7 +8,7 @@ class GetRoomAvatarUseCase(
 ) {
     suspend operator fun invoke(chat: ChatModel, username: String?): ByteArray? {
         if (chat.t == "d") {
-            chat.usernames?.firstOrNull{it != username}?.let { username ->
+            chat.usernames?.firstOrNull { it != username }?.let { username ->
                 avatarRemoteRepository.getAvatar(
                     subject = username
                 ).onRight { avatarRes ->

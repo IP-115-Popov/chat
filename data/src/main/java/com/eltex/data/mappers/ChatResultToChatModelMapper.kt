@@ -27,7 +27,7 @@ object ChatResultToChatModelMapper {
             lm = result.lm?.`$date`,
             unread = result.usersCount,
             avatarUrl = result.avatarETag,
-            usernames =  result.usernames,
+            usernames = result.usernames,
             t = result.t ?: "",
             uids = if (result.t == "d") result.uids else null,
             usersCount = result.usersCount,

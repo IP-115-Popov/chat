@@ -9,7 +9,6 @@ import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.models.chat.ChatResponse
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.DataError
-import com.eltex.domain.models.Message
 import com.eltex.domain.repository.remote.ChatRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +79,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatInfo(roomId: String): Either<DataError, ChatModel>  {
+    override suspend fun getChatInfo(roomId: String): Either<DataError, ChatModel> {
         return try {
             val response = chatApi.getChatInfo(roomId = roomId)
             if (response.isSuccessful) {
@@ -98,7 +97,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                     DataError.DefaultError.left()
                 }
             } else {
-                when(response.code()){
+                when (response.code()) {
                     in 400 until 500 -> DataError.IncorrectData.left()
                     else -> DataError.DefaultError.left()
                 }

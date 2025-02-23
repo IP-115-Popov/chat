@@ -4,26 +4,21 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.utils.byteArrayToBitmap
-import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
-import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
-import dagger.hilt.InstallIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +28,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltViewModel
 class MainViewModel @Inject constructor(

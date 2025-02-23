@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.chat.ui.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,10 +41,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.ui.components.CallerMessage
 import com.eltex.chat.feature.chat.ui.components.ChatScreenTopBar
-import com.eltex.chat.feature.chat.ui.components.PrivateChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageInput
 import com.eltex.chat.feature.chat.ui.components.MessageItem
 import com.eltex.chat.feature.chat.ui.components.MyMessageItem
+import com.eltex.chat.feature.chat.ui.components.PrivateChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.formatters.formatDateHeader
 import com.eltex.chat.feature.chat.viewmodel.ChatStatus
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
@@ -173,7 +172,8 @@ fun ChatScreen(
             val groupedMessages = state.value.messages.groupBy { message ->
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = message.date
-                calendar.get(Calendar.YEAR).toString() + "-" + calendar.get(Calendar.MONTH).toString() + "-" + calendar.get(Calendar.DAY_OF_MONTH).toString()
+                calendar.get(Calendar.YEAR).toString() + "-" + calendar.get(Calendar.MONTH)
+                    .toString() + "-" + calendar.get(Calendar.DAY_OF_MONTH).toString()
             }
 
             Text("")

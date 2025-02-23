@@ -13,29 +13,22 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetValue
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,22 +38,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -72,7 +60,6 @@ import com.eltex.chat.feature.chat.viewmodel.LoadFileStatus
 import com.eltex.chat.ui.components.MiddleEllipsisText
 import com.eltex.chat.ui.components.ZoomableImage
 import com.eltex.chat.ui.theme.CustomTheme
-import com.eltex.chat.utils.getInitials
 import com.eltex.chat.utils.openFile
 import com.eltex.domain.models.FileModel
 import kotlinx.coroutines.launch
@@ -270,56 +257,56 @@ private fun ImgZoom(
             Modifier
                 .fillMaxSize()
                 .background(CustomTheme.basicPalette.black0), topBar = {
-            Column(Modifier.background(CustomTheme.basicPalette.blue)) {
-                Box(
-                    Modifier
-                        .height(48.dp)
-                        .fillMaxWidth()
-                )
-                Row(
-                    Modifier
-                        .height(44.dp)
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 26.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Column(Modifier.background(CustomTheme.basicPalette.blue)) {
+                    Box(
+                        Modifier
+                            .height(48.dp)
+                            .fillMaxWidth()
+                    )
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f, fill = false)
+                        Modifier
+                            .height(44.dp)
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 26.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
-                            tint = CustomTheme.basicPalette.white,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    onBackClick()
-                                })
-                        Spacer(Modifier.size(8.dp))
-                        Text(
-                            text = stringResource(R.string.back),
-                            style = CustomTheme.typographySfPro.bodyMedium,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            color = CustomTheme.basicPalette.white,
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f, fill = false)
+                        ) {
+                            Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back_24),
+                                tint = CustomTheme.basicPalette.white,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable {
+                                        onBackClick()
+                                    })
+                            Spacer(Modifier.size(8.dp))
+                            Text(
+                                text = stringResource(R.string.back),
+                                style = CustomTheme.typographySfPro.bodyMedium,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                color = CustomTheme.basicPalette.white,
+                            )
+                        }
                     }
+                    Box(
+                        Modifier
+                            .height(6.dp)
+                            .fillMaxWidth()
+                    )
                 }
+            }, bottomBar = {
                 Box(
                     Modifier
-                        .height(6.dp)
+                        .height(60.dp)
                         .fillMaxWidth()
+                        .background(if (text.isBlank()) CustomTheme.basicPalette.blue else CustomTheme.basicPalette.black0)
                 )
-            }
-        }, bottomBar = {
-            Box(
-                Modifier
-                    .height(60.dp)
-                    .fillMaxWidth()
-                    .background(if (text.isBlank()) CustomTheme.basicPalette.blue else CustomTheme.basicPalette.black0)
-            )
-        }) { innerPadding ->
+            }) { innerPadding ->
             if (text.isNotBlank()) {
                 val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
                 val bottomSheetHeight = remember { mutableStateOf(30.dp) }
@@ -374,7 +361,12 @@ private fun ImgZoom(
                     }
                 }
             } else {
-                Box(modifier = Modifier.fillMaxSize().background(CustomTheme.basicPalette.black0), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(CustomTheme.basicPalette.black0),
+                    contentAlignment = Alignment.Center
+                ) {
                     ZoomableImage(
                         bitmap = bitmap, aspectRatio = aspectRatio
                     )

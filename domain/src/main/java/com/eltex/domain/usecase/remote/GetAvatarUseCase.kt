@@ -5,5 +5,6 @@ import com.eltex.domain.repository.remote.AvatarRemoteRepository
 class GetAvatarUseCase(
     private val avatarRemoteRepository: AvatarRemoteRepository
 ) {
-    suspend operator fun invoke(subject: String) = avatarRemoteRepository.getAvatar(subject = subject)
+    suspend operator fun invoke(subject: String) =
+        avatarRemoteRepository.getAvatar(subject = subject)
 }

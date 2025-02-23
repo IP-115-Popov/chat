@@ -42,9 +42,9 @@ class ChatCreationNetworkRepositoryImpl @Inject constructor(
                     "CreateChat", "Failed to create chat: ${response.code()} ${response.message()}"
                 )
             }
-            return when(response.code()) {
+            return when (response.code()) {
                 in 400 until 500 -> DataError.IncorrectData.left()
-                else ->  DataError.DefaultError.left()
+                else -> DataError.DefaultError.left()
             }
 
         } catch (e: Exception) {

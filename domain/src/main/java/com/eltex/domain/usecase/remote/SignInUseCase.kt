@@ -3,11 +3,11 @@ package com.eltex.domain.usecase.remote
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import com.eltex.domain.HeaderManager
 import com.eltex.domain.models.AuthData
 import com.eltex.domain.models.LoginModel
 import com.eltex.domain.models.SignInError
 import com.eltex.domain.repository.local.AuthDataLocalRepository
-import com.eltex.domain.HeaderManager
 import com.eltex.domain.repository.remote.SignInRemoteRepository
 
 class SignInUseCase(

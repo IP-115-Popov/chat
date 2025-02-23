@@ -40,8 +40,6 @@ import com.eltex.chat.feature.createchat.ui.components.SearchField
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatStatus
 import com.eltex.chat.feature.createchat.viewmodel.CreateChatViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
-import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
-import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch
 
@@ -142,7 +140,7 @@ fun BottomCreatedChatScreen(
                     }
                 }
             }
-            when(val status = state.value.status){
+            when (val status = state.value.status) {
                 is CreateChatStatus.roomCreated -> {
                     createChatViewModel.setStatusIdle()
                     navController.navigate(NavRoutes.Chat.route + "/${status.roomId}" + "/${status.roomType}") {
@@ -153,13 +151,16 @@ fun BottomCreatedChatScreen(
                         launchSingleTop = true
                     }
                 }
+
                 is CreateChatStatus.Error -> {
                     ErrorCreateChatAlertDialog(
                         onDismissRequest = { createChatViewModel.setStatusIdle() }
                     )
                 }
+
                 CreateChatStatus.Idle,
-                CreateChatStatus.Loading -> {}
+                CreateChatStatus.Loading -> {
+                }
             }
         }) {
         content()

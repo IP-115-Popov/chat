@@ -65,8 +65,7 @@ fun MiddleEllipsisText(
             )
         }.first().measure(Constraints())
         val textLayoutResult = textLayoutResultState.value
-            ?:
-            return@SubcomposeLayout layout(0, 0) {}
+            ?: return@SubcomposeLayout layout(0, 0) {}
         val placeable = subcompose("visible") {
             val finalText = remember(text, textLayoutResult, constraints.maxWidth) {
                 if (text.isEmpty() || textLayoutResult.getBoundingBox(text.indices.last).right <= constraints.maxWidth) {
@@ -104,7 +103,8 @@ fun MiddleEllipsisText(
                         break
                     }
                 }
-                startCounter.string.trimEnd() + ellipsisText + endCounter.string.reversed().trimStart()
+                startCounter.string.trimEnd() + ellipsisText + endCounter.string.reversed()
+                    .trimStart()
             }
             Text(
                 text = finalText,
@@ -130,7 +130,8 @@ fun MiddleEllipsisText(
 
 private const val ellipsisCharactersCount = 3
 private const val ellipsisCharacter = '.'
-private val ellipsisText = List(ellipsisCharactersCount) { ellipsisCharacter }.joinToString(separator = "")
+private val ellipsisText =
+    List(ellipsisCharactersCount) { ellipsisCharacter }.joinToString(separator = "")
 
 private class BoundCounter(
     private val text: String,

@@ -27,7 +27,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -271,7 +270,7 @@ class ChatViewModel @Inject constructor(
                         offset = state.value.offset,
                         roomId = state.value.roomId!!,
                         roomType = state.value.roomType!!
-                    ).onEach{ messsage ->
+                    ).onEach { messsage ->
                         if (messsage.username != state.value.profileModel?.username) {
                             messsage.username?.let {
                                 loadUserAvatar(username = it)

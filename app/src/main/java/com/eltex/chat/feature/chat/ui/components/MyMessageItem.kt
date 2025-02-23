@@ -2,16 +2,12 @@ package com.eltex.chat.feature.chat.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -77,46 +73,49 @@ fun MyMessageItem(
         }
     } else {
         when (messageUiModel.fileModel) {
-                is FileModel.Document -> {
-                    Row (
+            is FileModel.Document -> {
+                Row(
+                    modifier = Modifier
+                        .then(modifier)
+                        .background(
+                            color = CustomTheme.basicPalette.white2,
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .clip(shape = RoundedCornerShape(15.dp)),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(modifier = Modifier.weight(1f, fill = false)) {
+                        AttachmentItem(messageUiModel)
+                    }
+                    Row(
                         modifier = Modifier
-                            .then(modifier)
-                            .background(
-                                color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
-                            )
-                            .clip(shape = RoundedCornerShape(15.dp)),
+                            .padding(end = 8.dp)
+                            .height(14.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Box (modifier = Modifier.weight(1f, fill = false)) {
-                            AttachmentItem(messageUiModel)
-                        }
-                        Row(
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .height(14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
 
-                            ) {
-                            Text(
-                                text = time,
-                                style = CustomTheme.typographySfPro.caption3Regular,
-                                color = CustomTheme.basicPalette.grey,
-                            )
-                            Spacer(Modifier.size(1.93.dp))
-                            Icon(
-                                imageVector = if (read) ImageVector.vectorResource(R.drawable.ic_done_all) else ImageVector.vectorResource(
-                                    R.drawable.ic_done
-                                ), contentDescription = null, tint = CustomTheme.basicPalette.lightBlue
-                            )
-                        }
+                        ) {
+                        Text(
+                            text = time,
+                            style = CustomTheme.typographySfPro.caption3Regular,
+                            color = CustomTheme.basicPalette.grey,
+                        )
+                        Spacer(Modifier.size(1.93.dp))
+                        Icon(
+                            imageVector = if (read) ImageVector.vectorResource(R.drawable.ic_done_all) else ImageVector.vectorResource(
+                                R.drawable.ic_done
+                            ), contentDescription = null, tint = CustomTheme.basicPalette.lightBlue
+                        )
                     }
                 }
+            }
+
             else -> {
                 ConstraintLayout(
                     modifier = Modifier
                         .then(modifier)
                         .background(
-                            color = CustomTheme.basicPalette.white2, shape = RoundedCornerShape(15.dp)
+                            color = CustomTheme.basicPalette.white2,
+                            shape = RoundedCornerShape(15.dp)
                         )
                         .clip(shape = RoundedCornerShape(15.dp)),
                 ) {

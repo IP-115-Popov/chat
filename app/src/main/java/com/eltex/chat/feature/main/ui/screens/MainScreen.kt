@@ -40,9 +40,9 @@ import com.eltex.chat.feature.main.ui.components.ChatItem
 import com.eltex.chat.feature.main.viewmodel.MainUiStatus
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus
+import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.navigationBar.NavRoutes
-import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -142,7 +142,9 @@ fun MainScreen(
                     }) {
                     Box {
                         LazyColumn(
-                            modifier = Modifier.background(CustomTheme.basicPalette.white).fillMaxSize()
+                            modifier = Modifier
+                                .background(CustomTheme.basicPalette.white)
+                                .fillMaxSize()
                         ) {
                             itemsIndexed(state.value.chatList) { index, chat ->
                                 when (index) {

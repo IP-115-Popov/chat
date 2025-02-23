@@ -23,7 +23,10 @@ class GetUsersListUseCase(
             is Either.Left -> usersResult
             is Either.Right -> {
                 val users = usersResult.value.filter {
-                    it.name.contains(query, ignoreCase = true) || it.username.contains(query, ignoreCase = true)
+                    it.name.contains(query, ignoreCase = true) || it.username.contains(
+                        query,
+                        ignoreCase = true
+                    )
                 }
                 if (users.isNotEmpty()) users.right()
                 else DataError.DefaultError.left()

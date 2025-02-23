@@ -5,7 +5,7 @@ import com.eltex.domain.models.ChatModel
 
 object ChatUIModelToChatModelMapper {
     fun map(chatUIModel: ChatUIModel): ChatModel = with(chatUIModel) {
-        ChatModel (
+        ChatModel(
             id = id,
             name = name,
             unread = unread ?: 0,

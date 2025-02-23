@@ -1,54 +1,52 @@
 package com.eltex.chat.feature.chat.ui.screens
 
+import android.Manifest
 import android.content.ContentUris
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
-import android.os.Build
-import android.Manifest
-import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 
@@ -68,7 +66,10 @@ fun MediaGrid() {
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
-    permissionGranted = ContextCompat.checkSelfPermission(context, permissionToCheck) == PackageManager.PERMISSION_GRANTED
+    permissionGranted = ContextCompat.checkSelfPermission(
+        context,
+        permissionToCheck
+    ) == PackageManager.PERMISSION_GRANTED
 
     // Launcher для запроса разрешения
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -92,7 +93,8 @@ fun MediaGrid() {
     }
 
 
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -117,8 +119,8 @@ fun MediaGrid() {
                         ImageItem(
                             uri = uri,
                             selectable = state.value.attachmentUriList?.contains(uri) ?: false,
-                            onSelected = { chatViewModel.addAttachmentUri(uri)},
-                            onRemove = {chatViewModel.removeAttachmentUri(uri)}
+                            onSelected = { chatViewModel.addAttachmentUri(uri) },
+                            onRemove = { chatViewModel.removeAttachmentUri(uri) }
                         )
                     }
                 }
@@ -131,8 +133,8 @@ fun MediaGrid() {
 fun ImageItem(
     selectable: Boolean,
     uri: Uri,
-    onSelected: ()->Unit,
-    onRemove: ()->Unit
+    onSelected: () -> Unit,
+    onRemove: () -> Unit
 ) {
     Box(modifier = Modifier.padding(2.dp)) {
         Image(
@@ -149,7 +151,9 @@ fun ImageItem(
         )
 
         Box(
-            modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 4.dp, end = 4.dp)
         ) {
             CheckableCircle(
                 isChecked = selectable,
@@ -211,7 +215,8 @@ fun CheckableCircle(
     enabled: Boolean = true,
 ) {
     val borderColor = CustomTheme.basicPalette.white // Цвет границы всегда белый
-    val backgroundColor = if (isChecked) CustomTheme.basicPalette.lightBlue else Color.Transparent // Прозрачный фон если не выбран
+    val backgroundColor =
+        if (isChecked) CustomTheme.basicPalette.lightBlue else Color.Transparent // Прозрачный фон если не выбран
     val iconColor = CustomTheme.basicPalette.white
 
     val border: Modifier = Modifier.border(

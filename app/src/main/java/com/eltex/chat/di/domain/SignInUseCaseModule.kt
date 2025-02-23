@@ -1,7 +1,7 @@
 package com.eltex.chat.di.domain
 
-import com.eltex.domain.repository.local.AuthDataLocalRepository
 import com.eltex.domain.HeaderManager
+import com.eltex.domain.repository.local.AuthDataLocalRepository
 import com.eltex.domain.repository.remote.SignInRemoteRepository
 import com.eltex.domain.usecase.remote.SignInUseCase
 import dagger.Module

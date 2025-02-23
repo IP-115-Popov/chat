@@ -1,7 +1,6 @@
 package com.eltex.chat.feature.navigationBar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +22,12 @@ fun NavigationGraph(
         startDestination = startDestination.route,
     ) {
         composable(NavRoutes.Authorization.route) { SignInScreen(navController) }
-        composable(NavRoutes.Main.route) { MainScreen(navController = navController, mainViewModel = mainViewModel) }
+        composable(NavRoutes.Main.route) {
+            MainScreen(
+                navController = navController,
+                mainViewModel = mainViewModel
+            )
+        }
         composable(NavRoutes.Profile.route) { ProfileScreen(navController) }
         composable(NavRoutes.Chat.route + "/{roomId}" + "/{roomType}") { stackEntry ->
             val roomId = stackEntry.arguments?.getString("roomId")

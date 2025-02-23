@@ -43,8 +43,7 @@ fun InternalStorageButton(
                     .padding(vertical = 20.dp)
                     .padding(start = 16.dp)
                     .height(24.dp)
-                    .fillMaxWidth()
-                ,
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
