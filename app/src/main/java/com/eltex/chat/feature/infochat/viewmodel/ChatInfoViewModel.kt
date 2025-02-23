@@ -34,7 +34,6 @@ class ChatInfoViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getProfile()
-            loadChatAvatar()
         }
     }
 
@@ -73,40 +72,39 @@ class ChatInfoViewModel @Inject constructor(
                         membersList = membersList
                     )
                 }
-                loadMembersAvatar()
+                loadMembersAvatar(membersList)
+                loadChatAvatar(chat)
             }
         }
     }
 
-    private suspend fun loadChatAvatar() {
-        state.value.chatModel?.let { chat ->
-            getRoomAvatarUseCase(
-                chat = chat, username = state.value.profileModel?.username
-            )?.let { avatar ->
-                _state.update {
-                    it.copy(
-                        avatar = avatar.byteArrayToBitmap()
-                    )
-                }
+    private suspend fun loadChatAvatar(chatModel: ChatModel) {
+        getRoomAvatarUseCase(
+            chat = chatModel, username = state.value.profileModel?.username
+        )?.let { avatar ->
+            _state.update {
+                it.copy(
+                    avatar = avatar.byteArrayToBitmap()
+                )
             }
         }
     }
 
-    private fun loadMembersAvatar() {
-        state.value.membersList.forEach { members ->
-            if (members.avatar == null) {
+    private fun loadMembersAvatar(members: List<MemberUiModel>) {
+        members.forEach { member ->
+            if (member.avatar == null) {
                 viewModelScope.launch(Dispatchers.IO) {
                     getAvatarUseCase(
-                        subject = members.username
+                        subject = member.username
                     ).onRight { avatarRes ->
                         val img = avatarRes.byteArrayToBitmap()
                         img?.let {
                             _state.update {
-                                it.copy(membersList = it.membersList.map { u ->
-                                    if (u == members) {
-                                        u.copy(avatar = img.asImageBitmap())
+                                it.copy(membersList = it.membersList.map { m ->
+                                    if (m == member) {
+                                        m.copy(avatar = img.asImageBitmap())
                                     } else {
-                                        u
+                                        m
                                     }
                                 })
                             }
