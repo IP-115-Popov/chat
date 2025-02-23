@@ -1,10 +1,13 @@
 package com.eltex.chat.feature.infochat.viewmodel
 
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.eltex.chat.feature.infochat.models.MemberUiModel
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.ChatModel
+import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetChatInfoUseCase
 import com.eltex.domain.usecase.remote.GetChatMembersUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
@@ -24,6 +27,7 @@ class ChatInfoViewModel @Inject constructor(
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getChatMembersUseCase: GetChatMembersUseCase,
+    private val getAvatarUseCase: GetAvatarUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<ChatInfoState> = MutableStateFlow(ChatInfoState())
     val state: StateFlow<ChatInfoState> = _state.asStateFlow()
@@ -70,6 +74,7 @@ class ChatInfoViewModel @Inject constructor(
                         membersList = membersList
                     )
                 }
+                loadMembersAvatar()
             }
         }
     }
@@ -83,6 +88,31 @@ class ChatInfoViewModel @Inject constructor(
                     it.copy(
                         avatar = avatar.byteArrayToBitmap()
                     )
+                }
+            }
+        }
+    }
+
+    private fun loadMembersAvatar() {
+        state.value.membersList.forEach { members ->
+            if (members.avatar == null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getAvatarUseCase(
+                        subject = members.username
+                    ).onRight { avatarRes ->
+                        val img = avatarRes.byteArrayToBitmap()
+                        img?.let {
+                            _state.update {
+                                it.copy(membersList = it.membersList.map { u ->
+                                    if (u == members) {
+                                        u.copy(avatar = img.asImageBitmap())
+                                    } else {
+                                        u
+                                    }
+                                })
+                            }
+                        }
+                    }
                 }
             }
         }

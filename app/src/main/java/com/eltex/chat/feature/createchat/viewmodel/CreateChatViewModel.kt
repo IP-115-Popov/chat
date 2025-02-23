@@ -124,25 +124,6 @@ class CreateChatViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            val updatedUsers = state.value.userList.map { user ->
-                if (user.avatar == null) {
-                    val avatarRes = getAvatarUseCase(
-                        subject = user.username
-                    )
-                    when (avatarRes) {
-                        is Either.Left -> user
-                        is Either.Right -> user.copy(avatar = avatarRes.value.byteArrayToBitmap())
-                        else -> user
-                    }
-                } else {
-                    user
-                }
-            }
-            _state.update {
-                it.copy(userList = updatedUsers)
-            }
-        }
     }
 
     fun setStatusIdle() {
