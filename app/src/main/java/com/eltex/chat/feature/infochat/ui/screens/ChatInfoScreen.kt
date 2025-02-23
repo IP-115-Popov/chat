@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -78,7 +79,7 @@ fun ChatInfoScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Column {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
                         .size(122.dp)
@@ -103,14 +104,22 @@ fun ChatInfoScreen(
                 )
                 Spacer(Modifier.size(17.dp))
                 LazyColumn(
-                    modifier = Modifier.background(
-                        color = CustomTheme.basicPalette.white, shape = RoundedCornerShape(10.dp)
-                    )
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .background(
+                            color = CustomTheme.basicPalette.white,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 ) {
-                    items(state.value.membersList) { member ->
-                        MemberItem(member = member, onSelect = {
-                            // TODO: userprofile
-                        })
+                    itemsIndexed(state.value.membersList) { i, member ->
+                        val drawHorizontalDivider = (i != state.value.membersList.lastIndex)
+                        MemberItem(
+                            member = member,
+                            onSelect = {
+                                // TODO: userprofile
+                            },
+                            drawHorizontalDivider = drawHorizontalDivider
+                        )
                     }
                 }
             }
