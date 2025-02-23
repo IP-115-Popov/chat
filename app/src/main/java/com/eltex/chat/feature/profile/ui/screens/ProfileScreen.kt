@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
@@ -61,7 +62,10 @@ fun ProfileScreen(navController: NavHostController) {
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController)
+            Column {
+                BottomBarShadow()
+                BottomNavigationBar(navController)
+            }
         }
     ) { innerPadding ->
         Column(

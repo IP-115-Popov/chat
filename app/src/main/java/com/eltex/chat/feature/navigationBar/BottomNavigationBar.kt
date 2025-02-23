@@ -6,16 +6,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -30,45 +37,44 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    Box(
-        modifier = Modifier
+    Column(
+        Modifier
+            .height(60.dp)
             .fillMaxWidth()
-            .height(58.dp)
-            .padding(horizontal = 16.dp)
-            .background(Color.White),
-        contentAlignment = Alignment.Center
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+                .fillMaxWidth()
+                .height(58.dp)
+                .background(CustomTheme.basicPalette.white), contentAlignment = Alignment.Center
         ) {
-            NavBarItem(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_chat_bubble),
-                text = "Чат",
-                isSelected = currentRoute == NavRoutes.Main.route,
-                onClick = {
-                    navController.navigate(NavRoutes.Main.route) {
-                        launchSingleTop = true
-                    }
-                }
-            )
-            NavBarItem(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_account_circle),
-                text = "Профиль",
-                isSelected = currentRoute == NavRoutes.Profile.route,
-                onClick = {
-                    navController.navigate(NavRoutes.Profile.route) {
-                        launchSingleTop = true
-                    }
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                NavBarItem(imageVector = ImageVector.vectorResource(R.drawable.ic_chat_bubble),
+                    text = "Чат",
+                    isSelected = currentRoute == NavRoutes.Main.route,
+                    onClick = {
+                        navController.navigate(NavRoutes.Main.route) {
+                            launchSingleTop = true
+                        }
+                    })
+                NavBarItem(imageVector = ImageVector.vectorResource(R.drawable.ic_account_circle),
+                    text = "Профиль",
+                    isSelected = currentRoute == NavRoutes.Profile.route,
+                    onClick = {
+                        navController.navigate(NavRoutes.Profile.route) {
+                            launchSingleTop = true
+                        }
+                    })
+            }
         }
     }
 }
@@ -91,9 +97,7 @@ private fun NavBarItem(
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            tint = color
+            imageVector = imageVector, contentDescription = null, tint = color
         )
         Text(
             text = text,
@@ -104,10 +108,20 @@ private fun NavBarItem(
     }
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun BottomNavigationBar() {
     CustomTheme {
-        BottomNavigationBar(navController = rememberNavController())
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(navController = rememberNavController())
+            },
+        ) { innerPadding ->
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) { }
+        }
     }
 }

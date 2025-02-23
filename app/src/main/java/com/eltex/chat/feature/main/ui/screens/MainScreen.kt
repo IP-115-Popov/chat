@@ -29,12 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.createchat.ui.components.SearchField
 import com.eltex.chat.feature.createchat.ui.screens.BottomCreatedChatScreen
@@ -45,6 +42,7 @@ import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.main.viewmodel.MessageStatus
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.navigationBar.NavRoutes
+import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -64,9 +62,11 @@ fun MainScreen(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = { true })
 
-    Scaffold(bottomBar = {
-        BottomNavigationBar(navController)
-    }) { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController)
+        },
+    ) { innerPadding ->
         BottomCreatedChatScreen(
             navController = navController,
             modalBottomSheetState = modalBottomSheetState,
@@ -140,9 +140,9 @@ fun MainScreen(
                             contentColor = CustomTheme.basicPalette.blue
                         )
                     }) {
-                    Column {
+                    Box {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.background(CustomTheme.basicPalette.white).fillMaxSize()
                         ) {
                             itemsIndexed(state.value.chatList) { index, chat ->
                                 when (index) {
@@ -184,6 +184,7 @@ fun MainScreen(
                                 }
                             }
                         }
+                        BottomBarShadow(Modifier.align(Alignment.BottomCenter))
                     }
                 }
             }
