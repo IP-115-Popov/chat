@@ -42,9 +42,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -54,6 +56,7 @@ import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.chat.viewmodel.LoadFileStatus
 import com.eltex.chat.ui.components.MiddleEllipsisText
+import com.eltex.chat.ui.components.ZoomableImage
 import com.eltex.chat.ui.theme.CustomTheme
 import com.eltex.chat.utils.getInitials
 import com.eltex.chat.utils.openFile
@@ -246,7 +249,7 @@ private fun ImgZoom(
         ),
         onDismissRequest = { onBackClick() }
     ) {
-        Box(
+        Column(
             Modifier
                 .fillMaxSize()
                 .background(CustomTheme.basicPalette.black0)
@@ -259,7 +262,7 @@ private fun ImgZoom(
                 )
                 Row(
                     Modifier
-                        .height(48.dp)
+                        .height(44.dp)
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 26.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -277,32 +280,26 @@ private fun ImgZoom(
                                 .clickable {
                                     onBackClick()
                                 })
-                        Spacer(Modifier.size(12.dp))
+                        Spacer(Modifier.size(8.dp))
                         Text(
                             text = stringResource(R.string.back),
-                            style = CustomTheme.typographySfPro.titleMedium,
+                            style = CustomTheme.typographySfPro.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
                             color = CustomTheme.basicPalette.white,
                         )
                     }
                 }
+                Box(
+                    Modifier
+                        .height(6.dp)
+                        .fillMaxWidth()
+                )
             }
-            Column(horizontalAlignment = Alignment.Start) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .aspectRatio(aspectRatio),
-                        bitmap = bitmap,
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit
-                    )
-                }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                ZoomableImage(
+                    bitmap = bitmap, aspectRatio = aspectRatio
+                )
             }
         }
     }
