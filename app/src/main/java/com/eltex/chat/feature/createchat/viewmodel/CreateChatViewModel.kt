@@ -31,10 +31,6 @@ class CreateChatViewModel @Inject constructor(
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
 
-    private val _connectionState =
-        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
-    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
-
     init {
         searchUser()
     }
