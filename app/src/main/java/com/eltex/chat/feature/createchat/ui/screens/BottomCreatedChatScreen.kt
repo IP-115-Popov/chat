@@ -56,9 +56,9 @@ fun BottomCreatedChatScreen(
     val state = createChatViewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
-    ModalBottomSheetLayout(sheetState = modalBottomSheetState,
+    ModalBottomSheetLayout(
+        sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-
         sheetContent = {
             Column(
                 modifier = Modifier

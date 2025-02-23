@@ -34,6 +34,7 @@ data class CustomSfProDisplayTypography(
     val textMedium: TextStyle,
     val caption3Regular: TextStyle,
     val caption1Medium: TextStyle,
+    val bodyRegular: TextStyle,
 )
 
 

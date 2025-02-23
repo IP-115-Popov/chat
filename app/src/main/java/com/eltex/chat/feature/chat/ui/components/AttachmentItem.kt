@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,14 +19,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetValue
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
@@ -45,6 +58,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -180,7 +194,9 @@ fun AttachmentItem(
                 val bitmap = messageUiModel.bitmap.asImageBitmap()
                 val imageHeightPx = bitmap.height
                 val imageWidthPx = bitmap.width
-                val aspectRatio = remember(imageWidthPx, imageHeightPx) { imageWidthPx.toFloat() / imageHeightPx.toFloat() }
+                val aspectRatio = remember(
+                    imageWidthPx, imageHeightPx
+                ) { imageWidthPx.toFloat() / imageHeightPx.toFloat() }
                 var showPopup by remember { mutableStateOf(false) }
                 Image(
                     modifier = Modifier
@@ -194,7 +210,10 @@ fun AttachmentItem(
                     contentScale = ContentScale.Fit
                 )
                 if (showPopup) {
-                    ImgZoom(aspectRatio, bitmap, onBackClick = {showPopup = false} )
+                    ImgZoom(aspectRatio,
+                        text = messageUiModel.msg,
+                        bitmap,
+                        onBackClick = { showPopup = false })
                 }
             } else {
                 Box(
@@ -236,24 +255,21 @@ fun AttachmentItem(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ImgZoom(
     aspectRatio: Float,
+    text: String,
     bitmap: ImageBitmap,
-    onBackClick: ()->Unit,
+    onBackClick: () -> Unit,
 ) {
-    Popup(
-        alignment = Alignment.Center,
-        properties = PopupProperties(
-            focusable = true
-        ),
-        onDismissRequest = { onBackClick() }
-    ) {
-        Column(
+    Popup(alignment = Alignment.Center, properties = PopupProperties(
+        focusable = true
+    ), onDismissRequest = { onBackClick() }) {
+        Scaffold(
             Modifier
                 .fillMaxSize()
-                .background(CustomTheme.basicPalette.black0)
-        ) {
+                .background(CustomTheme.basicPalette.black0), topBar = {
             Column(Modifier.background(CustomTheme.basicPalette.blue)) {
                 Box(
                     Modifier
@@ -296,10 +312,73 @@ private fun ImgZoom(
                         .fillMaxWidth()
                 )
             }
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                ZoomableImage(
-                    bitmap = bitmap, aspectRatio = aspectRatio
-                )
+        }, bottomBar = {
+            Box(
+                Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .background(if (text.isBlank()) CustomTheme.basicPalette.blue else CustomTheme.basicPalette.black0)
+            )
+        }) { innerPadding ->
+            if (text.isNotBlank()) {
+                val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+                val bottomSheetHeight = remember { mutableStateOf(30.dp) }
+                val shadowColor = CustomTheme.basicPalette.black0
+
+                BottomSheetScaffold(modifier = Modifier.padding(innerPadding),
+                    scaffoldState = bottomSheetScaffoldState,
+                    backgroundColor = CustomTheme.basicPalette.black0,
+                    sheetBackgroundColor = CustomTheme.basicPalette.black0.copy(alpha = 0.8f),
+                    sheetPeekHeight = bottomSheetHeight.value,
+                    sheetContent = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 31.dp, top = 8.dp, bottom = 8.dp)
+                            ) {
+                                Text(
+                                    text = text,
+                                    color = CustomTheme.basicPalette.white,
+                                    style = CustomTheme.typographySfPro.bodyRegular,
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                            if (bottomSheetScaffoldState.bottomSheetState.currentValue == BottomSheetValue.Collapsed) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(30.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .drawBehind {
+                                            drawRect(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(Color.Transparent, shadowColor),
+                                                    startY = 0f,
+                                                    endY = size.height
+                                                )
+                                            )
+                                        }
+                                )
+                            }
+                        }
+                    }) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        ZoomableImage(
+                            bitmap = bitmap, aspectRatio = aspectRatio
+                        )
+                    }
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize().background(CustomTheme.basicPalette.black0), contentAlignment = Alignment.Center) {
+                    ZoomableImage(
+                        bitmap = bitmap, aspectRatio = aspectRatio
+                    )
+                }
             }
         }
     }
