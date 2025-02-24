@@ -107,6 +107,7 @@ fun ChatInfoScreen(
                 LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp)
                         .background(
                             color = CustomTheme.basicPalette.white,
                             shape = RoundedCornerShape(10.dp)
