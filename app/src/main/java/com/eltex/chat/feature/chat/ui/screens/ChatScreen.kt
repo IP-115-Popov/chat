@@ -126,7 +126,13 @@ fun ChatScreen(
                 title = state.value.name ?: "",
                 avatar = state.value.avatar,
                 onBackClick = onBackClick,
-                onMoreClick = {},
+                onMoreClick = {
+                    state.value.recipientUserId?.let { userId ->
+                        navController.navigate(NavRoutes.UserProfile.route+ "/${userId}") {
+                            launchSingleTop = true
+                        }
+                    }
+                },
             )
         } else {
             val usersCount = state.value.chatModel?.usersCount ?: 0

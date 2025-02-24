@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.infochat.ui.components.MemberItem
 import com.eltex.chat.feature.infochat.viewmodel.ChatInfoViewModel
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
 
@@ -116,7 +117,9 @@ fun ChatInfoScreen(
                         MemberItem(
                             member = member,
                             onSelect = {
-                                // TODO: userprofile
+                                navController.navigate(NavRoutes.UserProfile.route+ "/${member.id}") {
+                                    launchSingleTop = true
+                                }
                             },
                             drawHorizontalDivider = drawHorizontalDivider
                         )

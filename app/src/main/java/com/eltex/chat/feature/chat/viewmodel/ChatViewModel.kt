@@ -77,17 +77,27 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    private fun getRecipientUserIdInDirectChat(): String? {
+        if (state.value.chatModel?.t == "d") {
+            return state.value.chatModel?.uids?.firstOrNull { id -> id != state.value.profileModel?.id }
+        } else {
+            return null
+        }
+    }
+
     fun sync(roomId: String, roomType: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val getChatInfoRes = getChatInfoUseCase(roomId = roomId)
             var chatName: String = ""
+            var recipientUserId: String? = null
             getChatInfoRes.onRight { chat ->
                 when (chat.t) {
                     "d" -> {
-                        chat.uids?.firstOrNull { id -> id != state.value.profileModel?.id }?.let {
-                            getUserInfoUseCase(it).onRight { user ->
+                        getRecipientUserIdInDirectChat()?.let { userId ->
+                            getUserInfoUseCase(userId).onRight { user ->
                                 chatName = user.name
                             }
+                            recipientUserId = userId
                         }
                     }
 
@@ -104,7 +114,10 @@ class ChatViewModel @Inject constructor(
 
             _state.update {
                 it.copy(
-                    roomId = roomId, roomType = roomType, name = chatName
+                    roomId = roomId,
+                    roomType = roomType,
+                    name = chatName,
+                    recipientUserId = recipientUserId
                 )
             }
             loadHistoryChat()
