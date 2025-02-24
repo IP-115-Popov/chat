@@ -77,14 +77,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getRecipientUserIdInDirectChat(): String? {
-        if (state.value.chatModel?.t == "d") {
-            return state.value.chatModel?.uids?.firstOrNull { id -> id != state.value.profileModel?.id }
-        } else {
-            return null
-        }
-    }
-
     fun sync(roomId: String, roomType: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val getChatInfoRes = getChatInfoUseCase(roomId = roomId)
@@ -93,7 +85,7 @@ class ChatViewModel @Inject constructor(
             getChatInfoRes.onRight { chat ->
                 when (chat.t) {
                     "d" -> {
-                        getRecipientUserIdInDirectChat()?.let { userId ->
+                        chat.uids?.firstOrNull { id -> id != state.value.profileModel?.id }?.let { userId ->
                             getUserInfoUseCase(userId).onRight { user ->
                                 chatName = user.name
                             }

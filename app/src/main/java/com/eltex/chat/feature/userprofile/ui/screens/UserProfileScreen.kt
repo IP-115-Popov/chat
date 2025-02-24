@@ -106,7 +106,9 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                 )
                 Spacer(Modifier.size(8.dp))
 
-                WriteButton(onClick = {})
+                WriteButton(onClick = {
+
+                })
             }
         }
     }
