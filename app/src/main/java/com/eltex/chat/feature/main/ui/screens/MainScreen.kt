@@ -198,7 +198,6 @@ fun MainScreen(
                         color = CustomTheme.basicPalette.blue
                     )
                 }
-
             }
 
             is MainUiStatus.Error, MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {

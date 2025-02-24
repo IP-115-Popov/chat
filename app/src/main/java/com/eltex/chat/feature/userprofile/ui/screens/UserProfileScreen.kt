@@ -2,23 +2,18 @@ package com.eltex.chat.feature.userprofile.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +29,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.userprofile.ui.components.WriteButton
+import com.eltex.chat.feature.userprofile.viewmodel.UserProfileStatus
 import com.eltex.chat.feature.userprofile.viewmodel.UserProfileViewModel
 import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
@@ -107,8 +104,28 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                 Spacer(Modifier.size(8.dp))
 
                 WriteButton(onClick = {
-
+                    userProfileViewModel.WriteClick()
                 })
+            }
+        }
+    }
+    when(val status = state.value.status) {
+        UserProfileStatus.Idle -> {}
+        is UserProfileStatus.Error -> {}
+        UserProfileStatus.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    color = CustomTheme.basicPalette.blue
+                )
+            }
+        }
+        is UserProfileStatus.OpenChat -> {
+            navController.navigate(NavRoutes.Chat.route + "/${status.roomId}" + "/d") {
+                popUpTo(NavRoutes.Chat.route) {
+                    inclusive = true
+                    saveState = true
+                }
+                launchSingleTop = true
             }
         }
     }
