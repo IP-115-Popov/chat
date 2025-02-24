@@ -21,6 +21,7 @@ import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,21 +50,23 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            connect()
-        }
+        connect()
     }
 
-    private suspend fun connect() {
+    private fun connect() = viewModelScope.launch(Dispatchers.IO) {
+        var profileJob: Job? = null
+        var websocketJob: Job? = null
         if (state.value.profileUiModel == null) {
-            loadProfileInfo()
+            profileJob = loadProfileInfo()
         }
         if (connectionState.value !is WebSocketConnectionState.Connected) {
-            connectToWebSocket()
+            websocketJob = connectToWebSocket()
         }
+        profileJob?.join()
+        websocketJob?.join()
     }
 
-    private suspend fun loadProfileInfo() {
+    private fun loadProfileInfo() = viewModelScope.launch(Dispatchers.IO) {
         val profileModel = getProfileInfoUseCase()
         profileModel.onRight { getProfileInfoResult ->
             _state.update {
@@ -76,7 +79,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun connectToWebSocket() {
+    private fun connectToWebSocket() = viewModelScope.launch(Dispatchers.IO) {
         connectWebSocketUseCase().collect { state ->
             _connectionState.value = state
             when (state) {
@@ -116,7 +119,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun get() = viewModelScope.launch(Dispatchers.IO) {
-        connect()
+        connect().join()
         try {
             val res = getChatListUseCase()
             withContext(Dispatchers.Main) {
