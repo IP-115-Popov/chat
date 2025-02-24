@@ -43,6 +43,8 @@ import com.eltex.chat.feature.main.viewmodel.MessageStatus
 import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.navigationBar.NavRoutes
+import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
+import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -200,7 +202,15 @@ fun MainScreen(
                 }
             }
 
-            is MainUiStatus.Error, MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
+            is MainUiStatus.Error -> {
+                (state.value.status as? MainUiStatus.Error)?.let { error ->
+                    ErrorSignInAlertDialog(
+                        message = error.errorMessage,
+                        onDismissRequest = { mainViewModel.setStatusIdle() }
+                    )
+                }
+            }
+            MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
             }
         }
     }

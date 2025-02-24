@@ -26,6 +26,13 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
         Log.i("WebSocketManagerImpl", "WebSocketManagerImpl Created!!!")
 
         val listener = RocketChatWebSocketListener { json ->
+            if (json.has("failListener")) {
+                _connectionState.update {
+                    Log.i("WebSocketManager", "fail")
+                    WebSocketConnectionState.Error
+                }
+            }
+
             if (json.has("msg")) {
                 when (json.getString("msg")) {
                     "ping" -> {
@@ -79,7 +86,7 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
 
     override fun connect(authToken: String) {
         Log.i("WebSocketManagerImpl", "connect init")
-        if (_connectionState.value is WebSocketConnectionState.Disconnected) {
+        if (_connectionState.value !is WebSocketConnectionState.Connected) {
             Log.i("WebSocketManagerImpl", "connect start")
 
             addListener { json ->
@@ -100,12 +107,11 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
                     }
                 }
             }
-
-            webSocketManager?.connect()
             _connectionState.update {
                 Log.i("WebSocketManagerImpl", "connecting")
                 WebSocketConnectionState.Connecting
             }
+            webSocketManager?.connect()
         }
     }
 

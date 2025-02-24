@@ -10,7 +10,6 @@ import org.json.JSONObject
 class RocketChatWebSocketListener(val messageListener: (JSONObject) -> Unit) : WebSocketListener() {
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.i("WebSocket", "WebSocket connected  ${response.message}")
-        //connect
         webSocket.send("""{"msg": "connect", "version": "1", "support": ["1"]}""")
     }
 
@@ -37,6 +36,10 @@ class RocketChatWebSocketListener(val messageListener: (JSONObject) -> Unit) : W
 
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        val json = JSONObject(
+            """{"failListener": "RocketChatWebSocketListener onFailure"}"""
+        )
+        messageListener(json)
         Log.e("WebSocket", "Error: ${t.message}")
         t.printStackTrace()
     }

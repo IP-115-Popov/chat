@@ -41,59 +41,59 @@ class MainViewModel @Inject constructor(
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
+    private val _connectionState =
+        MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
+    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
+
+
     init {
-        connectToWebSocket()
-        loadProfileInfo()
+        viewModelScope.launch(Dispatchers.IO) {
+            connect()
+        }
     }
 
-    private fun loadProfileInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val profileModel = getProfileInfoUseCase()
-            profileModel.onRight { getProfileInfoResult ->
-                _state.update {
-                    it.copy(
-                        profileUiModel = ProfileModelToProfileUiMapper.map(getProfileInfoResult)
-                    )
+    private suspend fun connect() {
+        if (state.value.profileUiModel == null) {
+            loadProfileInfo()
+        }
+        if (connectionState.value !is WebSocketConnectionState.Connected) {
+            connectToWebSocket()
+        }
+    }
+
+    private suspend fun loadProfileInfo() {
+        val profileModel = getProfileInfoUseCase()
+        profileModel.onRight { getProfileInfoResult ->
+            _state.update {
+                it.copy(
+                    profileUiModel = ProfileModelToProfileUiMapper.map(getProfileInfoResult)
+                )
+            }
+        }.onLeft {
+            setStatus(MainUiStatus.Error("Произошла ошибка, проверьте вашу сеть и повторите"))
+        }
+    }
+
+    private suspend fun connectToWebSocket() {
+        connectWebSocketUseCase().collect { state ->
+            _connectionState.value = state
+            when (state) {
+                is WebSocketConnectionState.Connected -> {
+                    loadChat()
+                }
+
+                is WebSocketConnectionState.Connecting -> {
+
+                }
+
+                is WebSocketConnectionState.Disconnected, is WebSocketConnectionState.Error -> {
+                    setStatus(MainUiStatus.Error("Произошла ошибка, проверьте вашу сеть и повторите"))
                 }
             }
         }
     }
 
-    private fun connectToWebSocket() {
-        viewModelScope.launch(Dispatchers.IO) {
-            connectWebSocketUseCase().collect { state ->
-                when (state) {
-                    is WebSocketConnectionState.Connected -> {
-                        loadChat()
-                    }
-
-                    is WebSocketConnectionState.Disconnected -> {
-                        _state.update {
-                            it.copy(
-                                status = MainUiStatus.Error("WebSocket Disconnected")
-                            )
-                        }
-                    }
-
-                    is WebSocketConnectionState.Connecting -> {
-                        _state.update {
-                            it.copy(
-                                status = MainUiStatus.Loading
-                            )
-                        }
-                    }
-
-                    is WebSocketConnectionState.Error -> {
-                        _state.update {
-                            it.copy(
-                                status = MainUiStatus.Error("WebSocket connection error")
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+    fun setStatusIdle() = setStatus(status = MainUiStatus.Idle)
 
     private fun setStatus(status: MainUiStatus) {
         _state.update {
@@ -115,6 +115,7 @@ class MainViewModel @Inject constructor(
 
     private fun get() {
         viewModelScope.launch(Dispatchers.IO) {
+            connect()
             try {
                 val res = getChatListUseCase()
                 withContext(Dispatchers.Main) {
@@ -177,8 +178,7 @@ class MainViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     val chatModel = ChatUIModelToChatModelMapper.map(chat)
                     getRoomAvatarUseCase(
-                        chat = chatModel,
-                        username = state.value.profileUiModel?.username
+                        chat = chatModel, username = state.value.profileUiModel?.username
                     )?.let { avatar ->
                         val img = avatar.byteArrayToBitmap()
                         img?.let {
