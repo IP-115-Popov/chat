@@ -21,4 +21,6 @@
     <string name="creating_chat_problem">Проблема при создании чата с указанным пользователем, попробуйте позднее</string>
     <string name="participants">Участники:</string>
     <string name="back">Назад</string>
+    <string name="write">Написать</string>
+    <string name="exit">Выйти</string>
 </resources>

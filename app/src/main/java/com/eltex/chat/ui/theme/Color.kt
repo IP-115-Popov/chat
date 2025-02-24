@@ -16,6 +16,7 @@ val basicLightPalette = BasicPalette(
     black = getColorFormHex("#1B416B"),
     darkGray = getColorFormHex("#1F1F1F"),
     lightGrayBlue = getColorFormHex("#93B8CD"),
+    aquamarine = getColorFormHex("#25CBA3"),
 )
 
 fun getColorFormHex(hex: String): Color {

@@ -19,6 +19,7 @@ data class BasicPalette(
     val blue: Color,
     val lightBlue: Color,
     val lightGrayBlue: Color,
+    val aquamarine : Color,
 )
 
 data class CustomSfProDisplayTypography(
