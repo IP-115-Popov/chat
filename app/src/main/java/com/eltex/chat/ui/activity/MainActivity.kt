@@ -1,14 +1,29 @@
 package com.eltex.chat.ui.activity
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.eltex.chat.R
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.navigationBar.NavigationGraph
@@ -38,9 +53,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
         setContent {
+            TransparentSystemBars()
             CustomTheme {
                 val routeState = route.collectAsState()
                 val initializedViewModelState by initializedViewModel.collectAsState()
@@ -80,6 +94,19 @@ class MainActivity : ComponentActivity() {
             } finally {
                 initializedViewModel.value = true;
             }
+        }
+    }
+}
+
+@Composable
+fun TransparentSystemBars() {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = Color.Transparent.toArgb()
         }
     }
 }
