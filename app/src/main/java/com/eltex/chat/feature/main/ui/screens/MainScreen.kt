@@ -123,10 +123,10 @@ fun MainScreen(
                         .padding(horizontal = 16.dp)
                 ) {
                     SearchField(
-                        value = "",
+                        value = state.value.searchValue,
                         placeholderText = stringResource(R.string.chat_search_placeholder),
-                        onValueChange = {},
-                        onClearClick = {},
+                        onValueChange = {mainViewModel.setSearchValue(it)},
+                        onClearClick = {mainViewModel.setSearchValue("")},
                     )
                 }
 

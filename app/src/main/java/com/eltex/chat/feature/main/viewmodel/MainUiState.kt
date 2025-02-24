@@ -7,4 +7,5 @@ data class MainUiState(
     val chatList: List<ChatUIModel> = emptyList(),
     val status: MainUiStatus = MainUiStatus.Idle,
     val profileUiModel: ProfileUiModel? = null,
+    val searchValue: String = "",
 )

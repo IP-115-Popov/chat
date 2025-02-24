@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
@@ -20,6 +21,7 @@ import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -113,62 +115,60 @@ class MainViewModel @Inject constructor(
         get()
     }
 
-    private fun get() {
-        viewModelScope.launch(Dispatchers.IO) {
-            connect()
-            try {
-                val res = getChatListUseCase()
-                withContext(Dispatchers.Main) {
-                    _state.update {
-                        val resfirst = res.first().map { chatModel ->
-                            val name: String = if (chatModel.t == "d") {
-                                chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
-                                    ?.let { userId ->
-                                        when (val user = getUserInfoUseCase.invoke(userId)) {
-                                            is Either.Left -> chatModel.name ?: ""
-                                            is Either.Right -> user.value.name
-                                            else -> ""
-                                        }
-                                    } ?: ""
-                            } else {
-                                chatModel.name ?: ""
-                            }
-
-                            val lastMessage = chatModel.message?.let { message ->
-                                getLastMessage(
-                                    messsage = message, chatType = chatModel.t
-                                )
-                            } ?: "Сообщений нет"
-
-                            ChatUIModel(
-                                id = chatModel.id,
-                                name = name,
-                                lastMessage = lastMessage,
-                                lm = chatModel.lm?.let { instant ->
-                                    InstantFormatter.formatInstantToRelativeString(
-                                        instant
-                                    )
-                                } ?: "",
-                                unread = chatModel.unread ?: 0,
-                                otrAck = "",
-                                avatarUrl = "",
-                                usernames = chatModel.usernames,
-                                t = chatModel.t,
-                            )
-                        }.onEach { chat ->
-                            if (chat !in state.value.chatList) {
-                                listenChat(roomId = chat.id)
-                            }
+    private fun get() = viewModelScope.launch(Dispatchers.IO) {
+        connect()
+        try {
+            val res = getChatListUseCase()
+            withContext(Dispatchers.Main) {
+                _state.update {
+                    val resfirst = res.first().map { chatModel ->
+                        val name: String = if (chatModel.t == "d") {
+                            chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
+                                ?.let { userId ->
+                                    when (val user = getUserInfoUseCase.invoke(userId)) {
+                                        is Either.Left -> chatModel.name ?: ""
+                                        is Either.Right -> user.value.name
+                                        else -> ""
+                                    }
+                                } ?: ""
+                        } else {
+                            chatModel.name ?: ""
                         }
-                        it.copy(chatList = resfirst)
+
+                        val lastMessage = chatModel.message?.let { message ->
+                            getLastMessage(
+                                messsage = message, chatType = chatModel.t
+                            )
+                        } ?: "Сообщений нет"
+
+                        ChatUIModel(
+                            id = chatModel.id,
+                            name = name,
+                            lastMessage = lastMessage,
+                            lm = chatModel.lm?.let { instant ->
+                                InstantFormatter.formatInstantToRelativeString(
+                                    instant
+                                )
+                            } ?: "",
+                            unread = chatModel.unread ?: 0,
+                            otrAck = "",
+                            avatarUrl = "",
+                            usernames = chatModel.usernames,
+                            t = chatModel.t,
+                        )
+                    }.onEach { chat ->
+                        if (chat !in state.value.chatList) {
+                            listenChat(roomId = chat.id)
+                        }
                     }
-                    loadAvatars()
-                    setStatus(status = MainUiStatus.Idle)
+                    it.copy(chatList = resfirst)
                 }
-            } catch (e: Exception) {
-                setStatus(status = MainUiStatus.Error("GetChat Error"))
-                e.printStackTrace()
+                loadAvatars()
+                setStatus(status = MainUiStatus.Idle)
             }
+        } catch (e: Exception) {
+            setStatus(status = MainUiStatus.Error("GetChat Error"))
+            e.printStackTrace()
         }
     }
 
@@ -238,4 +238,33 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun setSearchValue(value: String) {
+        _state.update {
+            it.copy(
+                searchValue = value
+            )
+        }
+        if (value.length >= 2 || value.length == 0) {
+            viewModelScope.launch {
+                delay(300L)
+                searchChat()
+            }
+        }
+    }
+
+    private fun searchChat() = viewModelScope.launch(Dispatchers.IO) {
+        setStatus(status = MainUiStatus.Loading)
+        get().join()
+        if (state.value.searchValue.length >= 2 || state.value.searchValue.length == 0) {
+            _state.update { state ->
+                state.copy(chatList = state.chatList.filter {
+                    it.name.contains(
+                        state.searchValue, ignoreCase = true
+                    )
+                })
+            }
+        }
+    }
+
 }
