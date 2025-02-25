@@ -7,10 +7,7 @@ import arrow.core.right
 import com.eltex.data.api.ChatApi
 import com.eltex.data.mappers.AttachmentsToFileModelMapper
 import com.eltex.data.mappers.ChatResultToChatModelMapper
-import com.eltex.data.mappers.MessageResponseToMessageMapper
 import com.eltex.data.models.chat.ChatResponse
-import com.eltex.data.models.lifemessage.Arg
-import com.eltex.data.models.lifemessage.MessageResponse
 import com.eltex.data.models.usernotify.RoomInserted
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.DataError

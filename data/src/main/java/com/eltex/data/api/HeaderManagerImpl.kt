@@ -22,5 +22,5 @@ class HeaderManagerImpl @Inject constructor() : HeaderManager {
 
     override suspend fun getUserID(): String? = id
 
-    override suspend fun getToken(): String?  = token
+    override suspend fun getToken(): String? = token
 }

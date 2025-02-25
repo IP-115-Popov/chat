@@ -44,7 +44,6 @@ import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.signin.ui.components.ErrorSignInAlertDialog
-import com.eltex.chat.feature.signin.viewmodel.SignInStatus
 import com.eltex.chat.ui.theme.CustomTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -125,8 +124,8 @@ fun MainScreen(
                     SearchField(
                         value = state.value.searchValue,
                         placeholderText = stringResource(R.string.chat_search_placeholder),
-                        onValueChange = {mainViewModel.setSearchValue(it)},
-                        onClearClick = {mainViewModel.setSearchValue("")},
+                        onValueChange = { mainViewModel.setSearchValue(it) },
+                        onClearClick = { mainViewModel.setSearchValue("") },
                     )
                 }
 
@@ -210,6 +209,7 @@ fun MainScreen(
                     )
                 }
             }
+
             MainUiStatus.Idle, MainUiStatus.IsRefreshing -> {
             }
         }

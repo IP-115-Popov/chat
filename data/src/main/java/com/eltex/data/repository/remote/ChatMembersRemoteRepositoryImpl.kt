@@ -29,7 +29,7 @@ class ChatMembersRemoteRepositoryImpl @Inject constructor(
                     return DataError.IncorrectData.left()
                 }
             }
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 response.body()?.members?.map {
                     ChatsMember(
                         id = it._id,
@@ -39,14 +39,14 @@ class ChatMembersRemoteRepositoryImpl @Inject constructor(
                     )
                 }?.let { members ->
                     return members.right()
-                } ?: return  DataError.DefaultError.left()
+                } ?: return DataError.DefaultError.left()
             } else {
-                return when(response.code()){
+                return when (response.code()) {
                     in 400 until 500 -> DataError.IncorrectData.left()
                     else -> DataError.DefaultError.left()
                 }
             }
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             Log.e("ChatMembersRemoteRepository", "get ${e.message}")
             e.printStackTrace()
             return DataError.DefaultError.left()

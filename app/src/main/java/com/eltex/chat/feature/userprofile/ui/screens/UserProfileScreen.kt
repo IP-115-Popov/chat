@@ -81,16 +81,32 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                     contentAlignment = Alignment.Center
                 ) {
                     MainAvatar(
-                        avatarImg =state.value.avatar,
+                        avatarImg = state.value.avatar,
                         name = state.value.user?.name
                     )
-                    Box(Modifier.padding(6.dp).size(28.dp).background(color = background, shape = CircleShape).align(Alignment.BottomEnd)){
-                        Box(Modifier.size(24.dp).background(color = CustomTheme.basicPalette.aquamarine, shape = CircleShape).align(Alignment.Center)){
+                    Box(
+                        Modifier
+                            .padding(6.dp)
+                            .size(28.dp)
+                            .background(color = background, shape = CircleShape)
+                            .align(Alignment.BottomEnd)
+                    ) {
+                        Box(
+                            Modifier
+                                .size(24.dp)
+                                .background(
+                                    color = CustomTheme.basicPalette.aquamarine,
+                                    shape = CircleShape
+                                )
+                                .align(Alignment.Center)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 tint = CustomTheme.basicPalette.white,
                                 contentDescription = null,
-                                modifier =  Modifier.size(16.dp).align(Alignment.Center),
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .align(Alignment.Center),
                             )
                         }
                     }
@@ -109,7 +125,7 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
             }
         }
     }
-    when(val status = state.value.status) {
+    when (val status = state.value.status) {
         UserProfileStatus.Idle -> {}
         is UserProfileStatus.Error -> {}
         UserProfileStatus.Loading -> {
@@ -119,6 +135,7 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                 )
             }
         }
+
         is UserProfileStatus.OpenChat -> {
             navController.navigate(NavRoutes.Chat.route + "/${status.roomId}" + "/d") {
                 popUpTo(NavRoutes.Chat.route) {
@@ -134,7 +151,7 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
 @Preview
 @Composable
 fun UserProfileScreenPreview() {
-    CustomTheme{
+    CustomTheme {
         UserProfileScreen(navController = rememberNavController(), userId = "")
     }
 }

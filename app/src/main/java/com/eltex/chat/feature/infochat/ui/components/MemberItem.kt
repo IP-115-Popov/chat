@@ -4,10 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -75,7 +73,9 @@ fun MemberItem(
                 color = CustomTheme.basicPalette.darkGray,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(end = 16.dp).align(Alignment.CenterStart),
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .align(Alignment.CenterStart),
             )
             if (drawHorizontalDivider)
                 HorizontalDivider(
@@ -88,8 +88,8 @@ fun MemberItem(
 
 @Preview(showSystemUi = true)
 @Composable
-fun MemberItemPreview(){
-    CustomTheme{
+fun MemberItemPreview() {
+    CustomTheme {
         MemberItem(
             member = MemberUiModel(
                 avatar = null,

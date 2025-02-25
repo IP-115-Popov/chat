@@ -14,7 +14,7 @@ class ChatToUIModelMapper @Inject constructor(
 ) {
     suspend fun map(chatModel: ChatModel, userId: String?) = with(chatModel) {
         val name: String = if (chatModel.t == "d") {
-            chatModel.uids?.firstOrNull { id -> id != userId} //
+            chatModel.uids?.firstOrNull { id -> id != userId } //
                 ?.let { userId ->
                     when (val user = getUserInfoUseCase(userId)) {
                         is Either.Left -> chatModel.name ?: ""

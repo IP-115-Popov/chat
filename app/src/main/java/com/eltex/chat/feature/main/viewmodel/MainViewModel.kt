@@ -1,19 +1,11 @@
 package com.eltex.chat.feature.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
-import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.mappers.ChatToUIModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
-import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
-import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.utils.byteArrayToBitmap
-import com.eltex.domain.models.ChatModel
-import com.eltex.domain.models.FileModel
-import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
@@ -40,8 +32,6 @@ class MainViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
     private val connectWebSocketUseCase: ConnectWebSocketUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
-    private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val subscribeToChatsUseCase: SubscribeToChatsUseCase,
     private val chatToUIModelMapper: ChatToUIModelMapper,
@@ -104,7 +94,10 @@ class MainViewModel @Inject constructor(
 
     fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
         subscribeToChatsUseCase().collect { chatModel ->
-            val chat = chatToUIModelMapper.map(chatModel = chatModel, userId = state.value.profileUiModel?.id)
+            val chat = chatToUIModelMapper.map(
+                chatModel = chatModel,
+                userId = state.value.profileUiModel?.id
+            )
 
             _state.update {
                 val updatedChatList = (listOf(chat) + it.chatList.filter { it.id != chat.id })
@@ -141,7 +134,10 @@ class MainViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 _state.update {
                     val resfirst = res.first().map { chatModel ->
-                        chatToUIModelMapper.map(chatModel = chatModel, userId = state.value.profileUiModel?.id)
+                        chatToUIModelMapper.map(
+                            chatModel = chatModel,
+                            userId = state.value.profileUiModel?.id
+                        )
                     }
                     it.copy(chatList = resfirst)
                 }
@@ -153,7 +149,6 @@ class MainViewModel @Inject constructor(
             e.printStackTrace()
         }
     }
-
 
 
     private fun loadAvatars() {

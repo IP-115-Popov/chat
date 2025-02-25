@@ -55,12 +55,12 @@ fun NavigationGraph(
             }
         }
         composable(NavRoutes.UserProfile.route + "/{userId}") { stackEntry ->
-           stackEntry.arguments?.getString("userId")?.let { userId ->
-               UserProfileScreen(
-                   navController = navController,
-                   userId = userId,
-               )
-           }
+            stackEntry.arguments?.getString("userId")?.let { userId ->
+                UserProfileScreen(
+                    navController = navController,
+                    userId = userId,
+                )
+            }
         }
     }
 }

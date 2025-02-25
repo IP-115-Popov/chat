@@ -5,7 +5,6 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.AvatarApi
-import com.eltex.data.api.HeaderManagerImpl
 import com.eltex.domain.HeaderManager
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.remote.AvatarRemoteRepository

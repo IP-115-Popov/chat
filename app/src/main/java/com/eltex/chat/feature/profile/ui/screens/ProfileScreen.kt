@@ -1,6 +1,5 @@
 package com.eltex.chat.feature.profile.ui.screens
 
-import com.eltex.chat.ui.components.MainAvatar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +40,7 @@ import com.eltex.chat.feature.navigationBar.BottomNavigationBar
 import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
+import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
 
 
@@ -150,7 +150,8 @@ fun LogoutButton(onClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(11.dp))
                 Text(
-                    text = stringResource(R.string.exit), style = CustomTheme.typographySfPro.headlineSemibold
+                    text = stringResource(R.string.exit),
+                    style = CustomTheme.typographySfPro.headlineSemibold
                 )
             }
             Icon(

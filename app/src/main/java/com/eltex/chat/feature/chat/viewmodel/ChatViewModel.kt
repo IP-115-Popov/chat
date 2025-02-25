@@ -85,12 +85,13 @@ class ChatViewModel @Inject constructor(
             getChatInfoRes.onRight { chat ->
                 when (chat.t) {
                     "d" -> {
-                        chat.uids?.firstOrNull { id -> id != state.value.profileModel?.id }?.let { userId ->
-                            getUserInfoUseCase(userId).onRight { user ->
-                                chatName = user.name
+                        chat.uids?.firstOrNull { id -> id != state.value.profileModel?.id }
+                            ?.let { userId ->
+                                getUserInfoUseCase(userId).onRight { user ->
+                                    chatName = user.name
+                                }
+                                recipientUserId = userId
                             }
-                            recipientUserId = userId
-                        }
                     }
 
                     else -> chatName = chat.name ?: ""

@@ -3,7 +3,6 @@ package com.eltex.chat.feature.userprofile.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.eltex.chat.feature.infochat.models.MemberUiModel
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.usecase.remote.CreateChatUseCase
 import com.eltex.domain.usecase.remote.GetAvatarUseCase

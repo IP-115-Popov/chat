@@ -10,7 +10,6 @@ import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.usecase.remote.CreateChatUseCase
 import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUsersListUseCase
-import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

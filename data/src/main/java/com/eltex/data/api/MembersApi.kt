@@ -10,6 +10,7 @@ interface MembersApi {
     suspend fun getChannelMembers(
         @Query("roomId") roomId: String,
     ): Response<MembersResponse>
+
     @GET("/api/v1/groups.members")
     suspend fun getGroupMembers(
         @Query("roomId") roomId: String,

@@ -1,8 +1,6 @@
 package com.eltex.chat.di.domain
 
 import com.eltex.domain.repository.remote.ChatMembersRemoteRepository
-import com.eltex.domain.repository.remote.ChatRemoteRepository
-import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetChatMembersUseCase
 import dagger.Module
 import dagger.Provides

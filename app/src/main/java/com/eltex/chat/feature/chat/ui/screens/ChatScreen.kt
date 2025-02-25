@@ -128,7 +128,7 @@ fun ChatScreen(
                 onBackClick = onBackClick,
                 onMoreClick = {
                     state.value.recipientUserId?.let { userId ->
-                        navController.navigate(NavRoutes.UserProfile.route+ "/${userId}") {
+                        navController.navigate(NavRoutes.UserProfile.route + "/${userId}") {
                             launchSingleTop = true
                         }
                     }
@@ -142,7 +142,7 @@ fun ChatScreen(
                 avatar = state.value.avatar,
                 onBackClick = onBackClick,
                 onMoreClick = {
-                    navController.navigate(NavRoutes.ChatInfo.route+ "/${roomId}" + "/${roomType}") {
+                    navController.navigate(NavRoutes.ChatInfo.route + "/${roomId}" + "/${roomType}") {
                         launchSingleTop = true
                     }
                 },
