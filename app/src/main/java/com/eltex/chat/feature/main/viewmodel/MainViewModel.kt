@@ -115,11 +115,15 @@ class MainViewModel @Inject constructor(
             } else {
                 chatModel.name ?: ""
             }
-
+            val lastMessage = chatModel.message?.let { message ->
+                getLastMessage(
+                    messsage = message, chatType = chatModel.t
+                )
+            } ?: "Сообщений нет"
             val chat = ChatUIModel(
                 id = chatModel.id,
                 name = name,
-                lastMessage =  "Сообщений нет",
+                lastMessage = lastMessage,
                 lm = chatModel.lm?.let { instant ->
                     InstantFormatter.formatInstantToRelativeString(
                         instant
@@ -133,7 +137,8 @@ class MainViewModel @Inject constructor(
             )
 
             _state.update {
-                it.copy(chatList = it.chatList + chat)
+                val updatedChatList = (listOf(chat) + it.chatList.filter { it.id != chat.id })
+                it.copy(chatList = updatedChatList)
             }
             loadAvatars()
         }

@@ -5,6 +5,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.ChatApi
+import com.eltex.data.mappers.AttachmentsToFileModelMapper
 import com.eltex.data.mappers.ChatResultToChatModelMapper
 import com.eltex.data.mappers.MessageResponseToMessageMapper
 import com.eltex.data.models.chat.ChatResponse
@@ -13,6 +14,8 @@ import com.eltex.data.models.lifemessage.MessageResponse
 import com.eltex.data.models.usernotify.RoomInserted
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.DataError
+import com.eltex.domain.models.FileModel
+import com.eltex.domain.models.Message
 import com.eltex.domain.repository.remote.ChatRemoteRepository
 import com.eltex.domain.websocket.WebSocketManager
 import kotlinx.coroutines.Dispatchers
@@ -45,11 +48,9 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                             jsonSerializator.decodeFromString<ChatResponse>(json.toString()).result
 
                         if (result.isNotEmpty()) {
-                            trySend(
-                                result.map { chat ->
-                                    ChatResultToChatModelMapper.map(chat)
-                                }
-                            )
+                            trySend(result.map { chat ->
+                                ChatResultToChatModelMapper.map(chat)
+                            })
                         }
                     } catch (e: Exception) {
                         Log.e("ChatRepository", "Gson error: ${e.message}", e)
@@ -129,24 +130,51 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
 
                         try {
                             when (eventType) {
-//                               "updated" -> {
-//                                    val roomData = jsonSerializator.decodeFromString<RoomUpdated>(roomDataJson)
-//                                    Log.d("WebSocket", "Room Updated: $roomData")
-//                                    // Извлекайте нужные поля из roomData
-//                                    val id = roomData.id
-//                                    val fname = roomData.fname ?: "N/A"
-//                                    val usersCount = roomData.usersCount
-//                                    val userId = roomData.u?.id ?: "N/A"
-//                                    val username = roomData.u?.username ?: "N/A"
-//                                    val type = roomData.type
-//
-//                                    Log.d("WebSocket", "Room Updated: id=$id, fname=$fname, usersCount=$usersCount, userId=$userId, username=$username, type=$type")
-//
-  //                              }
-                                "inserted" -> {
-                                    val roomData = jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
-                                    Log.d("WebSocket", "Room Inserted: $roomData")
+                                "updated" -> {
+                                    val roomData =
+                                        jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
+                                    Log.d("WebSocket", "Room Updated: $roomData")
+                                    val message = roomData.lastMessage?.let { lastMessage ->
+//                                        val fileModel: FileModel? = lastMessage.attachments?.mapNotNull { jsonElement ->
+//                                            try {
+//                                                return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
+//                                            } catch (e: Exception) {
+//                                                println("Error parsing attachment: ${e.message}")
+//                                                return@mapNotNull null
+//                                            }
+//                                        }?.firstOrNull()
 
+                                        Message(
+                                            id = lastMessage._id,
+                                            rid = lastMessage.rid,
+                                            msg = lastMessage.msg ?: "",
+                                            date = lastMessage._updatedAt?.`$date` ?: 0,
+                                            userId = lastMessage.u?._id  ?: "",
+                                            name = lastMessage.u?.name ?: lastMessage.u?.username  ?: "",
+                                            username = lastMessage.u?.username ?: "",
+                                            fileModel = null,
+                                        )
+                                    }
+
+                                    trySend(
+                                        ChatModel(
+                                            id = roomData._id,
+                                            name = roomData.fname,
+                                            usernames = roomData.usernames,
+                                            uids = roomData.uids,
+                                            t = roomData.t,
+                                            usersCount = roomData.usersCount,
+                                            message = message,
+                                            lm = null,
+                                            unread = null,
+                                            avatarUrl = null,
+                                        )
+                                    )
+                                }
+
+                                "inserted" -> {
+                                    val roomData =
+                                        jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
                                     trySend(
                                         ChatModel(
                                             id = roomData._id,
@@ -162,6 +190,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                                         )
                                     )
                                 }
+
                                 else -> {
                                     Log.w("WebSocket", "Unknown event type: $eventType")
                                 }
