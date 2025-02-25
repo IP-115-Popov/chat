@@ -59,7 +59,6 @@ fun MediaGrid() {
     var imageUris by remember { mutableStateOf(listOf<Uri>()) }
     var permissionGranted by remember { mutableStateOf(false) }
 
-    // Проверяем, есть ли разрешение. В Android 13 нужно READ_MEDIA_IMAGES, в остальных READ_EXTERNAL_STORAGE
     val permissionToCheck = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         Manifest.permission.READ_MEDIA_IMAGES
     } else {
@@ -71,23 +70,22 @@ fun MediaGrid() {
         permissionToCheck
     ) == PackageManager.PERMISSION_GRANTED
 
-    // Launcher для запроса разрешения
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
+            permissionGranted = isGranted
             if (isGranted) {
-                permissionGranted = true
-                imageUris = getAllImages(context) // Загружаем изображения, если разрешение получено
+                imageUris = getAllImages(context)
             } else {
-                // Обработка случая, когда разрешение не предоставлено
                 println("Разрешение не предоставлено")
             }
         }
     )
 
-    // Загружаем изображения при первом запуске или когда разрешение получено
-    LaunchedEffect(permissionGranted) {
-        if (permissionGranted) {
+    LaunchedEffect(key1 = Unit) {
+        if (!permissionGranted) {
+            requestPermissionLauncher.launch(permissionToCheck)
+        } else {
             imageUris = getAllImages(context)
         }
     }
@@ -98,14 +96,7 @@ fun MediaGrid() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (!permissionGranted) {
-            Text("Требуется разрешение для доступа к галерее.")
-            Button(onClick = {
-                requestPermissionLauncher.launch(permissionToCheck)
-            }) {
-                Text("Запросить разрешение")
-            }
-        } else {
+        if (permissionGranted) {
             if (imageUris.isEmpty()) {
                 Text("В галерее нет изображений.")
             } else {
