@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
+import com.eltex.chat.feature.main.mappers.ChatToUIModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
@@ -42,6 +44,7 @@ class MainViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val subscribeToChatsUseCase: SubscribeToChatsUseCase,
+    private val chatToUIModelMapper: ChatToUIModelMapper,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -90,9 +93,7 @@ class MainViewModel @Inject constructor(
                     subscribeToChats()
                 }
 
-                is WebSocketConnectionState.Connecting -> {
-
-                }
+                is WebSocketConnectionState.Connecting -> {}
 
                 is WebSocketConnectionState.Disconnected, is WebSocketConnectionState.Error -> {
                     setStatus(MainUiStatus.Error("Произошла ошибка, проверьте вашу сеть и повторите"))
@@ -103,38 +104,7 @@ class MainViewModel @Inject constructor(
 
     fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
         subscribeToChatsUseCase().collect { chatModel ->
-            val name: String = if (chatModel.t == "d") {
-                chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
-                    ?.let { userId ->
-                        when (val user = getUserInfoUseCase.invoke(userId)) {
-                            is Either.Left -> chatModel.name ?: ""
-                            is Either.Right -> user.value.name
-                            else -> ""
-                        }
-                    } ?: ""
-            } else {
-                chatModel.name ?: ""
-            }
-            val lastMessage = chatModel.message?.let { message ->
-                getLastMessage(
-                    messsage = message, chatType = chatModel.t
-                )
-            } ?: "Сообщений нет"
-            val chat = ChatUIModel(
-                id = chatModel.id,
-                name = name,
-                lastMessage = lastMessage,
-                lm = chatModel.lm?.let { instant ->
-                    InstantFormatter.formatInstantToRelativeString(
-                        instant
-                    )
-                } ?: "",
-                unread = chatModel.unread ?: 0,
-                otrAck = "",
-                avatarUrl = "",
-                usernames = chatModel.usernames,
-                t = chatModel.t,
-            )
+            val chat = chatToUIModelMapper.map(chatModel = chatModel, userId = state.value.profileUiModel?.id)
 
             _state.update {
                 val updatedChatList = (listOf(chat) + it.chatList.filter { it.id != chat.id })
@@ -171,40 +141,7 @@ class MainViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 _state.update {
                     val resfirst = res.first().map { chatModel ->
-                        val name: String = if (chatModel.t == "d") {
-                            chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
-                                ?.let { userId ->
-                                    when (val user = getUserInfoUseCase.invoke(userId)) {
-                                        is Either.Left -> chatModel.name ?: ""
-                                        is Either.Right -> user.value.name
-                                        else -> ""
-                                    }
-                                } ?: ""
-                        } else {
-                            chatModel.name ?: ""
-                        }
-
-                        val lastMessage = chatModel.message?.let { message ->
-                            getLastMessage(
-                                messsage = message, chatType = chatModel.t
-                            )
-                        } ?: "Сообщений нет"
-
-                        ChatUIModel(
-                            id = chatModel.id,
-                            name = name,
-                            lastMessage = lastMessage,
-                            lm = chatModel.lm?.let { instant ->
-                                InstantFormatter.formatInstantToRelativeString(
-                                    instant
-                                )
-                            } ?: "",
-                            unread = chatModel.unread ?: 0,
-                            otrAck = "",
-                            avatarUrl = "",
-                            usernames = chatModel.usernames,
-                            t = chatModel.t,
-                        )
+                        chatToUIModelMapper.map(chatModel = chatModel, userId = state.value.profileUiModel?.id)
                     }
                     it.copy(chatList = resfirst)
                 }
@@ -216,6 +153,8 @@ class MainViewModel @Inject constructor(
             e.printStackTrace()
         }
     }
+
+
 
     private fun loadAvatars() {
         state.value.chatList.forEach { chat ->
@@ -241,24 +180,6 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun getLastMessage(messsage: Message, chatType: String): String {
-        var lastMessage = when (messsage.fileModel) {
-            is FileModel.Document -> "Документ"
-            is FileModel.Img -> "Изображение"
-            is FileModel.Video -> "Видео"
-            null -> if (messsage.msg.length > 0) messsage.msg else return "Сообщений нет"
-        }
-
-        if (chatType != "d") {
-            val fio = when (messsage.userId) {
-                state.value.profileUiModel?.id -> "Вы"
-                else -> messsage.name
-            }
-            lastMessage = fio + ":  " + lastMessage
-        }
-        return lastMessage
     }
 
     fun setSearchValue(value: String) {
@@ -288,5 +209,4 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
 }
