@@ -125,7 +125,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
 
                     if (eventName.endsWith("/rooms-changed")) {
                         val args = fields.getJSONArray("args")
-                        val eventType = args.getString(0) // "updated" или "inserted"
+                        val eventType = args.getString(0)
                         val roomDataJson = args.getJSONObject(1).toString()
 
                         try {
@@ -133,24 +133,27 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                                 "updated" -> {
                                     val roomData =
                                         jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
-                                    Log.d("WebSocket", "Room Updated: $roomData")
                                     val message = roomData.lastMessage?.let { lastMessage ->
-                                        val fileModel: FileModel? = lastMessage.attachments?.mapNotNull { jsonElement ->
-                                            try {
-                                                return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
-                                            } catch (e: Exception) {
-                                                println("Error parsing attachment: ${e.message}")
-                                                return@mapNotNull null
-                                            }
-                                        }?.firstOrNull()
+                                        val fileModel: FileModel? =
+                                            lastMessage.attachments?.mapNotNull { jsonElement ->
+                                                try {
+                                                    return@mapNotNull AttachmentsToFileModelMapper.map(
+                                                        jsonElement
+                                                    )
+                                                } catch (e: Exception) {
+                                                    println("Error parsing attachment: ${e.message}")
+                                                    return@mapNotNull null
+                                                }
+                                            }?.firstOrNull()
 
                                         Message(
                                             id = lastMessage._id,
                                             rid = lastMessage.rid,
                                             msg = lastMessage.msg ?: "",
                                             date = lastMessage._updatedAt?.`$date` ?: 0,
-                                            userId = lastMessage.u?._id  ?: "",
-                                            name = lastMessage.u?.name ?: lastMessage.u?.username  ?: "",
+                                            userId = lastMessage.u?._id ?: "",
+                                            name = lastMessage.u?.name ?: lastMessage.u?.username
+                                            ?: "",
                                             username = lastMessage.u?.username ?: "",
                                             fileModel = fileModel,
                                         )
@@ -202,7 +205,6 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                         Log.d("WebSocket", "Unhandled eventName: $eventName")
                     }
                 }
-
             } catch (e: Exception) {
                 Log.e("RoomMessages", "Error processing message: ${e.message}", e)
             }
