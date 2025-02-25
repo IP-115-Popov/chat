@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,6 +28,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.navigationBar.NavRoutes
+import com.eltex.chat.feature.userprofile.ui.components.UserStatusAway
+import com.eltex.chat.feature.userprofile.ui.components.UserStatusBusy
+import com.eltex.chat.feature.userprofile.ui.components.UserStatusOffline
+import com.eltex.chat.feature.userprofile.ui.components.UserStatusOnline
 import com.eltex.chat.feature.userprofile.ui.components.WriteButton
 import com.eltex.chat.feature.userprofile.viewmodel.UserProfileStatus
 import com.eltex.chat.feature.userprofile.viewmodel.UserProfileViewModel
@@ -81,8 +83,7 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                     contentAlignment = Alignment.Center
                 ) {
                     MainAvatar(
-                        avatarImg = state.value.avatar,
-                        name = state.value.user?.name
+                        avatarImg = state.value.avatar, name = state.value.user?.name
                     )
                     Box(
                         Modifier
@@ -91,24 +92,28 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                             .background(color = background, shape = CircleShape)
                             .align(Alignment.BottomEnd)
                     ) {
-                        Box(
-                            Modifier
-                                .size(24.dp)
-                                .background(
-                                    color = CustomTheme.basicPalette.aquamarine,
-                                    shape = CircleShape
-                                )
-                                .align(Alignment.Center)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                tint = CustomTheme.basicPalette.white,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Alignment.Center),
-                            )
+                        val statusModifier: Modifier = Modifier.align(Alignment.Center)
+
+                        when (state.value.user?.status) {
+                            "online" -> {
+                                UserStatusOnline(modifier = statusModifier)
+                            }
+
+                            "offline" -> {
+                                UserStatusOffline(modifier = statusModifier)
+                            }
+
+                            "away" -> {
+                                UserStatusAway(modifier = statusModifier)
+                            }
+
+                            "busy", "invisible" -> {
+                                UserStatusBusy(modifier = statusModifier)
+                            }
+
+                            else -> {}
                         }
+
                     }
                 }
                 Spacer(Modifier.size(8.dp))
@@ -148,7 +153,7 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun UserProfileScreenPreview() {
     CustomTheme {
