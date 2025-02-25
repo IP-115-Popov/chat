@@ -7,10 +7,8 @@ import javax.inject.Singleton
 @Singleton
 class HeaderManagerImpl @Inject constructor() : HeaderManager {
 
-    var token: String? = null
-        private set
-    var id: String? = null
-        private set
+    private var token: String? = null
+    private var id: String? = null
 
     override suspend fun setToken(authToken: String) {
         this.token = authToken
@@ -21,4 +19,8 @@ class HeaderManagerImpl @Inject constructor() : HeaderManager {
         this.id = userID
         OkHttpClientFactory.setApiUserId(userID)
     }
+
+    override suspend fun getUserID(): String? = id
+
+    override suspend fun getToken(): String?  = token
 }

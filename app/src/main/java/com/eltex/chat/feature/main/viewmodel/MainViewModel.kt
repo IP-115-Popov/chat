@@ -18,6 +18,7 @@ import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
+import com.eltex.domain.usecase.remote.SubscribeToChatsUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ class MainViewModel @Inject constructor(
     private val getMessageFromChatUseCase: GetMessageFromChatUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
+    private val subscribeToChatsUseCase: SubscribeToChatsUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -85,6 +87,7 @@ class MainViewModel @Inject constructor(
             when (state) {
                 is WebSocketConnectionState.Connected -> {
                     loadChat()
+                    subscribeToChats()
                 }
 
                 is WebSocketConnectionState.Connecting -> {
@@ -95,6 +98,44 @@ class MainViewModel @Inject constructor(
                     setStatus(MainUiStatus.Error("Произошла ошибка, проверьте вашу сеть и повторите"))
                 }
             }
+        }
+    }
+
+    fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
+        subscribeToChatsUseCase().collect { chatModel ->
+            val name: String = if (chatModel.t == "d") {
+                chatModel.uids?.firstOrNull { id -> id != state.value.profileUiModel?.id }
+                    ?.let { userId ->
+                        when (val user = getUserInfoUseCase.invoke(userId)) {
+                            is Either.Left -> chatModel.name ?: ""
+                            is Either.Right -> user.value.name
+                            else -> ""
+                        }
+                    } ?: ""
+            } else {
+                chatModel.name ?: ""
+            }
+
+            val chat = ChatUIModel(
+                id = chatModel.id,
+                name = name,
+                lastMessage =  "Сообщений нет",
+                lm = chatModel.lm?.let { instant ->
+                    InstantFormatter.formatInstantToRelativeString(
+                        instant
+                    )
+                } ?: "",
+                unread = chatModel.unread ?: 0,
+                otrAck = "",
+                avatarUrl = "",
+                usernames = chatModel.usernames,
+                t = chatModel.t,
+            )
+
+            _state.update {
+                it.copy(chatList = it.chatList + chat)
+            }
+            loadAvatars()
         }
     }
 
@@ -159,11 +200,12 @@ class MainViewModel @Inject constructor(
                             usernames = chatModel.usernames,
                             t = chatModel.t,
                         )
-                    }.onEach { chat ->
-                        if (chat !in state.value.chatList) {
-                            listenChat(roomId = chat.id)
-                        }
                     }
+//                        .onEach { chat ->
+//                        if (chat !in state.value.chatList) {
+//                            listenChat(roomId = chat.id)
+//                        }
+//                    }
                     it.copy(chatList = resfirst)
                 }
                 loadAvatars()

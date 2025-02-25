@@ -6,23 +6,26 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.AvatarApi
 import com.eltex.data.api.HeaderManagerImpl
+import com.eltex.domain.HeaderManager
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.remote.AvatarRemoteRepository
 import javax.inject.Inject
 
 class AvatarNetworkRepositoryImpl @Inject constructor(
     private val avatarApi: AvatarApi,
-    private val headerManagerImpl: HeaderManagerImpl,
+    private val headerManager: HeaderManager,
 ) : AvatarRemoteRepository {
     override suspend fun getAvatar(
         subject: String
     ): Either<DataError, ByteArray> {
+        val userId = headerManager.getUserID()
+        val token = headerManager.getToken()
         return try {
-            if (headerManagerImpl.id != null && headerManagerImpl.token != null) {
+            if (userId != null && token != null) {
                 val avatarRes = avatarApi.get(
                     subject = subject,
-                    rc_uid = headerManagerImpl.id!!,
-                    rc_token = headerManagerImpl.token!!
+                    rc_uid = userId,
+                    rc_token = token
                 )
                 val bytes = avatarRes.bytes()
                 bytes.right()
@@ -37,12 +40,14 @@ class AvatarNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRoomAvatar(roomId: String): Either<DataError, ByteArray> {
+        val userId = headerManager.getUserID()
+        val token = headerManager.getToken()
         return try {
-            if (headerManagerImpl.id != null && headerManagerImpl.token != null) {
+            if (userId != null && token != null) {
                 val avatarRes = avatarApi.getRoomAvatar(
                     roomId = roomId,
-                    rc_uid = headerManagerImpl.id!!,
-                    rc_token = headerManagerImpl.token!!
+                    rc_uid = userId,
+                    rc_token = token
                 )
                 val bytes = avatarRes.bytes()
                 bytes.right()

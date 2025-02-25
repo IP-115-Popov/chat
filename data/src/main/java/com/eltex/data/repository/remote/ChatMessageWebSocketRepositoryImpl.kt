@@ -76,7 +76,6 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         //защита от многократной подписки на 1 событие
         if (roomId !in subscribers) {
             subscribers.add(roomId)
-            // Отправляем запрос на подписку
             withContext(Dispatchers.IO) {
                 webSocketManager.sendMessage(
                     """

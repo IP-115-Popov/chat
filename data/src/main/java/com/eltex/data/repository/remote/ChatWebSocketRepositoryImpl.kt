@@ -6,7 +6,11 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.data.api.ChatApi
 import com.eltex.data.mappers.ChatResultToChatModelMapper
+import com.eltex.data.mappers.MessageResponseToMessageMapper
 import com.eltex.data.models.chat.ChatResponse
+import com.eltex.data.models.lifemessage.Arg
+import com.eltex.data.models.lifemessage.MessageResponse
+import com.eltex.data.models.usernotify.RoomInserted
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.DataError
 import com.eltex.domain.repository.remote.ChatRemoteRepository
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
+import java.util.UUID
 import javax.inject.Inject
 
 class ChatWebSocketRepositoryImpl @Inject constructor(
@@ -107,5 +112,99 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
             e.printStackTrace()
             DataError.ConnectionMissing.left()
         }
+    }
+
+    override suspend fun subscribeToChats(userId: String): Flow<ChatModel> = callbackFlow {
+
+        val listener: (JSONObject) -> Unit = { json ->
+            try {
+                if (json.getString("msg") == "changed" && json.getString("collection") == "stream-notify-user") {
+                    val fields = json.getJSONObject("fields")
+                    val eventName = fields.getString("eventName")
+
+                    if (eventName.endsWith("/rooms-changed")) {
+                        val args = fields.getJSONArray("args")
+                        val eventType = args.getString(0) // "updated" или "inserted"
+                        val roomDataJson = args.getJSONObject(1).toString()
+
+                        try {
+                            when (eventType) {
+//                               "updated" -> {
+//                                    val roomData = jsonSerializator.decodeFromString<RoomUpdated>(roomDataJson)
+//                                    Log.d("WebSocket", "Room Updated: $roomData")
+//                                    // Извлекайте нужные поля из roomData
+//                                    val id = roomData.id
+//                                    val fname = roomData.fname ?: "N/A"
+//                                    val usersCount = roomData.usersCount
+//                                    val userId = roomData.u?.id ?: "N/A"
+//                                    val username = roomData.u?.username ?: "N/A"
+//                                    val type = roomData.type
+//
+//                                    Log.d("WebSocket", "Room Updated: id=$id, fname=$fname, usersCount=$usersCount, userId=$userId, username=$username, type=$type")
+//
+  //                              }
+                                "inserted" -> {
+                                    val roomData = jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
+                                    Log.d("WebSocket", "Room Inserted: $roomData")
+
+                                    trySend(
+                                        ChatModel(
+                                            id = roomData._id,
+                                            name = roomData.fname,
+                                            usernames = roomData.usernames,
+                                            uids = roomData.uids,
+                                            t = roomData.t,
+                                            usersCount = roomData.usersCount,
+                                            message = null,
+                                            lm = null,
+                                            unread = null,
+                                            avatarUrl = null,
+                                        )
+                                    )
+                                }
+                                else -> {
+                                    Log.w("WebSocket", "Unknown event type: $eventType")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("WebSocked", "ChatMessageRepository json error: ${e.message}", e)
+                        }
+                    } else {
+                        Log.d("WebSocket", "Unhandled eventName: $eventName")
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("RoomMessages", "Error processing message: ${e.message}", e)
+            }
+        }
+
+        webSocketManager.addListener(listener)
+
+        val id = generateSubscriptionId()
+        withContext(Dispatchers.IO) {
+            webSocketManager.sendMessage(
+                """
+                    {
+                        "msg": "sub",
+                        "id": "$id",
+                        "name": "stream-notify-user",
+                        "params":[
+                            "$userId/rooms-changed",
+                            false
+                        ]
+                    }
+                """.trimIndent()
+            )
+        }
+
+        awaitClose {
+            webSocketManager.removeListener(listener)
+            Log.d("ChatRepository", "Flow closed, listener removed")
+        }
+    }
+
+    private fun generateSubscriptionId(): String {
+        return "sub-" + UUID.randomUUID().toString()
     }
 }
