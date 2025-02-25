@@ -135,14 +135,14 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                                         jsonSerializator.decodeFromString<RoomInserted>(roomDataJson)
                                     Log.d("WebSocket", "Room Updated: $roomData")
                                     val message = roomData.lastMessage?.let { lastMessage ->
-//                                        val fileModel: FileModel? = lastMessage.attachments?.mapNotNull { jsonElement ->
-//                                            try {
-//                                                return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
-//                                            } catch (e: Exception) {
-//                                                println("Error parsing attachment: ${e.message}")
-//                                                return@mapNotNull null
-//                                            }
-//                                        }?.firstOrNull()
+                                        val fileModel: FileModel? = lastMessage.attachments?.mapNotNull { jsonElement ->
+                                            try {
+                                                return@mapNotNull AttachmentsToFileModelMapper.map(jsonElement)
+                                            } catch (e: Exception) {
+                                                println("Error parsing attachment: ${e.message}")
+                                                return@mapNotNull null
+                                            }
+                                        }?.firstOrNull()
 
                                         Message(
                                             id = lastMessage._id,
@@ -152,7 +152,7 @@ class ChatWebSocketRepositoryImpl @Inject constructor(
                                             userId = lastMessage.u?._id  ?: "",
                                             name = lastMessage.u?.name ?: lastMessage.u?.username  ?: "",
                                             username = lastMessage.u?.username ?: "",
-                                            fileModel = null,
+                                            fileModel = fileModel,
                                         )
                                     }
 

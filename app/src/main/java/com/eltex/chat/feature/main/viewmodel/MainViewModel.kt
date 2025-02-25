@@ -206,11 +206,6 @@ class MainViewModel @Inject constructor(
                             t = chatModel.t,
                         )
                     }
-//                        .onEach { chat ->
-//                        if (chat !in state.value.chatList) {
-//                            listenChat(roomId = chat.id)
-//                        }
-//                    }
                     it.copy(chatList = resfirst)
                 }
                 loadAvatars()
@@ -264,29 +259,6 @@ class MainViewModel @Inject constructor(
             lastMessage = fio + ":  " + lastMessage
         }
         return lastMessage
-    }
-
-    fun listenChat(roomId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
-                withContext(Dispatchers.IO) {
-                    _state.update { state ->
-                        state.copy(chatList = state.chatList.map { chat ->
-                            if (chat.id == messsage.rid) {
-                                val lastMessage =
-                                    getLastMessage(messsage = messsage, chatType = chat.t)
-
-                                chat.copy(
-                                    lastMessage = lastMessage
-                                )
-                            } else {
-                                chat
-                            }
-                        })
-                    }
-                }
-            }
-        }
     }
 
     fun setSearchValue(value: String) {
