@@ -83,11 +83,12 @@ class MainViewModel @Inject constructor(
                     subscribeToChats()
                 }
 
-                is WebSocketConnectionState.Connecting -> {}
-
-                is WebSocketConnectionState.Disconnected, is WebSocketConnectionState.Error -> {
+                is WebSocketConnectionState.Error -> {
                     setStatus(MainUiStatus.Error("Произошла ошибка, проверьте вашу сеть и повторите"))
                 }
+
+                is WebSocketConnectionState.Connecting -> {}
+                is WebSocketConnectionState.Disconnected -> {}
             }
         }
     }
