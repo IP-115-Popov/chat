@@ -33,6 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.eltex.chat.R
+import com.eltex.chat.feature.chat.ui.components.InternalStorageButton
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.ui.theme.CustomTheme
 import kotlinx.coroutines.launch

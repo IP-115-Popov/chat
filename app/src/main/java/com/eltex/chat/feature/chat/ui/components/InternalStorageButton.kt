@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.chat.ui.screens
+package com.eltex.chat.feature.chat.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

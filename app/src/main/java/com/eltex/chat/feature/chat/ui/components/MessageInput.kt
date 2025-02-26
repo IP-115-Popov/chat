@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -155,14 +157,20 @@ fun MessageInput(
 fun MessageInputPreview() {
     var text by remember { mutableStateOf("") }
     CustomTheme {
-        MessageInput(
-            value = text,
-            showSendButtons = true,
-            showAttachmentButtons = true,
-            enabled = true,
-            onValueChange = { text = it },
-            onAttachClick = { text = "attach" },
-            onSendClick = { text = "send" },
-        )
+        Scaffold(
+            bottomBar = {
+                MessageInput(
+                    value = text,
+                    showSendButtons = true,
+                    showAttachmentButtons = true,
+                    enabled = true,
+                    onValueChange = { text = it },
+                    onAttachClick = { text = "attach" },
+                    onSendClick = { text = "send" },
+                )
+            }
+        ) { inp ->
+            Box(Modifier.padding(inp).fillMaxSize())
+        }
     }
 }
