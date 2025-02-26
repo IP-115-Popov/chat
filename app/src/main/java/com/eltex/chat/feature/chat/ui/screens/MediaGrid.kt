@@ -127,7 +127,10 @@ fun ImageItem(
     onSelected: () -> Unit,
     onRemove: () -> Unit
 ) {
-    Box(modifier = Modifier.padding(2.dp)) {
+    Box(modifier = Modifier.padding(2.dp).clickable {
+        if (selectable) onRemove()
+        else onSelected()
+    }) {
         Image(
             painter = rememberImagePainter(
                 data = uri,
@@ -148,10 +151,6 @@ fun ImageItem(
         ) {
             CheckableCircle(
                 isChecked = selectable,
-                onCheckedChange = {
-                    if (selectable) onRemove()
-                    else onSelected()
-                },
             )
         }
     }
@@ -202,8 +201,6 @@ fun getAllImages(context: Context): List<Uri> {
 @Composable
 fun CheckableCircle(
     isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    enabled: Boolean = true,
 ) {
     val borderColor = CustomTheme.basicPalette.white // Цвет границы всегда белый
     val backgroundColor =
@@ -223,10 +220,7 @@ fun CheckableCircle(
             .background(
                 color = backgroundColor,
                 shape = CircleShape
-            )
-            .clickable(enabled = enabled) {
-                onCheckedChange(!isChecked)
-            },
+            ),
         contentAlignment = Alignment.Center
     ) {
         if (isChecked) {
