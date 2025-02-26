@@ -15,6 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -42,56 +46,39 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var syncAuthDataUseCase: SyncAuthDataUseCase
 
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this)[MainViewModel::class.java]
-    }
-
-    private var initializedViewModel = MutableStateFlow(false);
-    private val route = MutableStateFlow<NavRoutes>(NavRoutes.Splash)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             TransparentSystemBars()
             CustomTheme {
-                val routeState = route.collectAsState()
-                val initializedViewModelState by initializedViewModel.collectAsState()
+                var isRegister by rememberSaveable { mutableStateOf(false) }
+                var initializedViewModel by rememberSaveable { mutableStateOf(false) }
                 val navController = rememberNavController()
 
-                if (initializedViewModelState) {
+                if (initializedViewModel) {
                     NavigationGraph(
                         navController = navController,
                         startDestination = NavRoutes.Main,
-                        mainViewModel = mainViewModel,
                     )
-                    LaunchedEffect(routeState.value) {
-                        if (routeState.value != NavRoutes.Splash) {
-                            navController.navigate(routeState.value.route) {
-                                popUpTo(NavRoutes.Splash.route) { inclusive = true }
-                            }
+                    if(!isRegister) {
+                        navController.navigate(NavRoutes.Authorization.route) {
+                            launchSingleTop = true
                         }
                     }
                 } else {
                     SplashScreen()
                 }
-            }
-        }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                syncAuthDataUseCase().onRight {
+                LaunchedEffect(Unit) {
+                    runCatching {
+                        syncAuthDataUseCase().onRight {
+                            isRegister = true
+                        }
+                    }
                     delay(1000L)
-                    route.value = NavRoutes.Main
-                }.onLeft {
-                    delay(1000L)
-                    route.value = NavRoutes.Authorization
+                    initializedViewModel  = true;
                 }
-            } catch (e: Exception) {
-                delay(1000L)
-                route.value = NavRoutes.Authorization
-            } finally {
-                initializedViewModel.value = true;
             }
         }
     }

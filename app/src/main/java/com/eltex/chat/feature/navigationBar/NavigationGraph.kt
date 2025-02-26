@@ -1,6 +1,7 @@
 package com.eltex.chat.feature.navigationBar
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,8 +18,8 @@ import com.eltex.chat.ui.components.SplashScreen
 fun NavigationGraph(
     navController: NavHostController,
     startDestination: NavRoutes,
-    mainViewModel: MainViewModel,
 ) {
+    val mainViewModel = hiltViewModel<MainViewModel>()
     NavHost(
         navController = navController,
         startDestination = startDestination.route,
