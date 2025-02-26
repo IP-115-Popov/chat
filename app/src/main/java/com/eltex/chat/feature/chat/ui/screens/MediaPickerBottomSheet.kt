@@ -59,7 +59,6 @@ fun MediaPickerBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
             ) {
                 Box(
                     Modifier
@@ -77,43 +76,51 @@ fun MediaPickerBottomSheet(
                 }
                 Spacer(Modifier.size(8.dp))
 
-                Row(
+                Column(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .height(96.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    media.forEach { mediaItem ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .background(
-                                        color = if (selectedOption.value == mediaItem) CustomTheme.basicPalette.lightBlue
-                                        else CustomTheme.basicPalette.lightGrayBlue,
-                                        shape = CircleShape
-                                    )
-                                    .clickable {
-                                        selectedOption.value = mediaItem
-                                    }, contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            //.padding(horizontal = 10.dp)
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        media.forEach { mediaItem ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(mediaItem.vectorId),
-                                    tint = CustomTheme.basicPalette.white,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
+                                Box(
+                                    modifier = Modifier
+                                        .padding(horizontal = 26.dp)
+                                        .size(44.dp)
+                                        .background(
+                                            color = if (selectedOption.value == mediaItem) CustomTheme.basicPalette.lightBlue
+                                            else CustomTheme.basicPalette.lightGrayBlue,
+                                            shape = CircleShape
+                                        )
+                                        .clickable {
+                                            selectedOption.value = mediaItem
+                                        }, contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(mediaItem.vectorId),
+                                        tint = CustomTheme.basicPalette.white,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                                Spacer(Modifier.size(4.dp))
+                                Text(
+                                    text = mediaItem.title,
+                                    maxLines = 1,
+                                    color = CustomTheme.basicPalette.darkGray,
+                                    style = CustomTheme.typographySfPro.caption1Regular,
+                                    modifier = Modifier.height(20.dp)
                                 )
                             }
-                            Spacer(Modifier.size(4.dp))
-                            Text(
-                                text = mediaItem.title,
-                                maxLines = 1,
-                                color = CustomTheme.basicPalette.darkGray,
-                                style = CustomTheme.typographySfPro.caption1Regular,
-                            )
                         }
                     }
                 }
@@ -131,17 +138,17 @@ fun MediaPickerBottomSheet(
 
                     Media.Document -> {
                         chatViewModel.clearAttachment()
-                        val documentPickerLauncher = rememberLauncherForActivityResult(
-                            contract = ActivityResultContracts.OpenDocument(),
-                            onResult = { uri ->
-                                uri?.let {
-                                    chatViewModel.addAttachmentUri(uri)
-                                    coroutineScope.launch {
-                                        modalBottomSheetState.hide()
+                        val documentPickerLauncher =
+                            rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument(),
+                                onResult = { uri ->
+                                    uri?.let {
+                                        chatViewModel.addAttachmentUri(uri)
+                                        coroutineScope.launch {
+                                            modalBottomSheetState.hide()
+                                        }
+                                        chatViewModel.sendDocument()
                                     }
-                                    chatViewModel.sendDocument()
-                                }
-                            })
+                                })
 
                         InternalStorageButton(onClick = {
                             documentPickerLauncher.launch(arrayOf("*/*"))
