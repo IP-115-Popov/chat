@@ -194,7 +194,7 @@ fun ChatScreen(
             ) {
 
                 groupedMessages.forEach { (dateString, messagesForDate) ->
-                    items(items = messagesForDate, key = {it.id}) { message ->
+                    items(items = messagesForDate) { message ->
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                         ) {

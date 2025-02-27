@@ -1,6 +1,7 @@
 package com.eltex.chat.di.domain
 
 import com.eltex.domain.repository.local.AuthDataLocalRepository
+import com.eltex.domain.repository.local.FileLocalRepository
 import com.eltex.domain.usecase.local.ClearCacheUseCase
 import dagger.Module
 import dagger.Provides
@@ -13,9 +14,11 @@ class ClearCacheUseCaseModule {
     @Provides
     fun provideClearCacheUseCase(
         authDataLocalRepository: AuthDataLocalRepository,
+        fileLocalRepository: FileLocalRepository,
     ): ClearCacheUseCase {
         return ClearCacheUseCase(
-            authDataLocalRepository = authDataLocalRepository
+            authDataLocalRepository = authDataLocalRepository,
+            fileLocalRepository = fileLocalRepository,
         )
     }
 }

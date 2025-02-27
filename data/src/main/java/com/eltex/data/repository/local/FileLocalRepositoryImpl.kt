@@ -27,6 +27,22 @@ class FileLocalRepositoryImpl @Inject constructor(
         file.writeBytes(data)
     }
 
+    override suspend fun deleteAllFiles(): Boolean {
+        val filesDir = context.filesDir
+        val files = filesDir.listFiles() ?: return true
+
+        var allDeleted = true
+        for (file in files) {
+            if (file.name.startsWith("file_")) {
+                if (!file.delete()) {
+                    allDeleted = false
+                    println("Failed to delete file: ${file.name}")
+                }
+            }
+        }
+        return allDeleted
+    }
+
     private fun getFileName(uri: String): String {
         return "file_${uri.hashCode()}"
     }
