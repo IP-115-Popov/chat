@@ -8,10 +8,8 @@ import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
-import com.eltex.domain.usecase.remote.GetMessageFromChatUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
-import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.SubscribeToChatsUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,10 +37,8 @@ class MainViewModel @Inject constructor(
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
-    private val _connectionState =
+    private val connectionState =
         MutableStateFlow<WebSocketConnectionState>(WebSocketConnectionState.Disconnected)
-    val connectionState: StateFlow<WebSocketConnectionState> = _connectionState.asStateFlow()
-
 
     init {
         connect()
@@ -76,7 +72,7 @@ class MainViewModel @Inject constructor(
 
     private fun connectToWebSocket() = viewModelScope.launch(Dispatchers.IO) {
         connectWebSocketUseCase().collect { state ->
-            _connectionState.value = state
+            connectionState.value = state
             when (state) {
                 is WebSocketConnectionState.Connected -> {
                     loadChat()
@@ -93,11 +89,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
+    private fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
         subscribeToChatsUseCase().collect { chatModel ->
             val chat = chatToUIModelMapper.map(
-                chatModel = chatModel,
-                userId = state.value.profileUiModel?.id
+                chatModel = chatModel, userId = state.value.profileUiModel?.id
             )
 
             _state.update {
@@ -136,8 +131,7 @@ class MainViewModel @Inject constructor(
                 _state.update {
                     val resfirst = res.first().map { chatModel ->
                         chatToUIModelMapper.map(
-                            chatModel = chatModel,
-                            userId = state.value.profileUiModel?.id
+                            chatModel = chatModel, userId = state.value.profileUiModel?.id
                         )
                     }
                     it.copy(chatList = resfirst)

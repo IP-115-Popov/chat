@@ -40,9 +40,10 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     Modifier.fillMaxSize()
     Column(
-        Modifier.padding(
-                        bottom = systemBarsPadding.calculateBottomPadding()
-                    )
+        Modifier
+            .padding(
+                bottom = systemBarsPadding.calculateBottomPadding()
+            )
             .height(60.dp)
             .fillMaxWidth()
     ) {
