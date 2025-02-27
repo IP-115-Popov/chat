@@ -117,8 +117,14 @@ fun ChatInfoScreen(
                         MemberItem(
                             member = member,
                             onSelect = {
-                                navController.navigate(NavRoutes.UserProfile.route + "/${member.id}") {
-                                    launchSingleTop = true
+                                if (member.id == state.value.profileModel?.id) {
+                                    navController.navigate(NavRoutes.Profile.route) {
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    navController.navigate(NavRoutes.UserProfile.route + "/${member.id}") {
+                                        launchSingleTop = true
+                                    }
                                 }
                             },
                             drawHorizontalDivider = drawHorizontalDivider
