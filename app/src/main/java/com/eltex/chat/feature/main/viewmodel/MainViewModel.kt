@@ -133,7 +133,7 @@ class MainViewModel @Inject constructor(
                         chatToUIModelMapper.map(
                             chatModel = chatModel, userId = state.value.profileUiModel?.id
                         )
-                    }
+                    }.sortedByDescending { it.updatedAt }
                     it.copy(chatList = resfirst)
                 }
                 loadAvatars()

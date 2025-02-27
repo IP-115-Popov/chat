@@ -9,6 +9,7 @@ data class Result(
     val fname: String? = null,
     val lastMessage: LastMessage? = null,
     val lm: Lm? = null,
+    val _updatedAt: UpdatedAt? = null,
     val usersCount: Int = 0,
     val avatarETag: String? = null,
     val name: String? = null,

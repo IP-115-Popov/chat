@@ -40,7 +40,8 @@ object ChatResultToChatModelMapper {
                 userId = result.lastMessage?.u?._id ?: "",
                 name = result.lastMessage?.u?.name ?: result.lastMessage?.u?.username ?: "",
                 username = null,
-            )
+            ),
+            updatedAt = result._updatedAt?.`$date`
         )
     }
 }

@@ -32,15 +32,25 @@ class ChatToUIModelMapper @Inject constructor(
             )
         } ?: "Сообщений нет"
 
+        val lastMessageDate =
+            chatModel.lm?.let { instant ->
+                InstantFormatter.formatInstantToRelativeString(
+                    instant
+                )
+            } ?: message?.let {
+                if (it.fileModel != null || it.msg.isNotBlank()) {
+                    InstantFormatter.formatInstantToRelativeString(
+                        it.date
+                    )
+                } else ""
+            } ?: ""
+
         ChatUIModel(
             id = chatModel.id,
             name = name,
             lastMessage = lastMessage,
-            lm = chatModel.lm?.let { instant ->
-                InstantFormatter.formatInstantToRelativeString(
-                    instant
-                )
-            } ?: "",
+            lm = lastMessageDate,
+            updatedAt = lm ?: updatedAt ?: Long.MAX_VALUE,
             unread = chatModel.unread ?: 0,
             otrAck = "",
             avatarUrl = "",

@@ -5,6 +5,7 @@ data class ChatModel(
     val id: String,
     val name: String? = null,
     val lm: Long? = null,
+    val updatedAt: Long? = null,
     val unread: Int? = null,
     val avatarUrl: String? = null,
     val usernames: List<String>? = null,

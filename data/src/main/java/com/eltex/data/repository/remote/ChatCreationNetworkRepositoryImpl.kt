@@ -33,6 +33,7 @@ class ChatCreationNetworkRepositoryImpl @Inject constructor(
                         name = userName,
                         t = createdChatResponse.room.t,
                         usernames = createdChatResponse.room.usernames,
+                        //updatedAt = null,
                     ).right()
                 } else {
                     Log.e("CreateChat", "Response body is null, but request was successful")
