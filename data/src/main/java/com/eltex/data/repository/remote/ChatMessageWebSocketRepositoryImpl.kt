@@ -52,7 +52,7 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         val listener: (JSONObject) -> Unit = { json ->
 
             try {
-                if (json.getString("msg") == "changed" && json.getString("collection") == "stream-room-messages") {
+                if (json.has("msg") && json.getString("msg") == "changed" && json.getString("collection") == "stream-room-messages") {
 
                     val fields = json.getString("fields")
 
