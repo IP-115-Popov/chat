@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = NavRoutes.Main,
                     )
-                    if(!state.isUserRegistered) {
+                    if (!state.isUserRegistered) {
                         navController.navigate(NavRoutes.Authorization.route) {
                             launchSingleTop = true
                         }

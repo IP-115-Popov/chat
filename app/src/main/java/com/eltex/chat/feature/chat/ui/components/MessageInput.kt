@@ -173,7 +173,8 @@ fun MessageInputPreview() {
             Box(
                 Modifier
                     .padding(inp)
-                    .fillMaxSize())
+                    .fillMaxSize()
+            )
         }
     }
 }

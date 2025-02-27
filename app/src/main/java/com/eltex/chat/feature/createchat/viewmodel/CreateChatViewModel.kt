@@ -38,7 +38,7 @@ class CreateChatViewModel @Inject constructor(
     }
 
     private fun getUserId() = viewModelScope.async(Dispatchers.IO) {
-        if (state.value.userId.isNullOrEmpty()){
+        if (state.value.userId.isNullOrEmpty()) {
             getProfileInfoUseCase().getOrNull()?.id
         } else {
             state.value.userId
@@ -96,7 +96,8 @@ class CreateChatViewModel @Inject constructor(
 
                     val userId = getUserId().await()
 
-                    val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }.filter { it._id != userId}
+                    val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }
+                        .filter { it._id != userId }
 
                     withContext(Dispatchers.Main) {
                         _state.update {
