@@ -84,7 +84,7 @@ fun ChatScreen(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(listState.firstVisibleItemIndex) {
+    LaunchedEffect(listState.layoutInfo.visibleItemsInfo.lastOrNull()?.key) {
         val totalItemsCount = listState.layoutInfo.totalItemsCount
 
         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index?.let { lastVisibleIndex ->
