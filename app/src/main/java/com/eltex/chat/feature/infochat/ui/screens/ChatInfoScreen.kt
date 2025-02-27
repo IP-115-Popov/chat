@@ -112,7 +112,7 @@ fun ChatInfoScreen(
                             shape = RoundedCornerShape(10.dp)
                         )
                 ) {
-                    itemsIndexed(state.value.membersList) { i, member ->
+                    itemsIndexed(state.value.membersList, key = {i, item -> item.id}) { i, member ->
                         val drawHorizontalDivider = (i != state.value.membersList.lastIndex)
                         MemberItem(
                             member = member,
