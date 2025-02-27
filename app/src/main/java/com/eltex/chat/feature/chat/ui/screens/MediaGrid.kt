@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -126,12 +127,10 @@ fun ImageItem(
     onSelected: () -> Unit,
     onRemove: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .padding(2.dp)
-        .clickable {
-            if (selectable) onRemove()
-            else onSelected()
-        }) {
+    Box(modifier = Modifier.padding(2.dp).clickable {
+        if (selectable) onRemove()
+        else onSelected()
+    }) {
         Image(
             painter = rememberImagePainter(
                 data = uri,

@@ -9,9 +9,11 @@ import com.eltex.chat.feature.createchat.model.UserUiModel
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.usecase.remote.CreateChatUseCase
 import com.eltex.domain.usecase.remote.GetAvatarUseCase
+import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +28,21 @@ class CreateChatViewModel @Inject constructor(
     private val getUsersListUseCase: GetUsersListUseCase,
     private val createChatUseCase: CreateChatUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<CreateChatUiState> = MutableStateFlow(CreateChatUiState())
     val state: StateFlow<CreateChatUiState> = _state.asStateFlow()
 
     init {
         searchUser()
+    }
+
+    private fun getUserId() = viewModelScope.async(Dispatchers.IO) {
+        if (state.value.userId.isNullOrEmpty()){
+            getProfileInfoUseCase().getOrNull()?.id
+        } else {
+            state.value.userId
+        }
     }
 
     fun setSearchValue(value: String) {
@@ -83,7 +94,9 @@ class CreateChatViewModel @Inject constructor(
 
                 is Either.Right -> {
 
-                    val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }
+                    val userId = getUserId().await()
+
+                    val updatedUserList = userlist.value.map { UserModelToUiModelMapper.map(it) }.filter { it._id != userId}
 
                     withContext(Dispatchers.Main) {
                         _state.update {
