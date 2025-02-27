@@ -8,6 +8,7 @@ import arrow.core.Either
 import com.eltex.chat.R
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.usecase.local.ClearCacheUseCase
 import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
+    private val сlearCacheUseCase: ClearCacheUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
@@ -106,6 +108,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun exitFromProfile() {
-        TODO("Not yet implemented")
+        viewModelScope.launch(Dispatchers.IO) {
+            сlearCacheUseCase()
+        }
     }
 }

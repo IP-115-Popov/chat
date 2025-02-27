@@ -31,4 +31,8 @@ class AuthDataSharedPrefRepositoryImpl @Inject constructor(
         )
         return authData
     }
+
+    override suspend fun deleteAuthData() {
+        sharedPreferencesAuthDataStorage.deleteAuthData()
+    }
 }

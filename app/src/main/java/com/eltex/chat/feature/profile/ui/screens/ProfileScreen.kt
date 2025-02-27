@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.R
 import com.eltex.chat.feature.navigationBar.BottomBarShadow
 import com.eltex.chat.feature.navigationBar.BottomNavigationBar
+import com.eltex.chat.feature.navigationBar.NavRoutes
 import com.eltex.chat.feature.profile.ui.components.ExitAlertDialog
 import com.eltex.chat.feature.profile.viewmodel.ProfileStatus
 import com.eltex.chat.feature.profile.viewmodel.ProfileViewModel
@@ -52,7 +53,15 @@ fun ProfileScreen(navController: NavHostController) {
 
     if (showExitAlertDialog.value) {
         ExitAlertDialog(onDismissRequest = { showExitAlertDialog.value = false },
-            onExitRequest = { profileViewModel.exitFromProfile() })
+            onExitRequest = {
+                profileViewModel.exitFromProfile()
+                navController.navigate(NavRoutes.Authorization.route){
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            })
     }
 
     Scaffold(

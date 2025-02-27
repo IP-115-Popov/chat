@@ -30,4 +30,8 @@ class SharedPreferencesAuthDataStorage @Inject constructor(
             }
         }
     }
+
+    override fun deleteAuthData() {
+        sharedPreferences.edit().remove("user").apply()
+    }
 }
