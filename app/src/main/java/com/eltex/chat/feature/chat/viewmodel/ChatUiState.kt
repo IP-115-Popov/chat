@@ -21,4 +21,6 @@ data class ChatUiState(
     val chatModel: ChatModel? = null,
     val usernameToAvatarsMap: Map<String, ImageBitmap> = mutableMapOf(),
     val recipientUserId: String? = null,
+    val selectedMessages: List<MessageUiModel> = emptyList(),
+    val canDeleteMsg: Boolean = false,
 )

@@ -186,6 +186,15 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteMessages(roomId: String, msgId: String) {
+        try {
+            chatCommunicationApi.deleteMessage(roomId = roomId, msgId = msgId)
+        } catch (e: Exception) {
+            Log.d("RoomDeleteMessagesId", "deleteMessages error ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
     private fun getFileName(context: Context, uri: Uri): String? {
         var fileName: String? = null
         val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)

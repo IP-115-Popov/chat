@@ -20,4 +20,10 @@ interface ChatCommunicationApi {
         @Part file: MultipartBody.Part,
         @Part("msg") description: RequestBody
     )
+
+    @POST("/api/v1/chat.sendMessage")
+    suspend fun deleteMessage(
+        @Body roomId: String,
+        @Body msgId: String,
+    )
 }

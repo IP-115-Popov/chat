@@ -23,4 +23,6 @@
     <string name="back">Назад</string>
     <string name="write">Написать</string>
     <string name="exit">Выйти</string>
+    <string name="selected">Выбрано</string>
+    <string name="cancel2">Отмена</string>
 </resources>

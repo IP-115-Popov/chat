@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,11 +54,10 @@ fun MessageInput(
         modifier = Modifier
             .fillMaxWidth()
             .background(CustomTheme.basicPalette.white)
-            .padding(start = 16.dp)
             .navigationBarsPadding()
             .imePadding()
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+        ConstraintLayout(modifier = Modifier.padding(start = 16.dp).fillMaxWidth()) {
             val (textField, buttons) = createRefs()
 
             Box(
@@ -148,6 +148,7 @@ fun MessageInput(
                 }
             }
         }
+        HorizontalDivider(thickness = 0.5.dp, modifier = Modifier.fillMaxWidth(), color = CustomTheme.basicPalette.lightGrey)
     }
 }
 

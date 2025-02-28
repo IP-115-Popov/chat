@@ -47,6 +47,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
+import com.eltex.chat.ui.components.CheckableCircle
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
@@ -152,6 +153,7 @@ fun ImageItem(
         ) {
             CheckableCircle(
                 isChecked = selectable,
+                borderColor = CustomTheme.basicPalette.white
             )
         }
     }
@@ -197,42 +199,6 @@ fun getAllImages(context: Context): List<Uri> {
     }
 
     return imageUris
-}
-
-@Composable
-fun CheckableCircle(
-    isChecked: Boolean,
-) {
-    val borderColor = CustomTheme.basicPalette.white // Цвет границы всегда белый
-    val backgroundColor =
-        if (isChecked) CustomTheme.basicPalette.lightBlue else Color.Transparent // Прозрачный фон если не выбран
-    val iconColor = CustomTheme.basicPalette.white
-
-    val border: Modifier = Modifier.border(
-        width = 1.dp,
-        color = borderColor,
-        shape = CircleShape
-    )
-
-    Box(
-        modifier = Modifier
-            .size(16.dp)
-            .then(if (!isChecked) border else Modifier)
-            .background(
-                color = backgroundColor,
-                shape = CircleShape
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        if (isChecked) {
-            Icon(
-                imageVector = Icons.Filled.Check,
-                contentDescription = "Checked",
-                tint = iconColor,
-                modifier = Modifier.size(12.dp)
-            )
-        }
-    }
 }
 
 @Preview(showBackground = true)

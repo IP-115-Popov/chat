@@ -5,15 +5,16 @@ import android.util.Log
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
+import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
 import com.eltex.domain.usecase.local.CheckFileExistsUseCase
+import com.eltex.domain.usecase.remote.DeleteMessageUseCase
 import com.eltex.domain.usecase.remote.GetAvatarUseCase
 import com.eltex.domain.usecase.remote.GetChatInfoUseCase
 import com.eltex.domain.usecase.remote.GetHistoryChatUseCase
@@ -52,6 +53,7 @@ class ChatViewModel @Inject constructor(
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
     private val observeMessageDeletionsUseCase: ObserveMessageDeletionsUseCase,
+    private val deleteMessageUseCase: DeleteMessageUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -167,14 +169,47 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             observeMessageDeletionsUseCase(roomId = roomId).collect { messageId ->
                 _state.update { state ->
-                    state.copy(
-                        messages = state.messages.filter { it.id != messageId }
-                    )
+                    state.copy(messages = state.messages.filter { it.id != messageId })
                 }
             }
         }
     }
 
+    fun toggleMessageSelection(message: MessageUiModel) {
+        var updatedSelectedMessages: List<MessageUiModel> = emptyList()
+        if (state.value.selectedMessages.contains(message)) {
+            updatedSelectedMessages = state.value.selectedMessages - message
+        } else {
+            updatedSelectedMessages = state.value.selectedMessages + message
+        }
+        _state.update {
+            it.copy(
+                canDeleteMsg = updatedSelectedMessages.isNotEmpty() && updatedSelectedMessages.all { msg -> msg.userId == state.value.profileModel?.id } ,
+                selectedMessages = updatedSelectedMessages,
+            )
+        }
+    }
+
+    fun deleteMessages() {
+        if (state.value.canDeleteMsg) {
+            state.value?.roomId?.let { roomId ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    state.value.selectedMessages.forEach { msg ->
+                        deleteMessageUseCase(roomId = roomId, msgId = msg.id)
+                    }
+                    clearMessageSelectionList()
+                }
+            }
+        }
+    }
+
+    fun clearMessageSelectionList() {
+        _state.update {
+            it.copy(
+                selectedMessages = emptyList()
+            )
+        }
+    }
 
     fun setMsgText(value: String) {
         _state.update {

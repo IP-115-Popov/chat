@@ -8,4 +8,5 @@ interface ChatMessageRemoteRepository {
     suspend fun subscribeToRoomMessages(roomId: String): Flow<Message>
     suspend fun subscribeToRoomDeleteMessagesId(roomId: String): Flow<String>
     suspend fun sendMessages(messagePayload: MessagePayload)
+    suspend fun deleteMessages(roomId: String, msgId: String)
 }
