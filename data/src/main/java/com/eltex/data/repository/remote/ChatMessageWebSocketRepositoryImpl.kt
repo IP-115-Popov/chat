@@ -28,7 +28,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,9 +43,7 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         ignoreUnknownKeys = true
     }
 
-    private var subscriptionId: String? = null
-
-    private val subscribers: MutableSet<String> = ConcurrentHashMap.newKeySet()
+    private val subscribersGetMsg: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
@@ -71,11 +68,11 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
 
         webSocketManager.addListener(listener)
 
-        val id = generateSubscriptionId()
+        val id = generateSubscriptionId(roomId = roomId)
 
         //защита от многократной подписки на 1 событие
-        if (roomId !in subscribers) {
-            subscribers.add(roomId)
+        if (id !in subscribersGetMsg) {
+            subscribersGetMsg.add(id)
             withContext(Dispatchers.IO) {
                 webSocketManager.sendMessage(
                     """
@@ -90,7 +87,6 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
                 }
                 """.trimIndent()
                 )
-                subscriptionId = id
             }
         }
 
@@ -152,10 +148,8 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
     }
 
     private fun unsubscribeFromRoomMessages(roomId: String) {
-
-        subscribers.remove(roomId)
-
-        val id = subscriptionId ?: return
+        val id =  generateSubscriptionId(roomId)
+        subscribersGetMsg.remove(id)
 
         webSocketManager.sendMessage(
             """
@@ -165,10 +159,9 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
                 }
             """.trimIndent()
         )
-        subscriptionId = null
     }
 
-    private fun generateSubscriptionId(): String {
-        return "sub-" + UUID.randomUUID().toString()
+    private fun generateSubscriptionId(roomId: String): String {
+        return "sub-" + roomId
     }
 }
