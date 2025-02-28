@@ -1,20 +1,27 @@
 package com.eltex.chat.feature.main.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.mappers.ChatToUIModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.models.UserModel
 import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
+import com.eltex.domain.usecase.remote.GetUserInfoUseCase
+import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.usecase.remote.SubscribeToChatsUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +39,8 @@ class MainViewModel @Inject constructor(
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val subscribeToChatsUseCase: SubscribeToChatsUseCase,
-    private val chatToUIModelMapper: ChatToUIModelMapper,
+    private val getUsersListUseCase: GetUsersListUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
@@ -91,8 +99,9 @@ class MainViewModel @Inject constructor(
 
     private fun subscribeToChats() = viewModelScope.launch(Dispatchers.IO) {
         subscribeToChatsUseCase().collect { chatModel ->
-            val chat = chatToUIModelMapper.map(
-                chatModel = chatModel, userId = state.value.profileUiModel?.id
+            val usersList = searchUser().await()
+            val chat = ChatToUIModelMapper.map(
+                chatModel = chatModel, userId = state.value.profileUiModel?.id, usersList
             )
 
             _state.update {
@@ -125,13 +134,16 @@ class MainViewModel @Inject constructor(
 
     private fun get() = viewModelScope.launch(Dispatchers.IO) {
         connect().join()
+        val usersList = searchUser().await()
         try {
             val res = getChatListUseCase()
             withContext(Dispatchers.Main) {
                 _state.update {
                     val resfirst = res.first().map { chatModel ->
-                        chatToUIModelMapper.map(
-                            chatModel = chatModel, userId = state.value.profileUiModel?.id
+                        ChatToUIModelMapper.map(
+                            chatModel = chatModel,
+                            userId = state.value.profileUiModel?.id,
+                            usersList
                         )
                     }.sortedByDescending { it.updatedAt }
                     it.copy(chatList = resfirst)
@@ -145,6 +157,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun searchUser() = viewModelScope.async(Dispatchers.IO) {
+        getUsersListUseCase(state.value.searchValue).onRight { userlist ->
+            return@async userlist
+        }
+        return@async emptyList<UserModel>()
+    }
 
     private fun loadAvatars() {
         state.value.chatList.forEach { chat ->

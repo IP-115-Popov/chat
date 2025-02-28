@@ -1,39 +1,35 @@
 package com.eltex.chat.feature.main.mappers
 
+import android.util.Log
 import arrow.core.Either
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
+import com.eltex.domain.models.UserModel
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import javax.inject.Inject
 
-class ChatToUIModelMapper @Inject constructor(
-    private val getUserInfoUseCase: GetUserInfoUseCase,
-) {
-    suspend fun map(chatModel: ChatModel, userId: String?) = with(chatModel) {
-        val name: String = if (chatModel.t == "d") {
-            chatModel.uids?.firstOrNull { id -> id != userId } //
-                ?.let { userId ->
-                    when (val user = getUserInfoUseCase(userId)) {
-                        is Either.Left -> chatModel.name ?: ""
-                        is Either.Right -> user.value.name
-                        else -> ""
-                    }
-                } ?: ""
-        } else {
-            chatModel.name ?: ""
-        }
+object ChatToUIModelMapper {
+    fun map(chatModel: ChatModel, userId: String?, usersList: List<UserModel>) =
+        with(chatModel) {
+            val name: String = if (chatModel.t == "d") {
+                chatModel.uids?.firstOrNull { uid -> uid != userId } //
+                    ?.let { uid ->
+                        usersList.firstOrNull { user -> user._id == uid }?.name
+                    } ?: chatModel.name ?: ""
+            } else {
+                chatModel.name ?: ""
+            }
 
-        val lastMessage = chatModel.message?.let { message ->
-            getLastMessage(
-                messsage = message, chatType = chatModel.t, userId
-            )
-        } ?: "Сообщений нет"
+            val lastMessage = chatModel.message?.let { message ->
+                getLastMessage(
+                    messsage = message, chatType = chatModel.t, userId
+                )
+            } ?: "Сообщений нет"
 
-        val lastMessageDate =
-            chatModel.lm?.let { instant ->
+            val lastMessageDate = chatModel.lm?.let { instant ->
                 InstantFormatter.formatInstantToRelativeString(
                     instant
                 )
@@ -45,19 +41,19 @@ class ChatToUIModelMapper @Inject constructor(
                 } else ""
             } ?: ""
 
-        ChatUIModel(
-            id = chatModel.id,
-            name = name,
-            lastMessage = lastMessage,
-            lm = lastMessageDate,
-            updatedAt = lm ?: updatedAt ?: Long.MAX_VALUE,
-            unread = chatModel.unread ?: 0,
-            otrAck = "",
-            avatarUrl = "",
-            usernames = chatModel.usernames,
-            t = chatModel.t,
-        )
-    }
+            ChatUIModel(
+                id = chatModel.id,
+                name = name,
+                lastMessage = lastMessage,
+                lm = lastMessageDate,
+                updatedAt = lm ?: updatedAt ?: Long.MAX_VALUE,
+                unread = chatModel.unread ?: 0,
+                otrAck = "",
+                avatarUrl = "",
+                usernames = chatModel.usernames,
+                t = chatModel.t,
+            )
+        }
 
     private fun getLastMessage(messsage: Message, chatType: String, userId: String?): String {
         var lastMessage = when (messsage.fileModel) {
