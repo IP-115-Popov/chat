@@ -130,7 +130,7 @@ fun BottomCreatedChatScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(state.value.userList, key = {it._id}) { contact ->
+                    items(state.value.userList, key = { it._id }) { contact ->
                         ContactItem(contact = contact, onSelect = { it ->
                             coroutineScope.launch {
                                 modalBottomSheetState.hide()

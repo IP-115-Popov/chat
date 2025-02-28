@@ -55,7 +55,7 @@ fun ProfileScreen(navController: NavHostController) {
         ExitAlertDialog(onDismissRequest = { showExitAlertDialog.value = false },
             onExitRequest = {
                 profileViewModel.exitFromProfile()
-                navController.navigate(NavRoutes.Authorization.route){
+                navController.navigate(NavRoutes.Authorization.route) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }

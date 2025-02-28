@@ -1,10 +1,7 @@
 package com.eltex.chat.feature.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
-import com.eltex.chat.feature.createchat.mappers.UserModelToUiModelMapper
 import com.eltex.chat.feature.main.mappers.ChatToUIModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
@@ -14,7 +11,6 @@ import com.eltex.domain.usecase.ConnectWebSocketUseCase
 import com.eltex.domain.usecase.remote.GetChatListUseCase
 import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
-import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.usecase.remote.SubscribeToChatsUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
@@ -40,7 +36,6 @@ class MainViewModel @Inject constructor(
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val subscribeToChatsUseCase: SubscribeToChatsUseCase,
     private val getUsersListUseCase: GetUsersListUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()

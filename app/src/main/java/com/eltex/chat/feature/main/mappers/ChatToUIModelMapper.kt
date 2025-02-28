@@ -1,15 +1,11 @@
 package com.eltex.chat.feature.main.mappers
 
-import android.util.Log
-import arrow.core.Either
 import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.formatters.InstantFormatter
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.UserModel
-import com.eltex.domain.usecase.remote.GetUserInfoUseCase
-import javax.inject.Inject
 
 object ChatToUIModelMapper {
     fun map(chatModel: ChatModel, userId: String?, usersList: List<UserModel>) =

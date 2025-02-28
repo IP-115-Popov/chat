@@ -147,7 +147,9 @@ fun MainScreen(
                                 .background(CustomTheme.basicPalette.white)
                                 .fillMaxSize()
                         ) {
-                            itemsIndexed(state.value.chatList, key = {i, item -> item.id}) { index, chat ->
+                            itemsIndexed(
+                                state.value.chatList,
+                                key = { i, item -> item.id }) { index, chat ->
                                 when (index) {
                                     0 -> {
                                         ChatItem(imageText = chat.name,
