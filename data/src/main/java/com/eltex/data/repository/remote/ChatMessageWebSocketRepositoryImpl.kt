@@ -9,6 +9,7 @@ import com.eltex.data.api.ChatCommunicationApi
 import com.eltex.data.mappers.MessageResponseToMessageMapper
 import com.eltex.data.models.communication.MessageForCommunication
 import com.eltex.data.models.communication.TextMessagePayload
+import com.eltex.data.models.deletemessage.DeleteMessageRequest
 import com.eltex.data.models.lifemessage.MessageResponse
 import com.eltex.domain.models.Message
 import com.eltex.domain.models.MessagePayload
@@ -188,7 +189,8 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
 
     override suspend fun deleteMessages(roomId: String, msgId: String) {
         try {
-            chatCommunicationApi.deleteMessage(roomId = roomId, msgId = msgId)
+            val payLoad = DeleteMessageRequest(roomId = roomId, msgId = msgId)
+            chatCommunicationApi.deleteMessage(payLoad)
         } catch (e: Exception) {
             Log.d("RoomDeleteMessagesId", "deleteMessages error ${e.message}")
             e.printStackTrace()

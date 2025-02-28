@@ -1,6 +1,7 @@
 package com.eltex.data.api
 
 import com.eltex.data.models.communication.TextMessagePayload
+import com.eltex.data.models.deletemessage.DeleteMessageRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -21,9 +22,8 @@ interface ChatCommunicationApi {
         @Part("msg") description: RequestBody
     )
 
-    @POST("/api/v1/chat.sendMessage")
+    @POST("/api/v1/chat.delete")
     suspend fun deleteMessage(
-        @Body roomId: String,
-        @Body msgId: String,
+        @Body payLoad: DeleteMessageRequest,
     )
 }

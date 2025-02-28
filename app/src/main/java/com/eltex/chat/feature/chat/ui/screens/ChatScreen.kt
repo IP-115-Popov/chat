@@ -174,6 +174,7 @@ fun ChatScreen(
         if (messagesSelecting) {
             DeleteMessageBottomBar(
                 enabled = state.value.canDeleteMsg, onClick = {
+                    messagesSelecting = false
                     chatViewModel.deleteMessages()
                 }
             )
