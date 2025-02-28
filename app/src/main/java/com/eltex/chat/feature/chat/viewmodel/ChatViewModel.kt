@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.utils.byteArrayToBitmap
@@ -22,6 +23,7 @@ import com.eltex.domain.usecase.remote.GetProfileInfoUseCase
 import com.eltex.domain.usecase.remote.GetRoomAvatarUseCase
 import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
+import com.eltex.domain.usecase.remote.ObserveMessageDeletionsUseCase
 import com.eltex.domain.usecase.remote.SendMessageUseCase
 import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +51,7 @@ class ChatViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getRoomAvatarUseCase: GetRoomAvatarUseCase,
     private val getAvatarUseCase: GetAvatarUseCase,
+    private val observeMessageDeletionsUseCase: ObserveMessageDeletionsUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -157,6 +160,16 @@ class ChatViewModel @Inject constructor(
                         loadUserAvatar(username = username)
                     }
                     updateImg()
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            observeMessageDeletionsUseCase(roomId = roomId).collect { messageId ->
+                _state.update { state ->
+                    state.copy(
+                        messages = state.messages.filter { it.id != messageId }
+                    )
                 }
             }
         }

@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatMessageRemoteRepository {
     suspend fun subscribeToRoomMessages(roomId: String): Flow<Message>
+    suspend fun subscribeToRoomDeleteMessagesId(roomId: String): Flow<String>
     suspend fun sendMessages(messagePayload: MessagePayload)
 }

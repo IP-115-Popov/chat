@@ -28,6 +28,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,8 +43,6 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
     private val jsonSerializator = Json {
         ignoreUnknownKeys = true
     }
-
-    private val subscribersGetMsg: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     override suspend fun subscribeToRoomMessages(roomId: String): Flow<Message> = callbackFlow {
         val listener: (JSONObject) -> Unit = { json ->
@@ -68,37 +67,91 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
 
         webSocketManager.addListener(listener)
 
-        val id = generateSubscriptionId(roomId = roomId)
+        val id = generateSubscriptionId()
 
-        //защита от многократной подписки на 1 событие
-        if (id !in subscribersGetMsg) {
-            subscribersGetMsg.add(id)
-            withContext(Dispatchers.IO) {
-                webSocketManager.sendMessage(
-                    """
-                {
-                    "msg": "sub",
-                    "id": "$id",
-                    "name": "stream-room-messages",
-                    "params": [
-                        "$roomId",
-                        false
-                    ]
-                }
-                """.trimIndent()
-                )
+        withContext(Dispatchers.IO) {
+            webSocketManager.sendMessage(
+                """
+            {
+                "msg": "sub",
+                "id": "$id",
+                "name": "stream-room-messages",
+                "params": [
+                    "$roomId",
+                    false
+                ]
             }
+            """.trimIndent()
+            )
         }
 
-
         awaitClose {
-            unsubscribeFromRoomMessages(roomId)
+            unsubscribeFromRoomMessages(id)
             webSocketManager.removeListener(listener)
             Log.d("RoomMessages", "Flow closed, listener removed")
         }
     }.shareIn(
         scope = CoroutineScope(Dispatchers.IO),
         started = SharingStarted.WhileSubscribed(5000),
+        replay = 1
+    )
+
+    override suspend fun subscribeToRoomDeleteMessagesId(roomId: String): Flow<String> = callbackFlow {
+        val listener: (JSONObject) -> Unit = { json ->
+            try {
+                if (json.has("msg") && json.getString("msg") == "changed" && json.getString("collection") == "stream-notify-room") {
+                    val fields = json.optJSONObject("fields")
+                    if (fields != null) {
+                        val eventName = fields.optString("eventName", "")
+                        if (eventName.endsWith("/deleteMessage")) {
+                            val args = fields.optJSONArray("args")
+                            if (args != null && args.length() > 0) {
+                                val firstArg = args.optJSONObject(0)
+                                if (firstArg != null) {
+                                    val messageId = firstArg.optString("_id", "")
+                                    if (messageId.isNotEmpty()) {
+                                        trySend(messageId)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("RoomMessages", "Error processing message: ${e.message}", e)
+            }
+        }
+
+        webSocketManager.addListener(listener)
+
+        val id = generateSubscriptionId()
+
+        withContext(Dispatchers.IO) {
+            webSocketManager.sendMessage(
+                """
+                {
+                    "msg": "sub",
+                    "id": "$id",
+                    "name": "stream-notify-room",
+                    "params":[
+                        "$roomId/deleteMessage",
+                        false
+                    ]
+                }
+                """.trimIndent()
+            )
+        }
+
+
+
+        awaitClose {
+            unsubscribeFromRoomMessages(id)
+            webSocketManager.removeListener(listener)
+            Log.d("RoomDeleteMessagesId", "Flow closed, listener removed")
+        }
+    }.shareIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.WhileSubscribed(1000),
         replay = 1
     )
 
@@ -147,10 +200,7 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         return fileName
     }
 
-    private fun unsubscribeFromRoomMessages(roomId: String) {
-        val id =  generateSubscriptionId(roomId)
-        subscribersGetMsg.remove(id)
-
+    private fun unsubscribeFromRoomMessages(id: String) {
         webSocketManager.sendMessage(
             """
                 {
@@ -161,7 +211,7 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun generateSubscriptionId(roomId: String): String {
-        return "sub-" + roomId
+    private fun generateSubscriptionId(): String {
+        return "sub-" + UUID.randomUUID().toString()
     }
 }
