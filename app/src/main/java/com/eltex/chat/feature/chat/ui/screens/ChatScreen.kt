@@ -230,7 +230,7 @@ fun ChatScreen(
                     .background(color = CustomTheme.basicPalette.white),
                 reverseLayout = true
             ) {
-
+                item { Spacer(Modifier.padding(11.dp)) }
                 groupedMessages.forEach { (dateString, messagesForDate) ->
                     items(items = messagesForDate, key = { message -> message.id }) { message ->
                         Row(verticalAlignment = Alignment.Bottom) {
