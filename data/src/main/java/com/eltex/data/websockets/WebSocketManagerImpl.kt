@@ -64,7 +64,9 @@ class WebSocketManagerImpl @Inject constructor() : WebSocketManager {
                     }
                 }
             }
-            listeners.forEach { it(json) }
+            runCatching {
+                listeners.forEach { it(json) }
+            }
         }
         webSocketManager = RocketChatWebSocket(listener)
     }

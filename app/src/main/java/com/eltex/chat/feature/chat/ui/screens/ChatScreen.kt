@@ -47,9 +47,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.model.MessageUiModel
+import com.eltex.chat.feature.chat.ui.components.DeleteMessageAlertDialog
 import com.eltex.chat.feature.chat.ui.components.messages.CallerMessage
 import com.eltex.chat.feature.chat.ui.components.bar.ChatScreenTopBar
 import com.eltex.chat.feature.chat.ui.components.MessageInput
+import com.eltex.chat.feature.chat.ui.components.SelectedAlertDialog
+import com.eltex.chat.feature.chat.ui.components.SelectedMessagesListDeleteAlertDialog
 import com.eltex.chat.feature.chat.ui.components.bar.DeleteMessageBottomBar
 import com.eltex.chat.feature.chat.ui.components.messages.MessageItem
 import com.eltex.chat.feature.chat.ui.components.bar.MessagesSelectingChatScreenTopBar
@@ -81,6 +84,10 @@ fun ChatScreen(
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
+    var showSelectedAlertDialog by remember { mutableStateOf(false) }
+    var showDeleteMessageAlertDialog by remember { mutableStateOf(false) }
+    var showSelectedMessagesListDeleteAlertDialog by remember { mutableStateOf(false) }
+
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { true })
@@ -110,7 +117,7 @@ fun ChatScreen(
         val totalItemsCount = listState.layoutInfo.totalItemsCount
 
         listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index?.let { firstVisibleIndex ->
-            if (totalItemsCount > 0 && firstVisibleIndex < 1) {
+            if (totalItemsCount > 0 && firstVisibleIndex <= 1) {
                 coroutineScope.launch {
                     listState.animateScrollToItem(0)
                 }
@@ -131,8 +138,7 @@ fun ChatScreen(
                 onCancelClick = {
                     messagesSelecting = false
                     chatViewModel.clearMessageSelectionList()
-                }
-            )
+                })
         } else {
             val onBackClick = {
                 navController.navigate(NavRoutes.Main.route) {
@@ -172,12 +178,13 @@ fun ChatScreen(
         }
     }, bottomBar = {
         if (messagesSelecting) {
-            DeleteMessageBottomBar(
-                enabled = state.value.canDeleteMsg, onClick = {
-                    messagesSelecting = false
-                    chatViewModel.deleteMessages()
+            DeleteMessageBottomBar(enabled = state.value.canDeleteMsg, onClick = {
+                if (state.value.selectedMessages.size == 1) {
+                    showDeleteMessageAlertDialog = true
+                } else {
+                    showSelectedMessagesListDeleteAlertDialog = true
                 }
-            )
+            })
         } else {
             MessageInput(
                 value = state.value.msgText,
@@ -225,7 +232,7 @@ fun ChatScreen(
             ) {
 
                 groupedMessages.forEach { (dateString, messagesForDate) ->
-                    items(items = messagesForDate) { message ->
+                    items(items = messagesForDate, key = { message -> message.id }) { message ->
                         Row(verticalAlignment = Alignment.Bottom) {
                             val onSelect = {
                                 if (messagesSelecting == true) {
@@ -241,16 +248,22 @@ fun ChatScreen(
                                 )
                                 Spacer(Modifier.size(6.dp))
                             }
-                            Message(
-                                state = state,
-                                message =  message,
+                            Message(state = state,
+                                message = message,
                                 maxMessageWidth = maxMessageWidth,
                                 modifier = Modifier.pointerInput(Unit) {
                                     detectTapGestures(
-                                        onPress = { onSelect()},
+                                        onPress = {
+                                            if (messagesSelecting == true) {
+                                                onSelect()
+                                            }
+                                        },
                                         onLongPress = {
-                                            messagesSelecting = true
-                                            onSelect()
+                                            if (messagesSelecting == false) {
+                                                messagesSelecting = true
+                                                showSelectedAlertDialog = true
+                                                onSelect()
+                                            }
                                         },
                                     )
                                 })
@@ -308,6 +321,45 @@ fun ChatScreen(
             }
         }
     }
+
+    val onDeleteMessage = {
+        messagesSelecting = false
+        chatViewModel.deleteMessages()
+    }
+    if (showSelectedAlertDialog) {
+        SelectedAlertDialog(
+            onDismissRequest = {
+                showSelectedAlertDialog = false
+                messagesSelecting = false
+                chatViewModel.clearMessageSelectionList()
+            },
+            onDeleteRequest = {
+                onDeleteMessage()
+                showSelectedAlertDialog = false
+            },
+            onSelectedRequest = {
+                showSelectedAlertDialog = false
+            },
+        )
+    }
+    if (showDeleteMessageAlertDialog) {
+        DeleteMessageAlertDialog(
+            onDismissRequest = { showDeleteMessageAlertDialog = false },
+            onDeleteRequest = {
+                onDeleteMessage()
+                showDeleteMessageAlertDialog = false
+            },
+        )
+    }
+    if (showSelectedMessagesListDeleteAlertDialog) {
+        SelectedMessagesListDeleteAlertDialog(
+            onDismissRequest = { showSelectedMessagesListDeleteAlertDialog = false },
+            onDeleteRequest = {
+                onDeleteMessage()
+                showSelectedMessagesListDeleteAlertDialog = false
+            },
+        )
+    }
 }
 
 @Composable
@@ -321,8 +373,7 @@ private fun Message(
         modifier = Modifier.fillMaxWidth(),
     ) {
         val isMyMessage = state.value.profileModel?.id == message.userId
-        val alignment =
-            if (isMyMessage) Alignment.CenterEnd else Alignment.CenterStart
+        val alignment = if (isMyMessage) Alignment.CenterEnd else Alignment.CenterStart
 
         if (state.value.roomType == "d") {
             if (isMyMessage) {

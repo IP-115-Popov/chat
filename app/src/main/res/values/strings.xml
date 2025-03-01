@@ -25,4 +25,10 @@
     <string name="exit">Выйти</string>
     <string name="selected">Выбрано</string>
     <string name="cancel2">Отмена</string>
+    <string name="select">Выбрать</string>
+    <string name="delete">Удалить</string>
+    <string name="question_delete_message">Удалить сообщение?</string>
+    <string name="warning_message_deletion">Сообщение останется доступно для остальных участников диалога. Это действие нельзя отменить</string>
+    <string name="action_cannot_undone">Это действие нельзя отменить</string>
+    <string name="question_delete_messages">Удалить сообщения?</string>
 </resources>

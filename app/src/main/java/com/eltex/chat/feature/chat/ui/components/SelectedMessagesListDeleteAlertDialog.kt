@@ -1,4 +1,4 @@
-package com.eltex.chat.feature.profile.ui.components
+package com.eltex.chat.feature.chat.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eltex.chat.R
@@ -28,53 +29,56 @@ import com.eltex.chat.ui.theme.CustomTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExitAlertDialog(
+fun SelectedMessagesListDeleteAlertDialog(
     onDismissRequest: () -> Unit,
-    onExitRequest: () -> Unit,
+    onDeleteRequest: () -> Unit,
 ) {
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+    onDismissRequest = onDismissRequest,
     ) {
         Column(
             modifier = Modifier
                 .size(width = 274.dp, height = 122.dp)
                 .background(
                     color = CustomTheme.basicPalette.white, shape = RoundedCornerShape(16.dp)
-                ), horizontalAlignment = Alignment.CenterHorizontally
+                ), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(R.string.log_out_of_account),
+                text = stringResource(R.string.question_delete_messages),
                 style = CustomTheme.typographySfPro.titleMedium,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.are_you_sure_want_to_get_out),
+                text = stringResource(R.string.action_cannot_undone),
                 style = CustomTheme.typographySfPro.bodyMedium,
+                textAlign = TextAlign.Center,
                 color = CustomTheme.basicPalette.grey
             )
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalDivider()
             Row(
-                horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.height(44.dp).fillMaxWidth()
             ) {
                 TextButton(onClick = {
                     onDismissRequest()
                 }) {
                     Text(
                         text = stringResource(R.string.Cancel),
-                        color = CustomTheme.basicPalette.lightBlue,
-                        style = CustomTheme.typographySfPro.headlineSemibold,
+                        style = CustomTheme.typographySfPro.bodyRegular,
+                        color = CustomTheme.basicPalette.lightBlue
                     )
                 }
                 VerticalDivider()
                 TextButton(onClick = {
-                    onExitRequest()
+                    onDeleteRequest()
                 }) {
                     Text(
-                        text = stringResource(R.string.Exit),
-                        color = CustomTheme.basicPalette.lightBlue,
-                        style = CustomTheme.typographySfPro.headlineSemibold,
+                        text = stringResource(R.string.delete),
+                        style = CustomTheme.typographySfPro.bodyRegular,
+                        color = CustomTheme.basicPalette.red,
                     )
                 }
             }
@@ -84,12 +88,12 @@ fun ExitAlertDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun ExitAlertDialogPreview() {
+private fun SelectedMessagesListDeleteAlertDialogPreview() {
     CustomTheme {
         Box(Modifier.fillMaxSize()) {
-            ExitAlertDialog(
+            SelectedMessagesListDeleteAlertDialog(
                 onDismissRequest = {},
-                onExitRequest = {}
+                onDeleteRequest = {}
             )
         }
     }
