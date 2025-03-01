@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.chat.feature.main.mappers.ChatToUIModelMapper
 import com.eltex.chat.feature.main.mappers.ChatUIModelToChatModelMapper
+import com.eltex.chat.feature.main.models.ChatUIModel
 import com.eltex.chat.feature.profile.mappers.ProfileModelToProfileUiMapper
 import com.eltex.chat.utils.byteArrayToBitmap
 import com.eltex.domain.models.UserModel
@@ -46,6 +47,8 @@ class MainViewModel @Inject constructor(
     init {
         connect()
     }
+
+    private var chatsListCache: List<ChatUIModel> = emptyList()
 
     private fun connect() = viewModelScope.launch(Dispatchers.IO) {
         var profileJob: Job? = null
@@ -101,6 +104,7 @@ class MainViewModel @Inject constructor(
 
             _state.update {
                 val updatedChatList = (listOf(chat) + it.chatList.filter { it.id != chat.id })
+                chatsListCache = updatedChatList
                 it.copy(chatList = updatedChatList)
             }
             loadAvatars()
@@ -141,6 +145,7 @@ class MainViewModel @Inject constructor(
                             usersList
                         )
                     }.sortedByDescending { it.updatedAt }
+                    chatsListCache = resfirst
                     it.copy(chatList = resfirst)
                 }
                 loadAvatars()
@@ -200,11 +205,9 @@ class MainViewModel @Inject constructor(
     }
 
     private fun searchChat() = viewModelScope.launch(Dispatchers.IO) {
-        setStatus(status = MainUiStatus.Loading)
-        get().join()
         if (state.value.searchValue.length >= 2 || state.value.searchValue.length == 0) {
             _state.update { state ->
-                state.copy(chatList = state.chatList.filter {
+                state.copy(chatList = chatsListCache.filter {
                     it.name.contains(
                         state.searchValue, ignoreCase = true
                     )
