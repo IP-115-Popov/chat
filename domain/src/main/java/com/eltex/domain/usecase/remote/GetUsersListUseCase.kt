@@ -57,9 +57,10 @@ class GetUsersListUseCase(
                             ignoreCase = true
                         )
                     }
+                    cachedData = CachedData(users, Instant.now())
                     mutex.withLock {
                         if (users.isNotEmpty()) {
-                            cachedData = CachedData(users, Instant.now())
+                            cachedData = CachedData(usersResult.value, Instant.now())
                             users.right()
                         }
                         else DataError.DefaultError.left()
