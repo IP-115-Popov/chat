@@ -110,8 +110,12 @@ fun MediaGrid() {
                         ImageItem(
                             uri = uri,
                             selectable = state.value.attachmentUriList?.contains(uri) ?: false,
-                            onSelected = { chatViewModel.addAttachmentUri(uri) },
-                            onRemove = { chatViewModel.removeAttachmentUri(uri) }
+                            onSelected = {
+                                chatViewModel.addAttachmentUri(uri)
+                                         },
+                            onRemove = {
+                                chatViewModel.removeAttachmentUri(uri)
+                            }
                         )
                     }
                 }
@@ -153,7 +157,11 @@ fun ImageItem(
         ) {
             CheckableCircle(
                 isChecked = selectable,
-                borderColor = CustomTheme.basicPalette.white
+                borderColor = CustomTheme.basicPalette.white,
+                onClick = {
+                    if (selectable) onRemove()
+                    else onSelected()
+                }
             )
         }
     }
