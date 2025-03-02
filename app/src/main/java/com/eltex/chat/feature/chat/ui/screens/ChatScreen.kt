@@ -78,8 +78,8 @@ fun ChatScreen(
     navController: NavController,
     roomId: String,
     roomType: String,
+    chatViewModel: ChatViewModel
 ) {
-    val chatViewModel = hiltViewModel<ChatViewModel>()
     val state = chatViewModel.state.collectAsState()
     val enabled = rememberSaveable { mutableStateOf(true) }
     var messagesSelecting by rememberSaveable { mutableStateOf(false) }
@@ -441,13 +441,5 @@ private fun Message(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun ChatScreenPreview() {
-    CustomTheme {
-        ChatScreen(navController = rememberNavController(), roomId = "", roomType = "")
     }
 }

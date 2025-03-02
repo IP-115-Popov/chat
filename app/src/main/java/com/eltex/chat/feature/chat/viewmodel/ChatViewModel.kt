@@ -66,26 +66,27 @@ class ChatViewModel @Inject constructor(
         syncAuthData()
     }
 
-    private fun syncAuthData() {
+    private fun syncAuthData() = viewModelScope.launch(Dispatchers.IO) {
         runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
-                runCatching {
-                    getProfileInfoUseCase().onRight { profileInfo ->
-                        _state.update {
-                            it.copy(
-                                profileModel = profileInfo
-                            )
-                        }
-                    }
+            getProfileInfoUseCase().onRight { profileInfo ->
+                _state.update {
+                    it.copy(
+                        profileModel = profileInfo
+                    )
                 }
             }
         }
     }
 
+
     fun sync(roomId: String, roomType: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            if (state.value.profileModel == null) {
+                syncAuthData().join()
+            }
+
             val getChatInfoRes = getChatInfoUseCase(roomId = roomId)
-            var chatName: String = ""
+            var chatName = ""
             var recipientUserId: String? = null
             getChatInfoRes.onRight { chat ->
                 when (chat.t) {

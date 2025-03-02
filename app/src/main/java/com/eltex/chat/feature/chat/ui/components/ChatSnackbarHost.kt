@@ -24,8 +24,9 @@ fun ChatSnackbarHost(snackbarHostState: SnackbarHostState) {
             backgroundColor = CustomTheme.basicPalette.blue,
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
-                .height(50.dp)
+                .padding(bottom = 11.dp)
                 .padding(horizontal = 16.dp)
+                .height(50.dp)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
