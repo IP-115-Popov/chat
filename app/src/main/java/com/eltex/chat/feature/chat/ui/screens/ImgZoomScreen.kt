@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -49,17 +53,20 @@ fun ImgZoomScreen(
     bitmap: ImageBitmap,
     onBackClick: () -> Unit,
 ) {
+    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
+
     Popup(alignment = Alignment.Center, properties = PopupProperties(
         focusable = true
     ), onDismissRequest = { onBackClick() }) {
         Scaffold(
             Modifier
                 .fillMaxSize()
-                .background(CustomTheme.basicPalette.black0), topBar = {
+                .background(CustomTheme.basicPalette.black0),
+            topBar = {
                 Column(Modifier.background(CustomTheme.basicPalette.blue)) {
                     Box(
                         Modifier
-                            .height(48.dp)
+                            .height(48.dp - systemBarsPadding.calculateTopPadding())
                             .fillMaxWidth()
                     )
                     Row(
