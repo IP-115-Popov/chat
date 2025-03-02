@@ -41,8 +41,8 @@ fun ChatInfoScreen(
     navController: NavHostController,
     roomId: String,
     roomType: String,
+    chatInfoVIewModel: ChatInfoViewModel
 ) {
-    val chatInfoVIewModel = hiltViewModel<ChatInfoViewModel>()
     val state = chatInfoVIewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -135,16 +135,5 @@ fun ChatInfoScreen(
                 }
             }
         }
-    }
-}
-
-
-@Preview
-@Composable
-fun ChatInfoPreview() {
-    CustomTheme {
-        ChatInfoScreen(
-            navController = rememberNavController(), roomId = "", roomType = "p"
-        )
     }
 }

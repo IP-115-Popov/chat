@@ -39,8 +39,11 @@ import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
-fun UserProfileScreen(navController: NavHostController, userId: String) {
-    val userProfileViewModel = hiltViewModel<UserProfileViewModel>()
+fun UserProfileScreen(
+    navController: NavHostController,
+    userId: String,
+    userProfileViewModel: UserProfileViewModel,
+) {
     val state = userProfileViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -150,13 +153,5 @@ fun UserProfileScreen(navController: NavHostController, userId: String) {
                 launchSingleTop = true
             }
         }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun UserProfileScreenPreview() {
-    CustomTheme {
-        UserProfileScreen(navController = rememberNavController(), userId = "")
     }
 }

@@ -32,12 +32,10 @@ class ChatInfoViewModel @Inject constructor(
     val state: StateFlow<ChatInfoState> = _state.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getProfile()
-        }
+        getProfile()
     }
 
-    private suspend fun getProfile() {
+    private fun getProfile() = viewModelScope.launch(Dispatchers.IO) {
         getProfileInfoUseCase().onRight { profileModel ->
             _state.update {
                 it.copy(
@@ -49,6 +47,10 @@ class ChatInfoViewModel @Inject constructor(
 
     fun getInfo(roomId: String, roomType: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            if(state.value.profileModel == null) {
+                getProfile().join()
+            }
+
             var chatModel: ChatModel? = null
             var membersList: List<MemberUiModel> = emptyList()
             getChatInfoUseCase(roomId = roomId).onRight { chat ->

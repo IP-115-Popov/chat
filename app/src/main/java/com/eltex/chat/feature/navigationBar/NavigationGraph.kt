@@ -8,11 +8,13 @@ import androidx.navigation.compose.composable
 import com.eltex.chat.feature.chat.ui.screens.ChatScreen
 import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.infochat.ui.screens.ChatInfoScreen
+import com.eltex.chat.feature.infochat.viewmodel.ChatInfoViewModel
 import com.eltex.chat.feature.main.ui.screens.MainScreen
 import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.profile.ui.screens.ProfileScreen
 import com.eltex.chat.feature.signin.ui.screens.SignInScreen
 import com.eltex.chat.feature.userprofile.ui.screens.UserProfileScreen
+import com.eltex.chat.feature.userprofile.viewmodel.UserProfileViewModel
 import com.eltex.chat.ui.components.SplashScreen
 
 @Composable
@@ -22,6 +24,9 @@ fun NavigationGraph(
 ) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val chatViewModel = hiltViewModel<ChatViewModel>()
+    val chatInfoVIewModel = hiltViewModel<ChatInfoViewModel>()
+    val userProfileViewModel = hiltViewModel<UserProfileViewModel>()
+
     NavHost(
         navController = navController,
         startDestination = startDestination.route,
@@ -55,6 +60,7 @@ fun NavigationGraph(
                     navController = navController,
                     roomId = roomId,
                     roomType = roomType,
+                    chatInfoVIewModel = chatInfoVIewModel,
                 )
             }
         }
@@ -63,6 +69,7 @@ fun NavigationGraph(
                 UserProfileScreen(
                     navController = navController,
                     userId = userId,
+                    userProfileViewModel = userProfileViewModel
                 )
             }
         }
