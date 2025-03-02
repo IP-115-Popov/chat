@@ -16,9 +16,11 @@ import com.eltex.domain.usecase.remote.GetUsersListUseCase
 import com.eltex.domain.usecase.remote.SubscribeToChatsUseCase
 import com.eltex.domain.websocket.WebSocketConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -165,9 +167,10 @@ class MainViewModel @Inject constructor(
     }
 
     private fun loadAvatars() {
-        state.value.chatList.forEach { chat ->
-            if (chat.avatar == null) {
-                viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            val avatarJobs = mutableListOf<Deferred<Unit?>>()
+            state.value.chatList.filter { it.avatar == null }.forEach { chat ->
+                val job = viewModelScope.async(Dispatchers.IO) {
                     val chatModel = ChatUIModelToChatModelMapper.map(chat)
                     getRoomAvatarUseCase(
                         chat = chatModel, username = state.value.profileUiModel?.username
@@ -186,7 +189,10 @@ class MainViewModel @Inject constructor(
                         }
                     }
                 }
+                avatarJobs.add(job)
             }
+            avatarJobs.awaitAll()
+            chatsListCache = state.value.chatList
         }
     }
 
