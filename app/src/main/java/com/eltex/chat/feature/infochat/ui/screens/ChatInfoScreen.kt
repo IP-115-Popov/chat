@@ -116,11 +116,7 @@ fun ChatInfoScreen(
                         MemberItem(
                             member = member,
                             onSelect = {
-                                if (member.id == state.value.profileModel?.id) {
-                                    navController.navigate(NavRoutes.Profile.route) {
-                                        launchSingleTop = true
-                                    }
-                                } else {
+                                if (member.id != state.value.profileModel?.id) {
                                     navController.navigate(NavRoutes.UserProfile.route + "/${member.id}") {
                                         launchSingleTop = true
                                     }
