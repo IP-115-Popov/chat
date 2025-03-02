@@ -140,13 +140,8 @@ fun ChatScreen(
                     chatViewModel.clearMessageSelectionList()
                 })
         } else {
-            val onBackClick = {
-                navController.navigate(NavRoutes.Main.route) {
-                    popUpTo(NavRoutes.Main.route) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                }
+            val onBackClick = fun() {
+                navController.popBackStack()
             }
             if (state.value.chatModel?.t == "d") {
                 PrivateChatScreenTopBar(
