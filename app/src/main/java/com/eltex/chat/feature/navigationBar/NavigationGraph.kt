@@ -13,7 +13,6 @@ import com.eltex.chat.feature.main.viewmodel.MainViewModel
 import com.eltex.chat.feature.profile.ui.screens.ProfileScreen
 import com.eltex.chat.feature.signin.ui.screens.SignInScreen
 import com.eltex.chat.feature.userprofile.ui.screens.UserProfileScreen
-import com.eltex.chat.feature.userprofile.viewmodel.UserProfileViewModel
 import com.eltex.chat.ui.components.SplashScreen
 
 @Composable

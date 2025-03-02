@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,8 +35,6 @@ import com.eltex.chat.feature.userprofile.viewmodel.UserProfileStatus
 import com.eltex.chat.feature.userprofile.viewmodel.UserProfileViewModel
 import com.eltex.chat.ui.components.MainAvatar
 import com.eltex.chat.ui.theme.CustomTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun UserProfileScreen(

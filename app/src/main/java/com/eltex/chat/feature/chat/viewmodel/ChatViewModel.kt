@@ -78,7 +78,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateState(updateFun: (ChatUiState)->ChatUiState) =
+    suspend fun updateState(updateFun: (ChatUiState) -> ChatUiState) =
         withContext(Dispatchers.Main.immediate) {
             _state.update {
                 updateFun(it)
