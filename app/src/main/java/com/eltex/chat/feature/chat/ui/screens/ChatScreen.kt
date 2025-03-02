@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.feature.chat.ui.components.ChatSnackbarHost
@@ -75,8 +76,9 @@ fun ChatScreen(
     navController: NavController,
     roomId: String,
     roomType: String,
-    chatViewModel: ChatViewModel
 ) {
+    val chatViewModel = hiltViewModel<ChatViewModel>()
+
     val state = chatViewModel.state.collectAsState()
     val enabled = rememberSaveable { mutableStateOf(true) }
     var messagesSelecting by rememberSaveable { mutableStateOf(false) }

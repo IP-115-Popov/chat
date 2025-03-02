@@ -17,7 +17,7 @@ data class ChatUiState(
     val offset: Int = 0,
     val isAtEnd: Boolean = false,
     val msgText: String = "",
-    val attachmentUriList: Set<Uri> = emptySet(),
+    val attachmentUriList: List<Uri> = emptyList(),
     val chatModel: ChatModel? = null,
     val usernameToAvatarsMap: Map<String, ImageBitmap> = mutableMapOf(),
     val recipientUserId: String? = null,

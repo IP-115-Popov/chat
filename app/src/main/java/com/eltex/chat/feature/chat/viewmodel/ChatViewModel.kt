@@ -69,7 +69,7 @@ class ChatViewModel @Inject constructor(
     private fun syncAuthData() = viewModelScope.launch(Dispatchers.IO) {
         runCatching {
             getProfileInfoUseCase().onRight { profileInfo ->
-                _state.update {
+                updateState {
                     it.copy(
                         profileModel = profileInfo
                     )
@@ -77,6 +77,13 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun updateState(updateFun: (ChatUiState)->ChatUiState) =
+        withContext(Dispatchers.Main.immediate) {
+            _state.update {
+                updateFun(it)
+            }
+        }
 
 
     fun sync(roomId: String, roomType: String) {
@@ -104,7 +111,7 @@ class ChatViewModel @Inject constructor(
                     else -> chatName = chat.name ?: ""
 
                 }
-                _state.update {
+                updateState {
                     it.copy(
                         chatModel = chat,
                     )
@@ -112,7 +119,7 @@ class ChatViewModel @Inject constructor(
                 loadChatAvatar(chat)
             }
 
-            _state.update {
+            updateState {
                 it.copy(
                     roomId = roomId,
                     roomType = roomType,
@@ -133,7 +140,7 @@ class ChatViewModel @Inject constructor(
                 userAvatarEither.onRight { avatarBytes ->
                     val img = avatarBytes.byteArrayToBitmap()?.asImageBitmap()
                     if (img != null) {
-                        _state.update { currentState ->
+                        updateState { currentState ->
                             val updatedMap = (currentState.usernameToAvatarsMap?.toMutableMap()
                                 ?: mutableMapOf()).apply {
                                 this[username] = img
@@ -151,13 +158,11 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getMessageFromChatUseCase(roomId = roomId).collect { messsage: Message ->
                 withContext(Dispatchers.IO) {
-                    _state.update { state ->
+                    val updatedMessage = MessageToMessageUiModelMapper.map(messsage)
+
+                    updateState { state ->
                         state.copy(
-                            messages = (listOf(
-                                MessageToMessageUiModelMapper.map(
-                                    messsage
-                                )
-                            ) + state.messages).distinct()
+                            messages = (listOf(updatedMessage) + state.messages).distinct()
                         )
                     }
                     messsage.username?.let { username ->
@@ -170,7 +175,7 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             observeMessageDeletionsUseCase(roomId = roomId).collect { messageId ->
-                _state.update { state ->
+                updateState { state ->
                     state.copy(messages = state.messages.filter { it.id != messageId })
                 }
             }
@@ -227,6 +232,7 @@ class ChatViewModel @Inject constructor(
                 attachmentUriList = it.attachmentUriList + uri
             )
         }
+        Log.i("Attachment", "${state.value.attachmentUriList}")
     }
 
     fun removeAttachmentUri(uri: Uri) {
@@ -235,14 +241,16 @@ class ChatViewModel @Inject constructor(
                 attachmentUriList = it.attachmentUriList - uri
             )
         }
+        Log.i("", "${state.value.attachmentUriList}")
     }
 
     fun clearAttachment() {
         _state.update {
             it.copy(
-                attachmentUriList = emptySet()
+                attachmentUriList = emptyList()
             )
         }
+        Log.i("", "${state.value.attachmentUriList}")
     }
 
     fun sendDocument() {
@@ -331,13 +339,13 @@ class ChatViewModel @Inject constructor(
 
                     withContext(Dispatchers.IO) {
                         if (messages.isEmpty()) {
-                            _state.update { state ->
+                            updateState { state ->
                                 state.copy(
                                     isAtEnd = true
                                 )
                             }
                         } else {
-                            _state.update { state ->
+                            updateState { state ->
                                 state.copy(
                                     offset = state.offset + messages.size,
                                     messages = (state.messages + messages).distinct()
@@ -360,7 +368,7 @@ class ChatViewModel @Inject constructor(
             if (message.fileModel is FileModel.Img && message.bitmap == null) {
                 viewModelScope.launch(Dispatchers.IO) {
                     loadImg(fileModel = message.fileModel)?.let { bitmap ->
-                        _state.update {
+                        updateState {
                             it.copy(messages = it.messages.map {
                                 if (it == message) {
                                     it.copy(
@@ -375,23 +383,6 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
-
-
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.update { state ->
-                state.copy(
-                    messages = state.messages.map { message ->
-                        //если это незагруженное изображение
-                        if (message.fileModel is FileModel.Img && message.bitmap == null) {
-                            val bitmap = loadImg(fileModel = message.fileModel)
-                            message.copy(bitmap = bitmap)
-                        } else {
-                            message
-                        }
-                    },
-                )
-            }
-        }
     }
 
     private fun loadChatAvatar(chatModel: ChatModel) {
@@ -399,7 +390,7 @@ class ChatViewModel @Inject constructor(
             getRoomAvatarUseCase(
                 chat = chatModel, username = state.value.profileModel?.username
             )?.let { avatar ->
-                _state.update {
+                updateState {
                     it.copy(
                         avatar = avatar.byteArrayToBitmap()?.asImageBitmap()
                     )

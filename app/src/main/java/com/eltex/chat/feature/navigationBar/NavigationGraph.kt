@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.eltex.chat.feature.chat.ui.screens.ChatScreen
-import com.eltex.chat.feature.chat.viewmodel.ChatViewModel
 import com.eltex.chat.feature.infochat.ui.screens.ChatInfoScreen
 import com.eltex.chat.feature.infochat.viewmodel.ChatInfoViewModel
 import com.eltex.chat.feature.main.ui.screens.MainScreen
@@ -23,7 +22,6 @@ fun NavigationGraph(
     startDestination: NavRoutes,
 ) {
     val mainViewModel = hiltViewModel<MainViewModel>()
-    val chatViewModel = hiltViewModel<ChatViewModel>()
     val chatInfoVIewModel = hiltViewModel<ChatInfoViewModel>()
     val userProfileViewModel = hiltViewModel<UserProfileViewModel>()
 
@@ -47,7 +45,6 @@ fun NavigationGraph(
                     navController = navController,
                     roomId = roomId,
                     roomType = roomType,
-                    chatViewModel = chatViewModel,
                 )
             }
         }
