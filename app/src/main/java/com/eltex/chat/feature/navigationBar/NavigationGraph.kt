@@ -23,7 +23,6 @@ fun NavigationGraph(
 ) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val chatInfoVIewModel = hiltViewModel<ChatInfoViewModel>()
-    val userProfileViewModel = hiltViewModel<UserProfileViewModel>()
 
     NavHost(
         navController = navController,
@@ -66,7 +65,6 @@ fun NavigationGraph(
                 UserProfileScreen(
                     navController = navController,
                     userId = userId,
-                    userProfileViewModel = userProfileViewModel
                 )
             }
         }

@@ -105,6 +105,10 @@ fun ChatScreen(
         }
     }
 
+    LaunchedEffect(key1 = roomId, key2 = roomType) {
+        chatViewModel.sync(roomId = roomId, roomType = roomType)
+    }
+
     LaunchedEffect(listState.layoutInfo.visibleItemsInfo.lastOrNull()?.key) {
         val totalItemsCount = listState.layoutInfo.totalItemsCount
 
@@ -125,12 +129,6 @@ fun ChatScreen(
                 }
             }
         }
-    }
-
-
-
-    LaunchedEffect(key1 = roomId, key2 = roomType) {
-        chatViewModel.sync(roomId = roomId, roomType = roomType)
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
