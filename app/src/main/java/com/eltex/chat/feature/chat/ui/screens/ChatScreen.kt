@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.model.MessageUiModel
+import com.eltex.chat.feature.chat.ui.components.ChatSnackbarHost
 import com.eltex.chat.feature.chat.ui.components.DeleteMessageAlertDialog
 import com.eltex.chat.feature.chat.ui.components.messages.CallerMessage
 import com.eltex.chat.feature.chat.ui.components.bar.ChatScreenTopBar
@@ -83,14 +85,15 @@ fun ChatScreen(
     var messagesSelecting by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var showSelectedAlertDialog by remember { mutableStateOf(false) }
     var showDeleteMessageAlertDialog by remember { mutableStateOf(false) }
     var showSelectedMessagesListDeleteAlertDialog by remember { mutableStateOf(false) }
 
-    val modalBottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { true })
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = { true })
 
     val showSendButtons by remember {
         derivedStateOf {
@@ -133,8 +136,7 @@ fun ChatScreen(
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         if (messagesSelecting == true) {
-            MessagesSelectingChatScreenTopBar(
-                messageCount = state.value.selectedMessages.size,
+            MessagesSelectingChatScreenTopBar(messageCount = state.value.selectedMessages.size,
                 onCancelClick = {
                     messagesSelecting = false
                     chatViewModel.clearMessageSelectionList()
@@ -200,6 +202,8 @@ fun ChatScreen(
                 },
             )
         }
+    }, snackbarHost = {
+        ChatSnackbarHost(snackbarHostState)
     }) { innerPadding ->
         MediaPickerBottomSheet(
             modalBottomSheetState = modalBottomSheetState,
@@ -319,6 +323,13 @@ fun ChatScreen(
 
     val onDeleteMessage = {
         messagesSelecting = false
+        coroutineScope.launch {
+            if (state.value.selectedMessages.size == 1) {
+                snackbarHostState.showSnackbar(message = "Сообщение удалено")
+            } else {
+                snackbarHostState.showSnackbar(message = "Сообщения удалены")
+            }
+        }
         chatViewModel.deleteMessages()
     }
     if (showSelectedAlertDialog) {
