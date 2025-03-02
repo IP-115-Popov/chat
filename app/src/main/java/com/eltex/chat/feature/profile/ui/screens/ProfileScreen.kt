@@ -168,7 +168,7 @@ fun LogoutButton(onClick: () -> Unit) {
                 contentDescription = null,
                 modifier = Modifier
                     .height(13.33.dp)
-                    .padding(end = 1.dp),
+                    .padding(end = 16.15.dp),
                 tint = CustomTheme.basicPalette.lightGrey
             )
         }
