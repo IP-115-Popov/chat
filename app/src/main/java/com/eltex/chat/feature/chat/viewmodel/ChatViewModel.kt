@@ -9,6 +9,7 @@ import arrow.core.Either
 import com.eltex.chat.feature.chat.mappers.MessageToMessageUiModelMapper
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.utils.byteArrayToBitmap
+import com.eltex.domain.Constants
 import com.eltex.domain.models.ChatModel
 import com.eltex.domain.models.FileModel
 import com.eltex.domain.models.Message
@@ -26,7 +27,6 @@ import com.eltex.domain.usecase.remote.GetUserInfoUseCase
 import com.eltex.domain.usecase.remote.LoadDocumentUseCase
 import com.eltex.domain.usecase.remote.ObserveMessageDeletionsUseCase
 import com.eltex.domain.usecase.remote.SendMessageUseCase
-import com.eltex.domain.Сonstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -410,7 +410,7 @@ class ChatViewModel @Inject constructor(
     suspend fun loadImg(fileModel: FileModel?) = when (val file = fileModel) {
         is FileModel.Img -> {
             try {
-                val byteArray = getImageUseCase(Сonstants.BASE_URL + file.uri)
+                val byteArray = getImageUseCase(Constants.BASE_URL + file.uri)
                 when (byteArray) {
                     is Either.Left -> null
                     is Either.Right -> {

@@ -7,8 +7,8 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.eltex.domain.Constants
 import com.eltex.domain.models.FileModel
-import com.eltex.domain.Сonstants
 import java.io.File
 
 fun Context.openFile(fileModel: FileModel) {
@@ -85,7 +85,7 @@ fun Context.openFile(fileModel: FileModel) {
         }
 
         is FileModel.Video -> {
-            val uri = Сonstants.BASE_URL + file.uri
+            val uri = Constants.BASE_URL + file.uri
             val videoUri = Uri.parse(uri)
             val browserIntent = Intent(Intent.ACTION_VIEW, videoUri)
 

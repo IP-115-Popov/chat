@@ -68,10 +68,13 @@ fun DeleteMessageBottomBarPreview() {
                 enabled = true,
                 onClick = {}
             )
-        }) { ip -> Box(
-            Modifier
-                .padding(ip)
-                .fillMaxSize()) }
+        }) { ip ->
+            Box(
+                Modifier
+                    .padding(ip)
+                    .fillMaxSize()
+            )
+        }
     }
 
 }

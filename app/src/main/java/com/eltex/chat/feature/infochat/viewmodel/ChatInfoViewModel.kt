@@ -47,7 +47,7 @@ class ChatInfoViewModel @Inject constructor(
 
     fun getInfo(roomId: String, roomType: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            if(state.value.profileModel == null) {
+            if (state.value.profileModel == null) {
                 getProfile().join()
             }
 

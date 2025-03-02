@@ -57,9 +57,11 @@ fun MessageInput(
             .navigationBarsPadding()
             .imePadding()
     ) {
-        ConstraintLayout(modifier = Modifier
-            .padding(start = 16.dp)
-            .fillMaxWidth()) {
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .fillMaxWidth()
+        ) {
             val (textField, buttons) = createRefs()
 
             Box(

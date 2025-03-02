@@ -41,12 +41,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.eltex.chat.feature.chat.model.MessageUiModel
 import com.eltex.chat.feature.chat.ui.components.ChatSnackbarHost
 import com.eltex.chat.feature.chat.ui.components.DeleteMessageAlertDialog
