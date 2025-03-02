@@ -26,11 +26,12 @@ import com.eltex.chat.ui.theme.CustomTheme
 fun DeleteMessageBottomBar(
     enabled: Boolean, onClick: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .navigationBarsPadding()
-        .imePadding()
-        .height(50.dp)
-        .fillMaxWidth()
+    Box(
+        modifier = Modifier
+            .navigationBarsPadding()
+            .imePadding()
+            .height(50.dp)
+            .fillMaxWidth()
     ) {
         Box(modifier = Modifier
             .size(44.dp)
@@ -50,7 +51,11 @@ fun DeleteMessageBottomBar(
                     .align(Alignment.Center)
             )
         }
-        HorizontalDivider(thickness = 0.5.dp, modifier = Modifier.fillMaxWidth(), color = CustomTheme.basicPalette.lightGrey)
+        HorizontalDivider(
+            thickness = 0.5.dp,
+            modifier = Modifier.fillMaxWidth(),
+            color = CustomTheme.basicPalette.lightGrey
+        )
     }
 }
 
@@ -63,7 +68,10 @@ fun DeleteMessageBottomBarPreview() {
                 enabled = true,
                 onClick = {}
             )
-        }) { ip -> Box(Modifier.padding(ip).fillMaxSize()) }
+        }) { ip -> Box(
+            Modifier
+                .padding(ip)
+                .fillMaxSize()) }
     }
 
 }

@@ -57,7 +57,9 @@ fun MessageInput(
             .navigationBarsPadding()
             .imePadding()
     ) {
-        ConstraintLayout(modifier = Modifier.padding(start = 16.dp).fillMaxWidth()) {
+        ConstraintLayout(modifier = Modifier
+            .padding(start = 16.dp)
+            .fillMaxWidth()) {
             val (textField, buttons) = createRefs()
 
             Box(
@@ -148,7 +150,11 @@ fun MessageInput(
                 }
             }
         }
-        HorizontalDivider(thickness = 0.5.dp, modifier = Modifier.fillMaxWidth(), color = CustomTheme.basicPalette.lightGrey)
+        HorizontalDivider(
+            thickness = 0.5.dp,
+            modifier = Modifier.fillMaxWidth(),
+            color = CustomTheme.basicPalette.lightGrey
+        )
     }
 }
 

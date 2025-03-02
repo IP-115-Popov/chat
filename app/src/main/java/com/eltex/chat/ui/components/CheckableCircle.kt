@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.motion.widget.MotionScene.Transition.TransitionOnClick
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
@@ -22,7 +21,7 @@ fun CheckableCircle(
     isChecked: Boolean,
     borderColor: Color,
     iconColor: Color = CustomTheme.basicPalette.white,
-    onClick: ()->Unit = {},
+    onClick: () -> Unit = {},
 ) {
     val backgroundColor =
         if (isChecked) CustomTheme.basicPalette.lightBlue else Color.Transparent // Прозрачный фон если не выбран
@@ -40,7 +39,8 @@ fun CheckableCircle(
             .background(
                 color = backgroundColor,
                 shape = CircleShape
-            ).clickable {
+            )
+            .clickable {
                 onClick()
             },
         contentAlignment = Alignment.Center

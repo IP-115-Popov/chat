@@ -30,7 +30,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -97,39 +96,40 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
         replay = 1
     )
 
-    override suspend fun subscribeToRoomDeleteMessagesId(roomId: String): Flow<String> = callbackFlow {
-        val listener: (JSONObject) -> Unit = { json ->
-            try {
-                if (json.has("msg") && json.getString("msg") == "changed" && json.getString("collection") == "stream-notify-room") {
-                    val fields = json.optJSONObject("fields")
-                    if (fields != null) {
-                        val eventName = fields.optString("eventName", "")
-                        if (eventName.endsWith("/deleteMessage")) {
-                            val args = fields.optJSONArray("args")
-                            if (args != null && args.length() > 0) {
-                                val firstArg = args.optJSONObject(0)
-                                if (firstArg != null) {
-                                    val messageId = firstArg.optString("_id", "")
-                                    if (messageId.isNotEmpty()) {
-                                        trySend(messageId)
+    override suspend fun subscribeToRoomDeleteMessagesId(roomId: String): Flow<String> =
+        callbackFlow {
+            val listener: (JSONObject) -> Unit = { json ->
+                try {
+                    if (json.has("msg") && json.getString("msg") == "changed" && json.getString("collection") == "stream-notify-room") {
+                        val fields = json.optJSONObject("fields")
+                        if (fields != null) {
+                            val eventName = fields.optString("eventName", "")
+                            if (eventName.endsWith("/deleteMessage")) {
+                                val args = fields.optJSONArray("args")
+                                if (args != null && args.length() > 0) {
+                                    val firstArg = args.optJSONObject(0)
+                                    if (firstArg != null) {
+                                        val messageId = firstArg.optString("_id", "")
+                                        if (messageId.isNotEmpty()) {
+                                            trySend(messageId)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                } catch (e: Exception) {
+                    Log.e("RoomMessages", "Error processing message: ${e.message}", e)
                 }
-            } catch (e: Exception) {
-                Log.e("RoomMessages", "Error processing message: ${e.message}", e)
             }
-        }
 
-        webSocketManager.addListener(listener)
+            webSocketManager.addListener(listener)
 
-        val id = generateSubscriptionId()
+            val id = generateSubscriptionId()
 
-        withContext(Dispatchers.IO) {
-            webSocketManager.sendMessage(
-                """
+            withContext(Dispatchers.IO) {
+                webSocketManager.sendMessage(
+                    """
                 {
                     "msg": "sub",
                     "id": "$id",
@@ -140,21 +140,21 @@ class ChatMessageWebSocketRepositoryImpl @Inject constructor(
                     ]
                 }
                 """.trimIndent()
-            )
-        }
+                )
+            }
 
 
 
-        awaitClose {
-            unsubscribeFromRoomMessages(id)
-            webSocketManager.removeListener(listener)
-            Log.d("RoomDeleteMessagesId", "Flow closed, listener removed")
-        }
-    }.shareIn(
-        scope = CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.WhileSubscribed(1000),
-        replay = 1
-    )
+            awaitClose {
+                unsubscribeFromRoomMessages(id)
+                webSocketManager.removeListener(listener)
+                Log.d("RoomDeleteMessagesId", "Flow closed, listener removed")
+            }
+        }.shareIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.WhileSubscribed(1000),
+            replay = 1
+        )
 
     override suspend fun sendMessages(messagePayload: MessagePayload) {
         if (messagePayload.uri == null) {

@@ -184,7 +184,7 @@ class ChatViewModel @Inject constructor(
         }
         _state.update {
             it.copy(
-                canDeleteMsg = updatedSelectedMessages.isNotEmpty() && updatedSelectedMessages.all { msg -> msg.userId == state.value.profileModel?.id } ,
+                canDeleteMsg = updatedSelectedMessages.isNotEmpty() && updatedSelectedMessages.all { msg -> msg.userId == state.value.profileModel?.id },
                 selectedMessages = updatedSelectedMessages,
             )
         }

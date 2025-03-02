@@ -19,9 +19,9 @@ import com.eltex.chat.R
 import com.eltex.chat.ui.theme.CustomTheme
 
 @Composable
-fun MessagesSelectingChatScreenTopBar (
+fun MessagesSelectingChatScreenTopBar(
     messageCount: Int,
-    onCancelClick: ()->Unit,
+    onCancelClick: () -> Unit,
 ) {
     Column(Modifier.background(CustomTheme.basicPalette.blue)) {
         Box(
@@ -35,7 +35,7 @@ fun MessagesSelectingChatScreenTopBar (
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
 
-        ) {
+            ) {
             Text(
                 text = stringResource(R.string.selected) + ": " + messageCount,
                 style = CustomTheme.typographySfPro.titleMedium,
@@ -50,9 +50,11 @@ fun MessagesSelectingChatScreenTopBar (
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 color = CustomTheme.basicPalette.white,
-                modifier = Modifier.align(Alignment.CenterEnd).clickable {
-                    onCancelClick()
-                }
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable {
+                        onCancelClick()
+                    }
             )
         }
     }

@@ -34,7 +34,7 @@ fun SelectedMessagesListDeleteAlertDialog(
     onDeleteRequest: () -> Unit,
 ) {
     AlertDialog(
-    onDismissRequest = onDismissRequest,
+        onDismissRequest = onDismissRequest,
     ) {
         Column(
             modifier = Modifier
@@ -60,7 +60,9 @@ fun SelectedMessagesListDeleteAlertDialog(
             HorizontalDivider()
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.height(44.dp).fillMaxWidth()
+                modifier = Modifier
+                    .height(44.dp)
+                    .fillMaxWidth()
             ) {
                 TextButton(onClick = {
                     onDismissRequest()
