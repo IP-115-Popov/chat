@@ -80,6 +80,7 @@ class ChatViewModel @Inject constructor(
 
 
     fun sync(roomId: String, roomType: String) {
+        _state.update { ChatUiState() }
         viewModelScope.launch(Dispatchers.IO) {
             if (state.value.profileModel == null) {
                 syncAuthData().join()
@@ -105,7 +106,7 @@ class ChatViewModel @Inject constructor(
                 }
                 _state.update {
                     it.copy(
-                        chatModel = chat
+                        chatModel = chat,
                     )
                 }
                 loadChatAvatar(chat)
@@ -116,7 +117,7 @@ class ChatViewModel @Inject constructor(
                     roomId = roomId,
                     roomType = roomType,
                     name = chatName,
-                    recipientUserId = recipientUserId
+                    recipientUserId = recipientUserId,
                 )
             }
             loadHistoryChat()
